@@ -5,17 +5,18 @@ import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import Connection from './database/db.js';
-import customerRoutes from './routes/customer.js';
-import adminRoutes from './routes/admin.js';
-
-const app = express();
+import adminRoutes from './routes/adminRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
 
 dotenv.config();
+
+const app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(methodOverride('_method'));
+app.use(express.urlencoded({ extended: true }));
 app.use(noCache());
 app.use(cookieParser());
 app.use(session({
