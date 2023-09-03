@@ -28820,7 +28820,7 @@ div.tagsinput span.tag a {
 
 @media (max-width: 991px) {
   .navbar .navbar-menu-wrapper {
-    width: calc(100% - 55px);
+    width: calc(100% - 115px);
     padding-left: 15px;
     padding-right: 11px;
   }
@@ -28832,6 +28832,7 @@ div.tagsinput span.tag a {
   font-size: 1.25rem;
   padding: 0;
   border-radius: 0;
+  background-color: #fff;
 }
 
 .navbar .navbar-menu-wrapper .navbar-toggler:not(.navbar-toggler-right) {
@@ -29827,9 +29828,11 @@ div.tagsinput span.tag a {
     -webkit-box-direction: normal;
     -ms-flex-direction: row;
     flex-direction: row;
+    background-color: #fff;
   }
   .navbar .navbar-brand-wrapper {
-    width: 55px;
+    width: 90px;
+    margin-left: 25px;
   }
   .navbar .navbar-brand-wrapper .navbar-brand.brand-logo {
     display: none;
