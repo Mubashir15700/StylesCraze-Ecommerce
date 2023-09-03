@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
+import UserOTPVerification from '../models/userOTPModel.js';
+import { sendToMail } from '../utils/sendMail.js';
 
 let salt;
 
@@ -39,9 +41,12 @@ export const logoutAdmin = async (req, res) => {
         req.session.destroy();
         res.redirect('/admin/');
     } catch (error) {
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({
+            status: 'FAILED',
+            message: 'Internal Server Error:' + error.message,
+        });
     }
-}
+};
 
 export const loginCustomer = async (req, res) => {
     try {
@@ -86,7 +91,7 @@ export const registerCustomer = async (req, res) => {
                     await newUser.save();
                     const savedUser = await User.findOne({ username: username });
                     req.session.user = savedUser._id;
-                    res.render('customer/home', { isLoggedIn: true });
+                    sendToMail(req, res, savedUser._id);
                 } else {
                     res.render('customer/register', { commonError: "Password and confirm password didn't match." });
                 }
@@ -99,11 +104,51 @@ export const registerCustomer = async (req, res) => {
     }
 };
 
+export const Verification = async (req, res) => {
+    try {
+        let { userId, otp } = req.body;
+        if (!userId || !otp) {
+            throw Error("Empty details are not allowed");
+        } else {
+            const verificationRecords = await UserOTPVerification.findOne({ userId });
+            if (!verificationRecords) {
+                throw new Error(
+                    "Account record doesn't exist or has been verified already. Please sign in."
+                );
+            } else {
+                const { expiresAt } = verificationRecords;
+                const hashedOTP = verificationRecords.otp;
+                if (expiresAt < Date.now()) {
+                    await verificationRecords.deleteOne({ userId });
+                    throw new Error("Code has expired. Please try again.");
+                } else {
+                    const isValid = await bcrypt.compare(otp, hashedOTP);
+                    if (!isValid) {
+                        throw new Error("Invalid code. Please check your inbox.");
+                    } else {
+                        await User.updateOne({ _id: userId }, { verified: true });
+                        await verificationRecords.deleteOne({ userId });
+                        res.redirect("/");
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 'FAILED',
+            message: 'Internal Server Error:' + error.message,
+        });
+    }
+};
+
 export const logoutCustomer = async (req, res) => {
     try {
         req.session.destroy();
         res.redirect('/');
     } catch (error) {
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({
+            status: 'FAILED',
+            message: 'Internal Server Error:' + error.message,
+        });
     }
-}
+};

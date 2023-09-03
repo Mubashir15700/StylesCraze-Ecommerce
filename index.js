@@ -24,7 +24,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: 600000
+        expires: 600000 * 24 * 7
     }
 }));
 

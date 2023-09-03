@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: {
         required: true,
         type: String,
@@ -91,6 +91,10 @@ const userSchema = mongoose.Schema({
         type: String,
         minLength: 6,
     },
+    verified: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const user = mongoose.model("user", userSchema);
