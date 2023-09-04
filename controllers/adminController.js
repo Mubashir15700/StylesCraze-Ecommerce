@@ -23,8 +23,40 @@ export const getProducts = (req, res) => {
     res.render('admin/products');
 };
 
+export const newProduct = (req, res) => {
+    res.render('admin/newProduct');
+};
+
+export const addNewProduct = (req, res) => {
+    console.log("add new product");
+};
+
+export const getProduct = (req, res) => {
+    res.render('admin/editProduct');
+};
+
+export const editProduct = (req, res) => {
+    console.log("edit product");
+};
+
 export const getCategories = (req, res) => {
     res.render('admin/categories');
+};
+
+export const newCategory = (req, res) => {
+    res.render('admin/newCategory');
+};
+
+export const addNewCategory = (req, res) => {
+    console.log("add new category");
+};
+
+export const getCategory = (req, res) => {
+    res.render('admin/editCategory');
+};
+
+export const editCategory = (req, res) => {
+    console.log("edit category");
 };
 
 export const getCustomers = (req, res) => {

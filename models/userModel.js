@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema({
         minLength: 10,
         maxLength: 10,
     },
+    profile: {
+        type: String
+    },
     dob: {
         type: Date
     },
@@ -92,6 +95,10 @@ const userSchema = new mongoose.Schema({
         minLength: 6,
     },
     verified: {
+        type: Boolean,
+        default: false
+    },
+    blocked: {
         type: Boolean,
         default: false
     }

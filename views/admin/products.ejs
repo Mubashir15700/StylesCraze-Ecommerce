@@ -129,28 +129,28 @@
                     <div class="col-lg-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4>Customers</h4>
-                                <p class="card-description">
-                                    Add class <code>.table-striped</code>
-                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <h4>Customers</h4>
+                                    <a href="/admin/new-product" class="btn btn-primary">New Product</a>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    User
+                                                    Name
                                                 </th>
                                                 <th>
-                                                    Username
+                                                    Price
                                                 </th>
                                                 <th>
-                                                    Email
+                                                    Stock
                                                 </th>
                                                 <th>
-                                                    Phone
+                                                    Category
                                                 </th>
                                                 <th>
-                                                    Verified
+                                                    Images
                                                 </th>
                                                 <th>
                                                     Actions
@@ -178,7 +178,11 @@
                                                 <td>
                                                     May 15, 2015
                                                 </td>
-                                                <td></td>
+                                                <td>
+                                                    <a href="" class="btn btn-info btn-sm">Edit</a>
+                                                    <button type="submit"
+                                                        class="btn btn-warning btn-sm">Acivate</button>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td class="py-1">
@@ -200,7 +204,12 @@
                                                 <td>
                                                     July 1, 2015
                                                 </td>
-                                                <td></td>
+                                                <td>
+                                                    <a href="" class="btn btn-info btn-sm">Edit</a>
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        Deacivate
+                                                    </button>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td class="py-1">
@@ -222,11 +231,17 @@
                                                 <td>
                                                     Apr 12, 2015
                                                 </td>
-                                                <td></td>
+                                                <td>
+                                                    <a href="" class="btn btn-info btn-sm">Edit</a>
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        Deacivate
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
