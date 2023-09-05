@@ -1,20 +1,28 @@
+import Category from '../models/categoryModel.js';
 
-export const getHome = (req, res) => {
+export const getHome = async (req, res) => {
     let isLoggedIn;
     if (req.session.user) {
         isLoggedIn = true;
     } else {
         isLoggedIn = false;
     }
-    res.render("customer/home", { isLoggedIn: isLoggedIn });
+    const foundCategories = await Category.find({ removed: false });
+    res.render("customer/home", { isLoggedIn: isLoggedIn, categoryDatas: foundCategories });
 };
 
 export const getAbout = (req, res) => {
     res.render("customer/about");
 };
 
-export const getShop = (req, res) => {
-    res.render("customer/shop");
+export const getShop = async (req, res) => {
+    try {
+        const foundCategories = await Category.find({ removed: false });
+        res.render("customer/shop", { categoryDatas: foundCategories });
+    } catch (error) {
+        console.log(error);
+    }
+    
 };
 
 export const getSingle = (req, res) => {

@@ -1,1 +1,212 @@
-<h1>ep</h1>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Shoppers Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/feather/feather.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/vertical-layout-light/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                <a><img src="/shoppers.svg" class="mr-2" alt="logo" /></a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                <ul class="navbar-nav mr-lg-2">
+                    <li class="nav-item nav-search d-none d-lg-block">
+                        <div class="input-group">
+                            <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                                <span class="input-group-text" id="search">
+                                    <i class="icon-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now"
+                                aria-label="search" aria-describedby="search">
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link count-indicator" id="notificationDropdown" href="/admin/notifications">
+                            <i class="icon-bell mx-0"></i>
+                            <span class="count"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-profile dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                            <i class="icon-contract menu-icon"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
+                            aria-labelledby="profileDropdown">
+                            <a class="dropdown-item">
+                                <i class="ti-settings text-primary"></i>
+                                Settings
+                            </a>
+                            <div class="ml-4">
+                                <form action="/admin/logout" method="post">
+                                    <button class="btn btn-light" type="submit">logout</button>
+                                </form>
+                            </div>
+                        </div>
+                        <a class="nav-link ml-2" href="/admin/profile">
+                            <img src="images/faces/face28.jpg" alt="profile" />
+                        </a>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+                    data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" aria-controls="ui-basic">
+                            <i class="icon-grid menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/orders" aria-controls="ui-basic">
+                            <i class="icon-layout menu-icon"></i>
+                            <span class="menu-title">Orders</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/products" aria-controls="ui-basic">
+                            <i class="icon-columns menu-icon"></i>
+                            <span class="menu-title">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/categories" aria-controls="ui-basic">
+                            <i class="icon-bar-graph menu-icon"></i>
+                            <span class="menu-title">Categories</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/customers" aria-controls="ui-basic">
+                            <i class="icon-grid-2 menu-icon"></i>
+                            <span class="menu-title">Customers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/sales-report" aria-controls="ui-basic">
+                            <i class="icon-contract menu-icon"></i>
+                            <span class="menu-title">Sales Report</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/banner" aria-controls="ui-basic">
+                            <i class="icon-contract menu-icon"></i>
+                            <span class="menu-title">Banner</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Add New Product</h4>
+
+                                    <form class="forms-sample" action="/admin/edit-product" method="post"
+                                        enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label for="name">Product</label>
+                                            <input type="text" class="form-control" name="name" id="name"
+                                                placeholder="Name">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="cat">Category</label>
+                                            <select name="category" id="cat" class="form-control">
+                                                <option value="">catname1</option>
+                                                <option value="">catname2</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputName1">Description</label>
+                                            <input type="text" class="form-control" name="description"
+                                                id="exampleInputName1" placeholder="description">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputName1">Price</label>
+                                            <input type="text" class="form-control" name="price" id="exampleInputName1"
+                                                placeholder="price">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputName1">Stock</label>
+                                            <input type="number" class="form-control" name="stock"
+                                                id="exampleInputName1" placeholder="stock">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Images</label>
+                                            <div class="input-group col-xs-12">
+                                                <input type="file" accept="image/*" multiple name="images"
+                                                    class="form-control file-upload-info" placeholder="Upload Image"
+                                                    id="preview-input" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="preview-group" style="display: none;">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Preview Image
+                                                </div>
+                                                <div class="card-body">
+                                                    <img src="" alt="img" class="preview" id="preview-img"
+                                                        style="max-width: 440px; object-fit: cover;" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary mr-2">Create</button>
+                                        <a href="/admin/products" class="btn btn-light">Cancel</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <!-- plugins:js -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <script src="vendors/chart.js/Chart.min.js"></script>
+
+    <script src="js/off-canvas.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/Chart.roundedBarCharts.js"></script>
+</body>
+
+</html>
