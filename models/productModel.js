@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     images: [String],
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: 'category',
     },
     softDeleted: {
         type: Boolean,

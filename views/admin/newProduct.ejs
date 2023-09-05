@@ -142,10 +142,11 @@
 
                                         <div class="form-group">
                                             <label for="cat">Category</label>
-                                                <select name="category" id="cat" class="form-control">
-                                                    <option value="">catname1</option>
-                                                    <option value="">catname2</option>
-                                                </select>
+                                            <select name="category" id="category" class="form-control">
+                                                <% categoryOptions.forEach(category => { %>
+                                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                                <% }) %>
+                                            </select>
                                         </div>
 
                                         <div class="form-group">

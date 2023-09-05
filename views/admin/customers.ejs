@@ -37,6 +37,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <% if (!customerDatas.length) { %>
+                                                <tr>
+                                                    <td colspan="3">No customers found.</td>
+                                                </tr>
+                                            <% } else { %>
                                             <% customerDatas.forEach((customer) => { %>
                                                 <tr>
                                                     <td class="py-1">
@@ -71,6 +76,7 @@
                                                     </td>
                                                 </tr>
                                                 <% }) %>
+                                                <% } %>
                                         </tbody>
                                     </table>
                                 </div>

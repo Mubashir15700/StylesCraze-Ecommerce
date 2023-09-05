@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
         {
             product_id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: 'product',
             },
             name: String,
             price: Number,
@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema({
         {
             product_id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: 'product',
             },
             name: String,
             price: Number,
@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema({
         {
             order_id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Order',
+                ref: 'order',
             },
             order_date: {
                 type: Date,
@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema({
                 {
                     product_id: {
                         type: mongoose.Schema.Types.ObjectId,
-                        ref: 'Product',
+                        ref: 'product',
                     },
                     name: String,
                     price: Number,

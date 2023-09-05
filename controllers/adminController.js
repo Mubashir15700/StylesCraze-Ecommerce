@@ -1,9 +1,10 @@
-import fs, { stat } from 'fs';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import User from '../models/userModel.js';
 import Category from '../models/categoryModel.js';
+import Product from '../models/productModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,24 +29,87 @@ export const getOrders = (req, res) => {
     res.render('admin/orders');
 };
 
-export const getProducts = (req, res) => {
-    res.render('admin/products');
+export const getProducts = async (req, res) => {
+    try {
+        const foundProducts = await Product.find({}).populate('category');
+        res.render('admin/products', { productDatas: foundProducts });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
-export const newProduct = (req, res) => {
-    res.render('admin/newProduct');
+export const newProduct = async (req, res) => {
+    try {
+        const foundCategories = await Category.find({}, { name: 1 });
+        res.render('admin/newProduct', { categoryOptions: foundCategories });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
-export const addNewProduct = (req, res) => {
-    console.log(req.body);
+export const addNewProduct = async (req, res) => {
+    const { name, category, description, price, stock, images } = req.body
+    const imagesWithPath = images.map(img => '/products/' + img)
+    try {
+        const product = await Product.create({
+            name,
+            description,
+            stock,
+            price,
+            category,
+            images: imagesWithPath,
+        });
+        res.redirect('/admin/products')
+    } catch (error) {
+        console.log(error.message)
+    }
 };
 
-export const getProduct = (req, res) => {
-    res.render('admin/editProduct');
+export const getProduct = async (req, res) => {
+    try {
+        const foundProduct = await Product.findById(req.params.id);
+        const foundCategories = await Category.find({}, { name: 1 });
+        res.render('admin/editProduct', { productData: foundProduct, categoryOptions: foundCategories });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export const editProduct = (req, res) => {
     console.log(req.body);
+};
+
+export const deleteImage = async (req, res) => {
+    const { id } = req.params;
+    const { image } = req.body;
+    try {
+        await Product.findByIdAndUpdate(id, { $pull: { images: image } }, { new: true });
+
+        fs.unlink(path.join(__dirname, '../public', image), (err) => {
+            if (err) console.log(err);
+        });
+
+        res.redirect(`/admin/edit-product/${id}`);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const addImage = async (req, res) => {
+    const { id } = req.params;
+    const { images } = req.body;
+    let imagesWithPath;
+    console.log("cvcxv");
+    if (images && images.length) {
+        console.log("sdfsd");
+        imagesWithPath = images.map(image => '/products/' + image);
+    }
+    try {
+        await Product.findByIdAndUpdate(id, { $push: { images: imagesWithPath } }, { new: true });
+        res.redirect(`/admin/edit-product/${id}`);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export const getCategories = async (req, res) => {

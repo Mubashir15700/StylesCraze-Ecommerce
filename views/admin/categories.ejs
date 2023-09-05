@@ -12,7 +12,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
-                                        <h4>Customers</h4>
+                                        <h4>Categories</h4>
                                         <a href="/admin/new-category" class="btn btn-primary">New Category</a>
                                     </div>
                                     <div class="table-responsive">
@@ -31,36 +31,42 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% categoryDatas.forEach((category)=> { %>
+                                                <% if (!categoryDatas.length) { %>
                                                     <tr>
-                                                        <td class="py-1">
-                                                            <img src="<%= category.image %>" alt="<%= category.name %>"
-                                                                class="img-click" />
-                                                        </td>
-                                                        <td>
-                                                            <%= category.name %>
-                                                        </td>
-                                                        <td class="d-flex">
-                                                            <a href="/admin/edit-category/<%= category._id %>"
-                                                                class="btn btn-info btn-sm mr-1">
-                                                                Edit
-                                                            </a>
-                                                            <form action="/admin/categories/action/<%= category._id %>?_method=PATCH" method="post">
-                                                                <% if(category.removed === true) { %>
-                                                                    <input type="hidden" name="state" value="">
-                                                                    <button type="submit" class="btn btn-warning btn-sm">
-                                                                        Activate
-                                                                    </button>
-                                                                <% } else { %>
-                                                                    <input type="hidden" name="state" value="1">
-                                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                                        Deactivate
-                                                                    </button>
-                                                                <% } %>
-                                                            </form>
-                                                        </td>
+                                                        <td colspan="3">No categories found.</td>
                                                     </tr>
-                                                    <% }) %>
+                                                <% } else { %>
+                                                    <% categoryDatas.forEach((category)=> { %>
+                                                        <tr>
+                                                            <td class="py-1">
+                                                                <img src="<%= category.image %>" alt="<%= category.name %>"
+                                                                    class="img-click" />
+                                                            </td>
+                                                            <td>
+                                                                <%= category.name %>
+                                                            </td>
+                                                            <td class="d-flex">
+                                                                <a href="/admin/edit-category/<%= category._id %>"
+                                                                    class="btn btn-info btn-sm mr-1">
+                                                                    Edit
+                                                                </a>
+                                                                <form action="/admin/categories/action/<%= category._id %>?_method=PATCH" method="post">
+                                                                    <% if(category.removed === true) { %>
+                                                                        <input type="hidden" name="state" value="">
+                                                                        <button type="submit" class="btn btn-warning btn-sm">
+                                                                            Activate
+                                                                        </button>
+                                                                    <% } else { %>
+                                                                        <input type="hidden" name="state" value="1">
+                                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                                            Deactivate
+                                                                        </button>
+                                                                    <% } %>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                <% } %>
                                             </tbody>
                                         </table>
                                     </div>

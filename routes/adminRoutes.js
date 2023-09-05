@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
-import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, customerAction, getSalesReport, getBanner } from '../controllers/adminController.js';
+import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, deleteImage, addImage, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, customerAction, getSalesReport, getBanner } from '../controllers/adminController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
-import { uploadCategoryImage, resizeCategoryImage } from '../middlewares/imageUplaodMiddleware.js';
+import { uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages } from '../middlewares/imageUplaodMiddleware.js';
 
 const router = Router();
 
@@ -13,8 +13,10 @@ router.get("/profile", checkAuth, getProfile);
 router.get("/orders", checkAuth, getOrders);
 
 router.get("/products", checkAuth, getProducts);
-router.route("/new-product").get(checkAuth, newProduct).post(checkAuth, addNewProduct);
-router.route("/edit-product").get(checkAuth, getProduct).post(checkAuth, editProduct);
+router.route("/new-product").get(checkAuth, newProduct).post(checkAuth, uploadProductImages, resizeProductImages, addNewProduct);
+router.route("/edit-product/:id").get(checkAuth, getProduct).post(checkAuth, editProduct);
+router.delete("/products/img-delete/:id", checkAuth, deleteImage);
+router.patch("/products/img-add/:id", checkAuth, uploadProductImages, resizeProductImages, addImage);
 
 router.get("/categories", checkAuth, getCategories);
 router.route("/new-category").get(checkAuth, newCategory).post(checkAuth, uploadCategoryImage, resizeCategoryImage, addNewCategory);

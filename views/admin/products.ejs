@@ -40,86 +40,42 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <% if (!productDatas.length) { %>
+                                                <tr>
+                                                    <td colspan="3">No products found.</td>
+                                                </tr>
+                                            <% } else { %>
+                                                <% productDatas.forEach((product)=> { %>
                                             <tr>
-                                                <td class="py-1">
-                                                    <img src="../../images/faces/face1.jpg" alt="image" />
+                                                <td>
+                                                    <% product.images.forEach(img => { %>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <img src="<%= img %>" alt="">
+                                                            </div>
+                                                        </div>
+                                                    <% }) %>
                                                 </td>
                                                 <td>
-                                                    Herman Beck
+                                                    <%= product.name %>
                                                 </td>
                                                 <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-success" role="progressbar"
-                                                            style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
+                                                    <%= product.category.name %>
                                                 </td>
                                                 <td>
-                                                    $ 77.99
+                                                    <%= product.price %>
                                                 </td>
                                                 <td>
-                                                    May 15, 2015
+                                                    <%= product.stock %>
                                                 </td>
                                                 <td>
-                                                    <a href="/admin/edit-product" class="btn btn-info btn-sm">Edit</a>
+                                                    <a href="/admin/edit-product/<%= product._id %>" class="btn btn-info btn-sm">Edit</a>
                                                     <button type="submit"
                                                         class="btn btn-warning btn-sm">Activate</button>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td class="py-1">
-                                                    <img src="../../images/faces/face2.jpg" alt="image" />
-                                                </td>
-                                                <td>
-                                                    Messsy Adam
-                                                </td>
-                                                <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-danger" role="progressbar"
-                                                            style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    $245.30
-                                                </td>
-                                                <td>
-                                                    July 1, 2015
-                                                </td>
-                                                <td>
-                                                    <a href="/admin/edit-product" class="btn btn-info btn-sm">Edit</a>
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        Deacivate
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-1">
-                                                    <img src="../../images/faces/face3.jpg" alt="image" />
-                                                </td>
-                                                <td>
-                                                    John Richards
-                                                </td>
-                                                <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar bg-warning" role="progressbar"
-                                                            style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    $138.00
-                                                </td>
-                                                <td>
-                                                    Apr 12, 2015
-                                                </td>
-                                                <td>
-                                                    <a href="/admin/edit-product" class="btn btn-info btn-sm">Edit</a>
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        Deacivate
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            <% }) %>
+                                            <% } %>
                                         </tbody>
                                     </table>
                                 </div>

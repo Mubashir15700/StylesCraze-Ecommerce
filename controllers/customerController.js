@@ -1,3 +1,4 @@
+import Product from "../models/productModel.js";
 import Category from '../models/categoryModel.js';
 
 export const getHome = async (req, res) => {
@@ -7,8 +8,9 @@ export const getHome = async (req, res) => {
     } else {
         isLoggedIn = false;
     }
+    const foundProducts = await Product.find();
     const foundCategories = await Category.find({ removed: false });
-    res.render("customer/home", { isLoggedIn: isLoggedIn, categoryDatas: foundCategories });
+    res.render("customer/home", { isLoggedIn: isLoggedIn, productDatas: foundProducts, categoryDatas: foundCategories });
 };
 
 export const getAbout = (req, res) => {
@@ -17,12 +19,12 @@ export const getAbout = (req, res) => {
 
 export const getShop = async (req, res) => {
     try {
+        const foundProducts = await Product.find();
         const foundCategories = await Category.find({ removed: false });
-        res.render("customer/shop", { categoryDatas: foundCategories });
+        res.render("customer/shop", { productDatas: foundProducts, categoryDatas: foundCategories });
     } catch (error) {
         console.log(error);
     }
-    
 };
 
 export const getSingle = (req, res) => {

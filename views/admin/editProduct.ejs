@@ -6,24 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Shoppers Admin</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="vendors/feather/feather.css">
-    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/admin/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/admin/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/admin/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
-    <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
-    <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
+    <link rel="stylesheet" href="/admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/admin/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="/admin/js/select.dataTables.min.css">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="css/vertical-layout-light/style.css">
+    <link rel="stylesheet" href="/admin/css/vertical-layout-light/style.css">
     <!-- endinject -->
-    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="shortcut icon" href="/admin/images/favicon.png" />
 </head>
 
 <body>
     <div class="container-scroller">
-        <!-- partial:partials/_navbar.html -->
         <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <a><img src="/shoppers.svg" class="mr-2" alt="logo" /></a>
@@ -66,7 +65,7 @@
                             </div>
                         </div>
                         <a class="nav-link ml-2" href="/admin/profile">
-                            <img src="images/faces/face28.jpg" alt="profile" />
+                            <img src="/admin/images/faces/face28.jpg" alt="profile" />
                         </a>
                     </li>
                 </ul>
@@ -130,66 +129,87 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Add New Product</h4>
+                                    <h4 class="card-title">Edit Product</h4>
 
-                                    <form class="forms-sample" action="/admin/edit-product" method="post"
+                                    <form class="forms-sample" action="/admin/edit-product/<%= productData._id %>?_method=PATCH" method="post"
                                         enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label for="name">Product</label>
-                                            <input type="text" class="form-control" name="name" id="name"
+                                            <input type="text" class="form-control" name="name" value="<%= productData.name %>" id="name"
                                                 placeholder="Name">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="cat">Category</label>
-                                            <select name="category" id="cat" class="form-control">
-                                                <option value="">catname1</option>
-                                                <option value="">catname2</option>
+                                            <label for="category">Category</label>
+                                            <select name="category" id="category" class="form-control">
+                                                <% categoryOptions.forEach(category => { %>
+                                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                                <% }) %>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="exampleInputName1">Description</label>
                                             <input type="text" class="form-control" name="description"
-                                                id="exampleInputName1" placeholder="description">
+                                            value="<%= productData.description %>" id="exampleInputName1" placeholder="description">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="exampleInputName1">Price</label>
-                                            <input type="text" class="form-control" name="price" id="exampleInputName1"
+                                            <input type="text" class="form-control" name="price"  value="<%= productData.price %>" id="exampleInputName1"
                                                 placeholder="price">
                                         </div>
 
                                         <div class="form-group">
                                             <label for="exampleInputName1">Stock</label>
-                                            <input type="number" class="form-control" name="stock"
+                                            <input type="number" class="form-control" name="stock"  value="<%= productData.stock %>"
                                                 id="exampleInputName1" placeholder="stock">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Images</label>
-                                            <div class="input-group col-xs-12">
-                                                <input type="file" accept="image/*" multiple name="images"
-                                                    class="form-control file-upload-info" placeholder="Upload Image"
-                                                    id="preview-input" />
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group" id="preview-group" style="display: none;">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    Preview Image
-                                                </div>
-                                                <div class="card-body">
-                                                    <img src="" alt="img" class="preview" id="preview-img"
-                                                        style="max-width: 440px; object-fit: cover;" />
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary mr-2">Create</button>
                                         <a href="/admin/products" class="btn btn-light">Cancel</a>
                                     </form>
+                                    <% if (productData.images.length) { %>
+                                        <div class="card mt-3">
+                                          <div class="card-header">
+                                              Preview Image
+                                          </div>
+                                          <div class="card-body">
+                                            <div class="row">
+                                              <% productData.images.forEach(img => { %>
+                                                <div class="col-4">
+                                                  <figure>
+                                                    <img src="<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 440px; object-fit: contain;" />
+                                                    <form action="/admin/products/img-delete/<%= productData._id %>?_method=DELETE" method="post" class="mt-3">
+                                                      <input type="hidden" name="image" value="<%= img %>">
+                                                      <div class="d-grid">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                      </div>
+                                                    </form>
+                                                  </figure>
+                                                </div>
+                                              <% }) %>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <% } %>
+                                      <% if (productData.images.length < 3) { %>
+                                        <div class="card mt-3">
+                                          <div class="card-header">
+                                            Upload
+                                          </div>
+                                          <div class="card-body">
+                                            <form action="/admin/products/img-add/<%= productData._id %>?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
+                                              <div class="mb-3" id="appendError">
+                                                <input type="file" accept="image/*" <%= productData.images.length > 1 ? '' : 'multiple' %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
+                                              </div>
+                                              <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Upload</button>
+                                              </div>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      <% } %>
                                 </div>
                             </div>
                         </div>
@@ -200,13 +220,12 @@
     </div>
     </div>
     </div>
-    <!-- plugins:js -->
-    <script src="vendors/js/vendor.bundle.base.js"></script>
-    <script src="vendors/chart.js/Chart.min.js"></script>
+    <script src="/admin/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/admin/vendors/chart.js/Chart.min.js"></script>
 
-    <script src="js/off-canvas.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/Chart.roundedBarCharts.js"></script>
+    <script src="/admin/js/off-canvas.js"></script>
+    <script src="/admin/js/dashboard.js"></script>
+    <script src="/admin/js/Chart.roundedBarCharts.js"></script>
 </body>
 
 </html>
