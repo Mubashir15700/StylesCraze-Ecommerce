@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
-import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, getSalesReport, getBanner } from '../controllers/adminController.js';
+import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, customerAction, getSalesReport, getBanner } from '../controllers/adminController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 import { uploadCategoryImage, resizeCategoryImage } from '../middlewares/imageUplaodMiddleware.js';
 
@@ -22,6 +22,8 @@ router.route("/edit-category/:id").get(checkAuth, getCategory).patch(checkAuth, 
 router.patch("/categories/action/:id", checkAuth, categoryAction);
 
 router.get("/customers", checkAuth, getCustomers);
+router.patch("/customers/action/:id", checkAuth, customerAction);
+
 router.get("/sales-report", checkAuth, getSalesReport);
 router.get("/banner", checkAuth, getBanner);
 router.post("/logout", logoutAdmin);

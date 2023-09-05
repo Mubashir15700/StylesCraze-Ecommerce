@@ -5,10 +5,8 @@ import { dirname } from 'path';
 import User from '../models/userModel.js';
 import Category from '../models/categoryModel.js';
 
-// Determine the directory name of the current module file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 
 export const getLogin = (req, res) => {
     res.render('admin/login', { commonError: "" });
@@ -76,7 +74,7 @@ export const addNewCategory = async (req, res) => {
             name,
             image: "/categories/" + photo,
         });
-        res.redirect("/admin/categories");
+        res.redirect('/admin/categories');
     } catch (error) {
         console.log(error.message);
     }
@@ -129,19 +127,26 @@ export const categoryAction = async (req, res) => {
     try {
         let state = req.body.state === "1";
         await Category.findByIdAndUpdate(req.params.id, { $set: { removed: state } });
-        res.redirect("/admin/categories");
+        res.redirect('/admin/categories');
     } catch (error) {
         console.log(error);
     }
 }
 
-
-
-
 export const getCustomers = async (req, res) => {
     try {
         const foundCustomers = await User.find();
         res.render('admin/customers', { customerDatas: foundCustomers });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const customerAction = async (req, res) => {
+    try {
+        let state = req.body.state === "1";
+        await User.findByIdAndUpdate(req.params.id, { $set: { blocked: state } });
+        res.redirect('/admin/customers');
     } catch (error) {
         console.log(error);
     }

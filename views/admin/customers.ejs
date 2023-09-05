@@ -55,8 +55,19 @@
                                                         <%= customer.verified %>
                                                     </td>
                                                     <td>
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-danger">Block</button>
+                                                        <form action="/admin/customers/action/<%= customer._id %>?_method=PATCH" method="post">
+                                                            <% if(customer.blocked === true) { %>
+                                                                <input type="hidden" name="state" value="">
+                                                                <button type="submit" class="btn btn-warning btn-sm">
+                                                                    Unblock
+                                                                </button>
+                                                            <% } else { %>
+                                                                <input type="hidden" name="state" value="1">
+                                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                                    Block
+                                                                </button>
+                                                            <% } %>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
