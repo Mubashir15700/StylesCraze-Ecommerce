@@ -22,7 +22,6 @@ export const sendToMail = (req, res, userId) => {
         },
     });
 
-    // to change
     function generateOTP(length) {
         const charset = '0123456789';
         let otp = '';
@@ -39,7 +38,7 @@ export const sendToMail = (req, res, userId) => {
 
     const mailOptions = {
         from: {
-            name: "Niko Bellic",
+            name: "Shoppers",
             address: process.env.USER,
         },
         to: req.body.email,
@@ -54,11 +53,11 @@ export const sendToMail = (req, res, userId) => {
                 userId: userId,
                 otp: hashedOTP,
                 createdAt: Date.now(),
-                expiresAt: Date.now() + 60000
+                expiresAt: Date.now() + 1000 * 60
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
-            res.render('customer/verification', { userId: userId });
+            res.render('customer/verification', { userId: userId, email: req.body.email });
         } catch (error) {
             res.status(500).json({
                 status: 'FAILED',

@@ -33,13 +33,28 @@
                                     </button>
                                 </div>
                             </form>
-                            <p><a href="#">Resend OTP</a></p>
+                            <form action="/resend-otp" method="post" id="resendForm">
+                                <input type="hidden" value="<%= userId %>" name="id">
+                                <input type="hidden" value="<%= email %>" name="email">
+                                <a href="#" id="submitLink">Resend OTP</a>
+                                <p id="hidden" hidden>Please check your inbox.</p>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById("submitLink").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("resendForm").submit();
+            setTimeout(() => {
+                document.getElementById("hidden").removeAttribute("hidden");
+            }, 1000);
+        });
+    </script>
 
 </body>
 

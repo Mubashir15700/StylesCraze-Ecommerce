@@ -122,7 +122,7 @@ export const Verification = async (req, res) => {
                     await verificationRecords.deleteOne({ userId });
                     throw new Error("Code has expired. Please try again.");
                 } else {
-                    const isValid = await bcrypt.compare(otp, hashedOTP);
+                    const isValid = bcrypt.compare(otp, hashedOTP);
                     if (!isValid) {
                         throw new Error("Invalid code. Please check your inbox.");
                     } else {
@@ -138,6 +138,15 @@ export const Verification = async (req, res) => {
             status: 'FAILED',
             message: 'Internal Server Error:' + error.message,
         });
+    }
+};
+
+export const resendOTP = async (req, res) => {
+    try {
+        await UserOTPVerification.deleteOne({ userId:  req.body.id });
+        sendToMail(req, res, req.body.id);
+    } catch (error) {
+        console.log(error);
     }
 };
 

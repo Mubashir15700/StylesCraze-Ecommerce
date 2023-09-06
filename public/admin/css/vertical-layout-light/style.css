@@ -30566,3 +30566,15 @@ div.tagsinput span.tag a {
 }
 
 /*# sourceMappingURL=../maps/vertical-layout-light/style.css.map */
+
+
+/* My Styles */
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+  }
+  .footer, .my-custom-wrapper {
+    margin-left: 220px;
+    width: 100%;
+  }
+}
