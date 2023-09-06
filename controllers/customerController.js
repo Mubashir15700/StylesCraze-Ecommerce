@@ -8,7 +8,7 @@ export const getHome = async (req, res) => {
     } else {
         isLoggedIn = false;
     }
-    const foundProducts = await Product.find();
+    const foundProducts = await Product.find({ softDeleted: false });
     const foundCategories = await Category.find({ removed: false });
     res.render("customer/home", { isLoggedIn: isLoggedIn, productDatas: foundProducts, categoryDatas: foundCategories });
 };
@@ -19,7 +19,7 @@ export const getAbout = (req, res) => {
 
 export const getShop = async (req, res) => {
     try {
-        const foundProducts = await Product.find();
+        const foundProducts = await Product.find({ softDeleted: false });
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", { productDatas: foundProducts, categoryDatas: foundCategories });
     } catch (error) {
@@ -36,11 +36,11 @@ export const getContact = (req, res) => {
 };
 
 export const getLogin = (req, res) => {
-    res.render("customer/login", { commonError: "" });
+    res.render("customer/auth/login", { commonError: "" });
 };
 
 export const getRegister = (req, res) => {
-    res.render("customer/register", { commonError: "" });
+    res.render("customer/auth/register", { commonError: "" });
 };
 
 export const getProfile = (req, res) => {

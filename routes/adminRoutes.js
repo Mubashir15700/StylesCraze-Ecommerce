@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
-import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, deleteImage, addImage, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, customerAction, getSalesReport, getBanner } from '../controllers/adminController.js';
+import { getLogin, getDashboard, getNotifications, getProfile, getOrders, getProducts, newProduct, addNewProduct, getProduct, editProduct, deleteImage, addImage, productAction, getCategories, newCategory, addNewCategory, getCategory, editCategory, categoryAction, getCustomers, customerAction, getSalesReport, getBanner } from '../controllers/adminController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 import { uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages } from '../middlewares/imageUplaodMiddleware.js';
 
@@ -17,6 +17,7 @@ router.route("/new-product").get(checkAuth, newProduct).post(checkAuth, uploadPr
 router.route("/edit-product/:id").get(checkAuth, getProduct).post(checkAuth, editProduct);
 router.delete("/products/img-delete/:id", checkAuth, deleteImage);
 router.patch("/products/img-add/:id", checkAuth, uploadProductImages, resizeProductImages, addImage);
+router.patch("/products/action/:id", checkAuth, productAction);
 
 router.get("/categories", checkAuth, getCategories);
 router.route("/new-category").get(checkAuth, newCategory).post(checkAuth, uploadCategoryImage, resizeCategoryImage, addNewCategory);

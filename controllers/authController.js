@@ -59,16 +59,16 @@ export const loginCustomer = async (req, res) => {
                     req.session.user = foundUser._id;
                     res.redirect('/');
                 } else {
-                    res.render('customer/login', { commonError: "Invalid username or password." });
+                    res.render('customer/auth/login', { commonError: "Invalid username or password." });
                 }
             } else {
-                res.render('customer/login', { commonError: "No user found." })
+                res.render('customer/auth/login', { commonError: "No user found." })
             }
         } else {
-            res.render('customer/login', { commonError: "All fields are required." });
+            res.render('customer/auth/login', { commonError: "All fields are required." });
         }
     } catch (error) {
-        res.render('customer/login', { commonError: "Unable to Login." });
+        res.render('customer/auth/login', { commonError: "Unable to Login." });
     }
 };
 
@@ -78,7 +78,7 @@ export const registerCustomer = async (req, res) => {
         if (username && email && phone && password && confirmPassword) {
             const foundUser = await User.findOne({ $or: [{ username: username }, { email: email }] });
             if (foundUser) {
-                res.render('customer/register', { commonError: "User already exist." });
+                res.render('customer/auth/register', { commonError: "User already exist." });
             } else {
                 if (password === confirmPassword) {
                     const hashPassword = await bcrypt.hash(password, salt);
@@ -93,14 +93,14 @@ export const registerCustomer = async (req, res) => {
                     req.session.user = savedUser._id;
                     sendToMail(req, res, savedUser._id);
                 } else {
-                    res.render('customer/register', { commonError: "Password and confirm password didn't match." });
+                    res.render('customer/auth/register', { commonError: "Password and confirm password didn't match." });
                 }
             }
         } else {
-            res.render('customer/register', { commonError: "All fields are required." });
+            res.render('customer/auth/register', { commonError: "All fields are required." });
         }
     } catch (error) {
-        res.render('customer/register', { commonError: "Unable to register." });
+        res.render('customer/auth/register', { commonError: "Unable to register." });
     }
 };
 

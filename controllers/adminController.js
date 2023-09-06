@@ -32,7 +32,7 @@ export const getOrders = (req, res) => {
 export const getProducts = async (req, res) => {
     try {
         const foundProducts = await Product.find({}).populate('category');
-        res.render('admin/products', { productDatas: foundProducts });
+        res.render('admin/products/products', { productDatas: foundProducts });
     } catch (error) {
         console.log(error);
     }
@@ -41,24 +41,31 @@ export const getProducts = async (req, res) => {
 export const newProduct = async (req, res) => {
     try {
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/newProduct', { categoryOptions: foundCategories });
+        res.render('admin/products/newProduct', { categoryOptions: foundCategories });
     } catch (error) {
         console.log(error);
     }
 };
 
 export const addNewProduct = async (req, res) => {
-    const { name, category, description, price, stock, images } = req.body
-    const imagesWithPath = images.map(img => '/products/' + img)
+    const { name, category, description, price, stock, images } = req.body;
     try {
-        const product = await Product.create({
-            name,
-            description,
-            stock,
-            price,
-            category,
-            images: imagesWithPath,
-        });
+        if (!name || !description || !category || !price || !stock || !images) {
+            res.status(500).json({
+                status: 'FAILED',
+                message: 'All fields are required',
+            });
+        } else {
+            const imagesWithPath = images.map(img => '/products/' + img);
+            await Product.create({
+                name,
+                description,
+                stock,
+                price,
+                category,
+                images: imagesWithPath,
+            });
+        }
         res.redirect('/admin/products')
     } catch (error) {
         console.log(error.message)
@@ -69,7 +76,7 @@ export const getProduct = async (req, res) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/editProduct', { productData: foundProduct, categoryOptions: foundCategories });
+        res.render('admin/products/editProduct', { productData: foundProduct, categoryOptions: foundCategories });
     } catch (error) {
         console.log(error);
     }
@@ -99,9 +106,7 @@ export const addImage = async (req, res) => {
     const { id } = req.params;
     const { images } = req.body;
     let imagesWithPath;
-    console.log("cvcxv");
     if (images && images.length) {
-        console.log("sdfsd");
         imagesWithPath = images.map(image => '/products/' + image);
     }
     try {
@@ -112,17 +117,27 @@ export const addImage = async (req, res) => {
     }
 };
 
+export const productAction = async (req, res) => {
+    try {
+        let state = req.body.state === "1";
+        await Product.findByIdAndUpdate(req.params.id, { $set: { softDeleted: state } });
+        res.redirect('/admin/products');
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const getCategories = async (req, res) => {
     try {
         const foundCategories = await Category.find();
-        res.render('admin/categories', { categoryDatas: foundCategories });
+        res.render('admin/categories/categories', { categoryDatas: foundCategories });
     } catch (error) {
         console.log(error);
     }
 };
 
 export const newCategory = (req, res) => {
-    res.render('admin/newCategory');
+    res.render('admin/categories/newCategory');
 };
 
 export const addNewCategory = async (req, res) => {
@@ -150,7 +165,7 @@ export const getCategory = async (req, res) => {
         if (!foundCategory) {
             console.log("no data found");
         } else {
-            res.render('admin/editCategory', { categoryData: foundCategory });
+            res.render('admin/categories/editCategory', { categoryData: foundCategory });
         }
     } catch (error) {
         console.log(error);

@@ -57,7 +57,7 @@ export const sendToMail = (req, res, userId) => {
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
-            res.render('customer/verification', { userId: userId, email: req.body.email });
+            res.render('customer/auth/verification', { userId: userId, email: req.body.email });
         } catch (error) {
             res.status(500).json({
                 status: 'FAILED',

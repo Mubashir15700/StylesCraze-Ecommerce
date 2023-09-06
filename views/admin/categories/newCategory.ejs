@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../../partials/admin/head') -%>
+
+    <body>
+        <div class="container-scroller">
+            <%- include('../../partials/admin/header') -%>
+                <div class="main-panel">
+                    <div class="content-wrapper my-custom-wrapper">
+                        <div class="row">
+                            <div class="col-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Add new category</h4>
+
+                                        <form class="forms-sample" action="/admin/new-category" method="post"
+                                            enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="exampleInputName1">Category Name</label>
+                                                <input type="text" class="form-control" name="name"
+                                                    id="exampleInputName1" placeholder="Name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Image upload</label>
+                                                <div class="input-group col-xs-12">
+                                                    <input type="file" accept="image/*" name="photo"
+                                                        class="form-control file-upload-info" placeholder="Upload Image"
+                                                        id="preview-input" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="preview-group" style="display: none;">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        Preview Image
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <img src="" alt="img" class="preview" id="preview-img"
+                                                            style="max-width: 440px; object-fit: cover;" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mr-2">Add</button>
+                                            <a href="/admin/categories" class="btn btn-light">Cancel</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </div>
+        </div>
+
+        <script>
+            const previewArea = document.getElementById('preview-group');
+            const previewInput = document.getElementById('preview-input');
+            const previewImg = document.getElementById('preview-img');
+
+            previewInput.onchange = e => {
+                if (e.target.files && e.target.files.length) {
+                    const imgSrc = URL.createObjectURL(e.target.files[0]);
+                    previewImg.src = imgSrc;
+                    previewArea.style.display = 'block';
+                }
+            }
+        </script>
+
+        <!-- plugins:js -->
+        <script src="vendors/js/vendor.bundle.base.js"></script>
+        <script src="vendors/chart.js/Chart.min.js"></script>
+
+        <script src="js/off-canvas.js"></script>
+        <script src="js/dashboard.js"></script>
+        <script src="js/Chart.roundedBarCharts.js"></script>
+    </body>
+
+</html>
