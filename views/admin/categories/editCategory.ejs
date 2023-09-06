@@ -156,14 +156,14 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <img src="<%= categoryData.image %>" alt="img" class="preview" id="preview-img"
-                                                        style="max-width: 440px; object-fit: cover;" />
+                                                        style="max-width: 440px; max-height: 300px; object-fit: cover;" />
                                                         <p><%= categoryData.image %></p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary mr-2">Edit</button>
-                                        <a href="/admin/categories" class="btn btn-light">Cancel</a>
+                                        <a href="#" class="btn btn-light" id="cancel-button">Cancel</a>
                                     </form>
                                 </div>
                             </div>
@@ -189,13 +189,4 @@
         }
     </script>
 
-    <!-- plugins:js -->
-    <script src="/admin/vendors/js/vendor.bundle.base.js"></script>
-    <script src="/admin/vendors/chart.js/Chart.min.js"></script>
-
-    <script src="/admin/js/off-canvas.js"></script>
-    <script src="/admin/js/dashboard.js"></script>
-    <script src="/admin/js/Chart.roundedBarCharts.js"></script>
-</body>
-
-</html>
+<%- include('../../partials/admin/footer') -%>

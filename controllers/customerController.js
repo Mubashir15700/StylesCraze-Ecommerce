@@ -27,8 +27,13 @@ export const getShop = async (req, res) => {
     }
 };
 
-export const getSingle = (req, res) => {
-    res.render("customer/single");
+export const getSingle = async (req, res) => {
+    try {
+        const foundProduct = await Product.findById(req.params.id);
+        res.render("customer/single", { productData: foundProduct });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export const getContact = (req, res) => {

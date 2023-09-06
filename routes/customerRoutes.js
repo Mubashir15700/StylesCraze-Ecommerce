@@ -8,7 +8,7 @@ const router = Router();
 router.get("/", getHome);
 router.get("/about", getAbout);
 router.get("/shop", getShop);
-router.get("/single", getSingle);
+router.get("/single/:id", getSingle);
 router.get("/contact", getContact);
 router.route("/login").get(isLoggedIn, getLogin).post(loginCustomer);
 router.route("/register").get(isLoggedIn, getRegister).post(registerCustomer);

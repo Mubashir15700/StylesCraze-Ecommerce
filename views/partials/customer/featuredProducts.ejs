@@ -19,9 +19,9 @@
                       <img src="<%= product.images[0] %>" alt="Image placeholder" class="img-fluid">
                     </figure>
                     <div class="block-4-text p-4">
-                      <h3><a href="/single"><%= product.name %></a></h3>
+                      <h3><a href="/single/<%= product._id %>"><%= product.name %></a></h3>
                       <p class="mb-0"><%= product.description %></p>
-                      <p class="text-primary font-weight-bold"><%= product.price %></p>
+                      <p class="text-primary font-weight-bold">$<%= product.price %>.00</p>
                     </div>
                   </div>
                 </div>
