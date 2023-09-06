@@ -29,25 +29,25 @@ export const getOrders = (req, res) => {
     res.render('admin/orders');
 };
 
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({}).populate('category');
         res.render('admin/products/products', { productDatas: foundProducts });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const newProduct = async (req, res) => {
+export const newProduct = async (req, res, next) => {
     try {
         const foundCategories = await Category.find({}, { name: 1 });
         res.render('admin/products/newProduct', { categoryOptions: foundCategories });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const addNewProduct = async (req, res) => {
+export const addNewProduct = async (req, res, next) => {
     const { name, category, description, price, stock, images } = req.body;
     try {
         if (!name || !description || !category || !price || !stock || !images) {
@@ -66,19 +66,19 @@ export const addNewProduct = async (req, res) => {
                 images: imagesWithPath,
             });
         }
-        res.redirect('/admin/products')
+        res.redirect('/admin/products');
     } catch (error) {
-        console.log(error.message)
+        next(error);
     }
 };
 
-export const getProduct = async (req, res) => {
+export const getProduct = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         const foundCategories = await Category.find({}, { name: 1 });
         res.render('admin/products/editProduct', { productData: foundProduct, categoryOptions: foundCategories });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
@@ -86,7 +86,7 @@ export const editProduct = (req, res) => {
     console.log(req.body);
 };
 
-export const deleteImage = async (req, res) => {
+export const deleteImage = async (req, res, next) => {
     const { id } = req.params;
     const { image } = req.body;
     try {
@@ -98,11 +98,11 @@ export const deleteImage = async (req, res) => {
 
         res.redirect(`/admin/edit-product/${id}`);
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const addImage = async (req, res) => {
+export const addImage = async (req, res, next) => {
     const { id } = req.params;
     const { images } = req.body;
     let imagesWithPath;
@@ -113,26 +113,26 @@ export const addImage = async (req, res) => {
         await Product.findByIdAndUpdate(id, { $push: { images: imagesWithPath } }, { new: true });
         res.redirect(`/admin/edit-product/${id}`);
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const productAction = async (req, res) => {
+export const productAction = async (req, res, next) => {
     try {
         let state = req.body.state === "1";
         await Product.findByIdAndUpdate(req.params.id, { $set: { softDeleted: state } });
         res.redirect('/admin/products');
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const getCategories = async (req, res) => {
+export const getCategories = async (req, res, next) => {
     try {
         const foundCategories = await Category.find();
         res.render('admin/categories/categories', { categoryDatas: foundCategories });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
@@ -140,7 +140,7 @@ export const newCategory = (req, res) => {
     res.render('admin/categories/newCategory');
 };
 
-export const addNewCategory = async (req, res) => {
+export const addNewCategory = async (req, res, next) => {
     try {
         const { name, photo } = req.body;
         if (!name || !photo) {
@@ -155,11 +155,11 @@ export const addNewCategory = async (req, res) => {
         });
         res.redirect('/admin/categories');
     } catch (error) {
-        console.log(error.message);
+        next(error);
     }
 };
 
-export const getCategory = async (req, res) => {
+export const getCategory = async (req, res, next) => {
     try {
         const foundCategory = await Category.findById(req.params.id);
         if (!foundCategory) {
@@ -168,11 +168,11 @@ export const getCategory = async (req, res) => {
             res.render('admin/categories/editCategory', { categoryData: foundCategory });
         }
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const editCategory = async (req, res) => {
+export const editCategory = async (req, res, next) => {
     const { id } = req.params;
     const { name, photo } = req.body;
     try {
@@ -198,36 +198,36 @@ export const editCategory = async (req, res) => {
         await category.updateOne(updatedObj);
         res.redirect("/admin/categories");
     } catch (error) {
-        console.error(error.message);
+        next(error);
     }
 };
 
-export const categoryAction = async (req, res) => {
+export const categoryAction = async (req, res, next) => {
     try {
         let state = req.body.state === "1";
         await Category.findByIdAndUpdate(req.params.id, { $set: { removed: state } });
         res.redirect('/admin/categories');
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
-export const getCustomers = async (req, res) => {
+export const getCustomers = async (req, res, next) => {
     try {
         const foundCustomers = await User.find();
         res.render('admin/customers', { customerDatas: foundCustomers });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const customerAction = async (req, res) => {
+export const customerAction = async (req, res, next) => {
     try {
         let state = req.body.state === "1";
         await User.findByIdAndUpdate(req.params.id, { $set: { blocked: state } });
         res.redirect('/admin/customers');
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 

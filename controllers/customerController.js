@@ -1,38 +1,44 @@
 import Product from "../models/productModel.js";
 import Category from '../models/categoryModel.js';
 
-export const getHome = async (req, res) => {
-    let isLoggedIn;
-    if (req.session.user) {
-        isLoggedIn = true;
-    } else {
-        isLoggedIn = false;
+export const getHome = async (req, res, next) => {
+    try {
+        let isLoggedIn;
+        if (req.session.user) {
+            isLoggedIn = true;
+        } else {
+            isLoggedIn = false;
+        }
+        const foundProducts = await Product.find({ softDeleted: false });
+        const foundCategories = await Category.find({ removed: false });
+        res.render("customer/home", { 
+            isLoggedIn: isLoggedIn, productDatas: foundProducts, categoryDatas: foundCategories 
+        });
+    } catch (error) {
+        next(error)
     }
-    const foundProducts = await Product.find({ softDeleted: false });
-    const foundCategories = await Category.find({ removed: false });
-    res.render("customer/home", { isLoggedIn: isLoggedIn, productDatas: foundProducts, categoryDatas: foundCategories });
 };
 
 export const getAbout = (req, res) => {
     res.render("customer/about");
 };
 
-export const getShop = async (req, res) => {
+export const getShop = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({ softDeleted: false });
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", { productDatas: foundProducts, categoryDatas: foundCategories });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const getSingle = async (req, res) => {
+export const getSingle = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         res.render("customer/single", { productData: foundProduct });
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
@@ -52,11 +58,11 @@ export const getProfile = (req, res) => {
     res.render("customer/profile");
 };
 
-export const updateProfile = (req, res) => {
+export const updateProfile = (req, res, next) => {
     try {
         console.log(req.body);
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 

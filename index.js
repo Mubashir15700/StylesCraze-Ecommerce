@@ -7,6 +7,7 @@ import session from 'express-session';
 import Connection from './database/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
+import customError from './middlewares/errorMiddleware.js'; 
 
 dotenv.config();
 
@@ -34,6 +35,8 @@ app.use("/admin", adminRoutes);
 app.use((req, res) => {
     res.render("404");
 });
+
+app.use(customError);
 
 Connection();
 

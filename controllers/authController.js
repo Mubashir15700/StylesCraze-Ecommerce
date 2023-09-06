@@ -12,7 +12,7 @@ async function generateSalt() {
 
 generateSalt();
 
-export const loginAdmin = async (req, res) => {
+export const loginAdmin = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
@@ -32,23 +32,20 @@ export const loginAdmin = async (req, res) => {
             res.render('admin/login', { commonError: "All fields are required." });
         }
     } catch (error) {
-        res.render('admin/login', { commonError: "Unable to Login." });
+        next(error);
     }
 };
 
-export const logoutAdmin = async (req, res) => {
+export const logoutAdmin = async (req, res, next) => {
     try {
         req.session.destroy();
         res.redirect('/admin/');
     } catch (error) {
-        res.status(500).json({
-            status: 'FAILED',
-            message: 'Internal Server Error:' + error.message,
-        });
+        next(error);
     }
 };
 
-export const loginCustomer = async (req, res) => {
+export const loginCustomer = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
@@ -68,11 +65,11 @@ export const loginCustomer = async (req, res) => {
             res.render('customer/auth/login', { commonError: "All fields are required." });
         }
     } catch (error) {
-        res.render('customer/auth/login', { commonError: "Unable to Login." });
+        next(error)
     }
 };
 
-export const registerCustomer = async (req, res) => {
+export const registerCustomer = async (req, res, next) => {
     try {
         const { username, email, phone, password, confirmPassword } = req.body;
         if (username && email && phone && password && confirmPassword) {
@@ -100,11 +97,11 @@ export const registerCustomer = async (req, res) => {
             res.render('customer/auth/register', { commonError: "All fields are required." });
         }
     } catch (error) {
-        res.render('customer/auth/register', { commonError: "Unable to register." });
+        next(error);
     }
 };
 
-export const Verification = async (req, res) => {
+export const Verification = async (req, res, next) => {
     try {
         let { userId, otp } = req.body;
         if (!userId || !otp) {
@@ -134,30 +131,24 @@ export const Verification = async (req, res) => {
             }
         }
     } catch (error) {
-        res.status(500).json({
-            status: 'FAILED',
-            message: 'Internal Server Error:' + error.message,
-        });
+        next(error);
     }
 };
 
-export const resendOTP = async (req, res) => {
+export const resendOTP = async (req, res, next) => {
     try {
         await UserOTPVerification.deleteOne({ userId:  req.body.id });
         sendToMail(req, res, req.body.id);
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 };
 
-export const logoutCustomer = async (req, res) => {
+export const logoutCustomer = async (req, res, next) => {
     try {
         req.session.destroy();
         res.redirect('/');
     } catch (error) {
-        res.status(500).json({
-            status: 'FAILED',
-            message: 'Internal Server Error:' + error.message,
-        });
+        next(error);
     }
 };
