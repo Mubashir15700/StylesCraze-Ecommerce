@@ -90,7 +90,9 @@ export const registerCustomer = async (req, res, next) => {
                     req.session.user = savedUser._id;
                     sendToMail(req, res, savedUser._id);
                 } else {
-                    res.render('customer/auth/register', { commonError: "Password and confirm password didn't match." });
+                    res.render('customer/auth/register', { 
+                        commonError: "Password and confirm password didn't match." 
+                    });
                 }
             }
         } else {

@@ -177,60 +177,45 @@
                                     </form>
                                     <% if (productData.images.length) { %>
                                         <div class="card mt-3">
-                                            <div class="card-header">
-                                                Preview Image
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <% productData.images.forEach(img=> { %>
-                                                        <div class="col-md-4">
-                                                            <figure>
-                                                                <img src="<%= img %>" alt="img" class="preview"
-                                                                    id="preview-img"
-                                                                    style="max-width: 250px; object-fit: contain;" />
-                                                                <p>
-                                                                    <%= img %>
-                                                                </p>
-                                                                <form
-                                                                    action="/admin/products/img-delete/<%= productData._id %>?_method=DELETE"
-                                                                    method="post" class="mt-3">
-                                                                    <input type="hidden" name="image"
-                                                                        value="<%= img %>">
-                                                                    <div class="d-grid">
-                                                                        <button type="submit"
-                                                                            class="btn btn-danger">Delete</button>
-                                                                    </div>
-                                                                </form>
-                                                            </figure>
-                                                        </div>
-                                                        <% }) %>
+                                          <div class="card-header">
+                                              Preview Image
+                                          </div>
+                                          <div class="card-body">
+                                            <div class="row">
+                                              <% productData.images.forEach(img => { %>
+                                                <div class="col-4">
+                                                  <figure>
+                                                    <img src="<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 440px; object-fit: contain;" />
+                                                    <form action="/admin/products/img-delete/<%= productData._id %>?_method=DELETE" method="post" class="mt-3">
+                                                      <input type="hidden" name="image" value="<%= img %>">
+                                                      <div class="d-grid">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                      </div>
+                                                    </form>
+                                                  </figure>
                                                 </div>
+                                              <% }) %>
                                             </div>
+                                          </div>
                                         </div>
-                                        <% } %>
-                                            <% if (productData.images.length < 3) { %>
-                                                <div class="card mt-3">
-                                                    <div class="card-header">
-                                                        Upload New Image
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <form
-                                                            action="/admin/products/img-add/<%= productData._id %>?_method=PATCH"
-                                                            method="post" enctype="multipart/form-data" id="uploadImg">
-                                                            <div class="mb-3" id="appendError">
-                                                                <input type="file" accept="image/*"
-                                                                    <%= productData.images.length> 1 ? '' : 'multiple' %>
-                                                                name="images" class="form-control file-upload-info"
-                                                                placeholder="Upload Image" id="preview-input" />
-                                                            </div>
-                                                            <div class="d-grid">
-                                                                <button type="submit"
-                                                                    class="btn btn-primary">Upload</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <% } %>
+                                      <% } %>
+                                      <% if (productData.images.length < 3) { %>
+                                        <div class="card mt-3">
+                                          <div class="card-header">
+                                            Upload
+                                          </div>
+                                          <div class="card-body">
+                                            <form action="/admin/products/img-add/<%= productData._id %>?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
+                                              <div class="mb-3" id="appendError">
+                                                <input type="file" accept="image/*" <%= productData.images.length > 1 ? '' : 'multiple' %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
+                                              </div>
+                                              <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Upload</button>
+                                              </div>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      <% } %>
                                 </div>
                             </div>
                         </div>
@@ -244,56 +229,57 @@
 
     <script>
         function hideErrorMessage() {
-            var errorMessageElement = document.getElementById('error-message');
-            if (errorMessageElement) {
-                setTimeout(() => {
-                    errorMessageElement.style.display = 'none';
-                }, 4000);
-
-            }
+          var errorMessageElement = document.getElementById('error-message');
+          if (errorMessageElement) {
+            setTimeout(()=>{
+              errorMessageElement.style.display = 'none';
+            }, 4000);
+            
+          }
         }
         hideErrorMessage();
-
+    
         const previewArea = document.getElementById('preview-group')
         const previewInput = document.getElementById('preview-input')
         const previewImg = document.getElementById('preview-img')
         const uploadImg = document.getElementById('uploadImg')
         const appendError = document.getElementById('appendError')
-
+        
         let validateUpload;
-
-        uploadImg.addEventListener('submit', function (e) {
-            const error = `
+    
+        uploadImg.addEventListener('submit', function(e) {
+          const error = `
               <div class="alert alert-danger mt-3">
                 Please select image to upload.  
               </div>
             `
-            const el = document.createElement('div')
-            el.setAttribute('id', 'error-el')
-            el.innerHTML = error
-            if (typeof validateUpload === "undefined" || validateUpload?.length === 0) {
-                e.preventDefault()
-                if (!appendError.hasAttribute('hasError')) {
-                    appendError.setAttribute('hasError', true)
-                    appendError.appendChild(el)
-                }
-            } else {
-                const errorEl = document.getElementById('error-el')
-                appendError.removeAttribute('hasError')
-                appendError.removeChild(el)
-                this.submit()
+          const el = document.createElement('div')
+          el.setAttribute('id', 'error-el')
+          el.innerHTML = error
+          if (typeof  validateUpload === "undefined" || validateUpload?.length === 0) {
+            e.preventDefault()
+            if (!appendError.hasAttribute('hasError')) {
+              appendError.setAttribute('hasError', true)
+              appendError.appendChild(el)
             }
+          } else {
+            const errorEl = document.getElementById('error-el')
+            appendError.removeAttribute('hasError')
+            appendError.removeChild(el)
+            this.submit()
+          }
+          
         })
-
+    
         previewInput.onchange = e => {
-
-            validateUpload = e.target.files
-
-            if (e.target.files && e.target.files.length) {
-                const imgSrc = URL.createObjectURL(e.target.files[0])
-                previewImg.src = imgSrc
-                previewArea.style.display = 'block'
-            }
+    
+          validateUpload = e.target.files
+          
+          if (e.target.files && e.target.files.length) {
+              const imgSrc = URL.createObjectURL(e.target.files[0])
+              previewImg.src = imgSrc
+              previewArea.style.display = 'block'
+          }
         }
-    </script>
+      </script>
 <%- include('../../partials/admin/footer') -%>

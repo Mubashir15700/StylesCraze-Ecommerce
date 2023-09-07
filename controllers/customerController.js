@@ -27,7 +27,22 @@ export const getShop = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({ softDeleted: false });
         const foundCategories = await Category.find({ removed: false });
-        res.render("customer/shop", { productDatas: foundProducts, categoryDatas: foundCategories });
+        res.render("customer/shop", { 
+            productDatas: foundProducts, categoryName: "Shop All", categoryDatas: foundCategories 
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCategoryProducts = async (req, res, next) => {
+    try {
+        const foundProducts = await Product.find({ softDeleted: false, category: req.params.id });
+        const currentCategory = await Category.findById(req.params.id);
+        const foundCategories = await Category.find({ removed: false });
+        res.render("customer/shop", { 
+            productDatas: foundProducts, categoryName: currentCategory.name, categoryDatas: foundCategories 
+        });
     } catch (error) {
         next(error);
     }

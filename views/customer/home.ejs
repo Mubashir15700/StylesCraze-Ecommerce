@@ -4,7 +4,6 @@
 <%- include('../partials/customer/head') -%>
 
   <body>
-
     <div class="site-wrap">
       <header class="site-navbar" role="banner">
         <div class="site-navbar-top">
@@ -25,19 +24,15 @@
               <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                 <div class="site-top-icons">
                   <ul>
-                    <li><a href="/profile"><span class="icon icon-person"></span></a></li>
-                    <li><a href="/wishlist"><span class="icon icon-heart-o"></span></a></li>
-                    <li>
-                      <a href="/cart" class="site-cart">
-                        <span class="icon icon-shopping_cart"></span>
-                      </a>
-                    </li>
+                    <%- include('../partials/customer/menu-list') -%>
                     <li class="ml-3">
                       <% if (!isLoggedIn) { %>
                         <a href="login">Login</a>
                         <% } else { %>
                           <form action="/logout" method="post">
-                            <button class="btn btn-light" type="submit">logout</button>
+                            <button class="btn btn-light" type="submit">
+                              <i class="bi bi-power"></i>
+                            </button>
                           </form>
                           <% } %>
                     </li>
@@ -80,33 +75,34 @@
       </div>
       <%- include('../partials/customer/features') -%>
 
-      <%- include('../partials/customer/category') -%>
-      
-      <%- include('../partials/customer/featuredProducts') -%>
+        <%- include('../partials/customer/category') -%>
 
-      <div class="site-section block-8">
-        <div class="container">
-          <div class="row justify-content-center  mb-5">
-            <div class="col-md-7 site-section-heading text-center pt-4">
-              <h2>Big Sale!</h2>
-            </div>
-          </div>
-          <div class="row align-items-center">
-            <div class="col-md-12 col-lg-7 mb-5">
-              <a href="#"><img src="/customer/images/blog_1.jpg" alt="Image placeholder" class="img-fluid rounded"></a>
-            </div>
-            <div class="col-md-12 col-lg-5 text-center pl-md-5">
-              <h2><a href="#">50% less in all items</a></h2>
-              <p class="post-meta mb-4">By <a href="#">Carl Smith</a> <span class="block-8-sep">&bullet;</span>
-                September
-                3, 2018</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam iste dolor accusantium facere
-                corporis
-                ipsum animi deleniti fugiat. Ex, veniam?</p>
-              <p><a href="/shop" class="btn btn-primary btn-sm">Shop Now</a></p>
-            </div>
-          </div>
-        </div>
-      </div>
+          <%- include('../partials/customer/featuredProducts') -%>
 
-      <%- include('../partials/customer/footer') -%>
+            <div class="site-section block-8">
+              <div class="container">
+                <div class="row justify-content-center  mb-5">
+                  <div class="col-md-7 site-section-heading text-center pt-4">
+                    <h2>Big Sale!</h2>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-12 col-lg-7 mb-5">
+                    <a href="#"><img src="/customer/images/blog_1.jpg" alt="Image placeholder"
+                        class="img-fluid rounded"></a>
+                  </div>
+                  <div class="col-md-12 col-lg-5 text-center pl-md-5">
+                    <h2><a href="#">50% less in all items</a></h2>
+                    <p class="post-meta mb-4">By <a href="#">Carl Smith</a> <span class="block-8-sep">&bullet;</span>
+                      September
+                      3, 2018</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam iste dolor accusantium facere
+                      corporis
+                      ipsum animi deleniti fugiat. Ex, veniam?</p>
+                    <p><a href="/shop" class="btn btn-primary btn-sm">Shop Now</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <%- include('../partials/customer/footer') -%>

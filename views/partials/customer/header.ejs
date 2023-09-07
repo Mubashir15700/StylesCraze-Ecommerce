@@ -1,0 +1,57 @@
+<header class="site-navbar" role="banner">
+    <div class="site-navbar-top">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+                    <form action="" class="site-block-top-search">
+                        <span class="icon icon-search2"></span>
+                        <input type="text" class="form-control border-0" placeholder="Search">
+                    </form>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+                    <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
+                </div>
+
+                <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+                    <div class="site-top-icons">
+                        <ul>
+                            <li><a href="/profile"><span class="icon icon-person"></span></a></li>
+                            <li><a href="/wishlist"><span class="icon icon-heart-o"></span></a></li>
+                            <li>
+                                <a href="/cart" class="site-cart">
+                                    <span class="icon icon-shopping_cart"></span>
+                                </a>
+                            </li>
+                            <li class="ml-3">
+                                <% if (!isLoggedIn) { %>
+                                    <a href="login">Login</a>
+                                    <% } else { %>
+                                        <form action="/logout" method="post">
+                                            <button class="btn btn-light" type="submit">logout</button>
+                                        </form>
+                                        <% } %>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav class="site-navigation text-right text-md-center" role="navigation">
+        <div class="container">
+            <ul class="site-menu js-clone-nav d-none d-md-block">
+                <li class="active">
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/about">About</a>
+                </li>
+                <li><a href="/shop">Shop</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>

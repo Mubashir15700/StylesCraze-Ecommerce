@@ -1,6 +1,11 @@
 import { Router } from 'express';
-import { loginCustomer, registerCustomer, Verification, resendOTP, logoutCustomer } from '../controllers/authController.js';
-import { getHome, getAbout, getShop, getSingle, getContact, getLogin, getRegister, getProfile, updateProfile, getWishlist, getCart } from '../controllers/customerController.js';
+import { 
+    loginCustomer, registerCustomer, Verification, resendOTP, logoutCustomer 
+} from '../controllers/authController.js';
+import { 
+    getHome, getAbout, getShop, getCategoryProducts, getSingle, getContact, 
+    getLogin, getRegister, getProfile, updateProfile, getWishlist, getCart 
+} from '../controllers/customerController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/customerMiddleware.js';
 
 const router = Router();
@@ -8,6 +13,7 @@ const router = Router();
 router.get("/", getHome);
 router.get("/about", getAbout);
 router.get("/shop", getShop);
+router.get("/shop/:id", getCategoryProducts);
 router.get("/single/:id", getSingle);
 router.get("/contact", getContact);
 router.route("/login").get(isLoggedIn, getLogin).post(loginCustomer);

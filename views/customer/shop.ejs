@@ -25,13 +25,7 @@
                             <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                                 <div class="site-top-icons">
                                     <ul>
-                                        <li><a href="/profile"><span class="icon icon-person"></span></a></li>
-                                        <li><a href="/wishlist"><span class="icon icon-heart-o"></span></a></li>
-                                        <li>
-                                            <a href="/cart" class="site-cart">
-                                                <span class="icon icon-shopping_cart"></span>
-                                            </a>
-                                        </li>
+                                        <%- include('../partials/customer/menu-list') -%>
                                     </ul>
                                 </div>
                             </div>
@@ -73,7 +67,7 @@
                             <div class="row">
                                 <div class="col-md-12 mb-5">
                                     <div class="float-md-left mb-4">
-                                        <h2 class="text-black h5">Shop All</h2>
+                                        <h2 class="text-black h5"><%= categoryName %></h2>
                                     </div>
                                     <div class="d-flex">
                                         <div class="dropdown mr-1 ml-md-auto">

@@ -76,7 +76,9 @@ export const getProduct = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/products/editProduct', { productData: foundProduct, categoryOptions: foundCategories });
+        res.render('admin/products/editProduct', { 
+            productData: foundProduct, categoryOptions: foundCategories 
+        });
     } catch (error) {
         next(error);
     }
