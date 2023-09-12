@@ -3,120 +3,59 @@
 
 <%- include('../partials/customer/head') -%>
 
-<body>
+    <body>
 
-    <div class="site-wrap">
-        <header class="site-navbar" role="banner">
-            <div class="site-navbar-top">
-                <div class="container">
-                    <div class="row align-items-center">
+        <div class="site-wrap">
+            <%- include('../partials/customer/header') -%>
+                <div class="bg-light py-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                                    class="text-black">Wishlist</strong></div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-                            <form action="" class="site-block-top-search">
-                                <span class="icon icon-search2"></span>
-                                <input type="text" class="form-control border-0" placeholder="Search">
+                <div class="site-section">
+                    <div class="container">
+                        <div class="row">
+                            <form class="col-md-12" method="post">
+                                <div class="site-blocks-table">
+                                    <div class="container">
+                                        <div class="col-lg-12 p-4 border mb-3 d-flex">
+                                            <div class="col-md-6">
+                                                <a href="">
+                                                    <img src="/customer/images/cloth_1.jpg" alt="Image" height="180px"
+                                                        width="180px" class="img-fluid">
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <span class="d-block text-primary h6 text-uppercase">Product</span>
+                                                <p>Description, Category, Price, Quantity, Status</p>
+                                                <form action="" method="post">
+                                                    <button type="submit" href=""
+                                                        class="btn btn-sm btn-primary">Remove</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p><a href="/shop"
+                                                                class="btn btn-outline-primary btn-sm btn-block">Continue
+                                                                Shopping
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
                         </div>
-
-                        <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
-                            <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
-                        </div>
-
-                        <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-                            <div class="site-top-icons">
-                                <ul>
-                                    <%- include('../partials/customer/menu-list') -%>
-                                </ul>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-            </div>
-            <nav class="site-navigation text-right text-md-center" role="navigation">
-                <div class="container">
-                    <ul class="site-menu js-clone-nav d-none d-md-block">
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <a href="/about">About</a>
-                        </li>
-                        <li><a href="/shop">Shop</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
 
-        <div class="bg-light py-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                            class="text-black">Wishlist</strong></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="site-section">
-            <div class="container">
-                <div class="row mb-5">
-                    <form class="col-md-12" method="post">
-                        <div class="site-blocks-table">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="product-thumbnail">Image</th>
-                                        <th class="product-name">Product</th>
-                                        <th class="product-name">Category</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-remove">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <img src="/customer/images/cloth_1.jpg" alt="Image" class="img-fluid">
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Top Up T-Shirt</h2>
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Women</h2>
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <img src="/customer/images/cloth_2.jpg" alt="Image" class="img-fluid">
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Polo Shirt</h2>
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Kids</h2>
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row mb-5">
-                            <div class="col-md-6">
-                                <p><a href="/shop" class="btn btn-outline-primary btn-sm btn-block">Continue Shopping</a></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <%- include('../partials/customer/footer') -%>
+                <%- include('../partials/customer/footer') -%>

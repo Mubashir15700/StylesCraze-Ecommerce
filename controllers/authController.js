@@ -16,11 +16,11 @@ export const loginAdmin = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
-            const foundUser = await Admin.findOne({ username: username });
-            if (foundUser) {
-                const isMatch = await bcrypt.compare(password, foundUser.password);
+            const foundAdmin = await Admin.findOne({ username: username });
+            if (foundAdmin) {
+                const isMatch = await bcrypt.compare(password, foundAdmin.password);
                 if (isMatch) {
-                    req.session.admin = foundUser._id;
+                    req.session.admin = foundAdmin._id;
                     res.redirect('/admin/');
                 } else {
                     res.render('admin/login', { commonError: "Invalid username or password." });
@@ -38,8 +38,8 @@ export const loginAdmin = async (req, res, next) => {
 
 export const logoutAdmin = async (req, res, next) => {
     try {
-        req.session.destroy();
-        res.redirect('/admin/');
+        req.session.admin = null;
+        res.redirect('/admin');
     } catch (error) {
         next(error);
     }
@@ -51,21 +51,25 @@ export const loginCustomer = async (req, res, next) => {
         if (username && password) {
             const foundUser = await User.findOne({ username: username });
             if (foundUser) {
-                const isMatch = await bcrypt.compare(password, foundUser.password);
-                if (isMatch) {
-                    req.session.user = foundUser._id;
-                    res.redirect('/');
+                if (foundUser.blocked) {
+                    res.render('customer/auth/login', { commonError: "Can't log in." });
                 } else {
-                    res.render('customer/auth/login', { commonError: "Invalid username or password." });
+                    const isMatch = await bcrypt.compare(password, foundUser.password);
+                    if (isMatch) {
+                        req.session.user = foundUser._id;
+                        res.redirect('/');
+                    } else {
+                        res.render('customer/auth/login', { commonError: "Invalid username or password." });
+                    }
                 }
             } else {
-                res.render('customer/auth/login', { commonError: "No user found." })
+                res.render('customer/auth/login', { commonError: "No user found." });
             }
         } else {
             res.render('customer/auth/login', { commonError: "All fields are required." });
         }
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
 
@@ -88,10 +92,10 @@ export const registerCustomer = async (req, res, next) => {
                     await newUser.save();
                     const savedUser = await User.findOne({ username: username });
                     req.session.user = savedUser._id;
-                    sendToMail(req, res, savedUser._id);
+                    sendToMail(req, res, savedUser._id, false);
                 } else {
-                    res.render('customer/auth/register', { 
-                        commonError: "Password and confirm password didn't match." 
+                    res.render('customer/auth/register', {
+                        commonError: "Password and confirm password didn't match."
                     });
                 }
             }
@@ -103,7 +107,7 @@ export const registerCustomer = async (req, res, next) => {
     }
 };
 
-export const Verification = async (req, res, next) => {
+export const Verification = async (req, res) => {
     try {
         let { userId, otp } = req.body;
         if (!userId || !otp) {
@@ -121,26 +125,137 @@ export const Verification = async (req, res, next) => {
                     await verificationRecords.deleteOne({ userId });
                     throw new Error("Code has expired. Please try again.");
                 } else {
-                    const isValid = bcrypt.compare(otp, hashedOTP);
+                    const isValid = await bcrypt.compare(otp, hashedOTP);
                     if (!isValid) {
                         throw new Error("Invalid code. Please check your inbox.");
                     } else {
                         await User.updateOne({ _id: userId }, { verified: true });
                         await verificationRecords.deleteOne({ userId });
-                        res.redirect("/");
+                        if (req.body.isForgotPassword === 'true') {
+                            res.render("customer/auth/changePassword", {
+                                isLoggedIn: req.session.user ? true : false,
+                                currentUser: "",
+                                error: "",
+                                isForgotPassword: true,
+                                email: req.body.email
+                            });
+                        } else {
+                            res.redirect("/");
+                        }
                     }
                 }
             }
         }
     } catch (error) {
-        next(error);
+        res.render('customer/auth/verification', {
+            userId: req.body.userId,
+            email: req.body.email,
+            error: error,
+            isForgotPassword: req.body.isForgotPassword
+        });
     }
 };
 
 export const resendOTP = async (req, res, next) => {
     try {
-        await UserOTPVerification.deleteOne({ userId:  req.body.id });
-        sendToMail(req, res, req.body.id);
+        await UserOTPVerification.deleteOne({ userId: req.body.id });
+        sendToMail(req, res, req.body.id, false);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// to separate
+export const changePassword = async (req, res) => {
+    let foundUser;
+    if (req.body.isForgotPassword === "false") {
+        try {
+            const { currentPassword, newPassword, confirmPassword } = req.body;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                throw new Error("All fields are required.");
+            }
+
+            foundUser = await User.findById(req.session.user);
+            const isMatch = await bcrypt.compare(currentPassword, foundUser.password);
+
+            if (!isMatch) {
+                throw new Error("Incorrect current password.");
+            }
+
+            if (newPassword !== confirmPassword) {
+                throw new Error("New password and Confirm password didn't match.");
+            }
+
+            const hashPassword = await bcrypt.hash(newPassword, salt);
+            await User.updateOne({ _id: req.session.user }, {
+                $set: {
+                    password: hashPassword
+                }
+            });
+
+            res.render("customer/profile", {
+                isLoggedIn: req.session.user ? true : false,
+                currentUser: foundUser,
+                error: ""
+            });
+        } catch (error) {
+            console.error(error);
+
+            res.render("customer/auth/changePassword", {
+                isLoggedIn: req.session.user ? true : false,
+                currentUser: foundUser,
+                error: error.message,
+                isForgotPassword: false,
+                email: ""
+            });
+        }
+    } else {
+        try {
+            console.log("forgot change");
+            const { newPassword, confirmPassword } = req.body;
+
+            if (!newPassword || !confirmPassword) {
+                throw new Error("All fields are required.");
+            }
+
+            foundUser = await User.findOne({ email: req.body.email });
+
+            if (newPassword !== confirmPassword) {
+                throw new Error("New password and Confirm password didn't match.");
+            }
+
+            const hashPassword = await bcrypt.hash(newPassword, salt);
+            await User.updateOne({ _id: foundUser._id }, {
+                $set: {
+                    password: hashPassword
+                }
+            });
+
+            res.redirect("/login");
+        } catch (error) {
+            console.error(error);
+
+            res.render("customer/auth/changePassword", {
+                isLoggedIn: req.session.user ? true : false,
+                currentUser: foundUser,
+                error: error.message,
+                isForgotPassword: true,
+                email: req.body.email
+            });
+        }
+    }
+};
+
+export const sendOTP = async (req, res, next) => {
+    try {
+        const foundUser = await User.findOne({ email: req.body.email });
+        if (foundUser) {
+            sendToMail(req, res, foundUser._id, true);
+        } else {
+            res.render("customer/auth/forgot", { commonError: "No user with this email found." });
+        }
     } catch (error) {
         next(error);
     }
@@ -148,8 +263,8 @@ export const resendOTP = async (req, res, next) => {
 
 export const logoutCustomer = async (req, res, next) => {
     try {
-        req.session.destroy();
-        res.redirect('/');
+        req.session.user = null;
+        res.redirect('/login');
     } catch (error) {
         next(error);
     }

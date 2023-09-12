@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+    <body>
+
+        <div class="site-wrap">
+            <%- include('../partials/customer/header') -%>
+                <div class="bg-light py-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                                    class="text-black">Orders</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="site-section">
+                    <div class="container">
+                        <div class="col-lg-12 p-4 border mb-3 d-flex">
+                            <div class="col-md-6">
+                                <a href="">
+                                    <img src="/customer/images/cloth_1.jpg" alt="Image" height="180px" width="180px"
+                                        class="img-fluid">
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="d-block text-primary h6 text-uppercase">Product</span>
+                                <p>Description, Category, Price, Quantity, Status</p>
+                                <div class="d-flex">
+                                    <div>
+                                        <h2 class="h5 text-black">Order Date</h2>
+                                        <h2 class="h5 text-black">delivery Date</h2>
+                                    </div>
+                                    <p class="ml-5">
+                                    <form action="" method="post">
+                                        <a href="" class="btn btn-sm btn-outline-primary mb-3">Review</a>
+                                        <button type="submit" href=""
+                                            class="btn btn-sm btn-primary mb-3">Cancel</button>
+                                    </form>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><a href="/shop" class="btn btn-outline-primary btn-sm btn-block">Continue
+                                                Shopping</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <%- include('../partials/customer/footer') -%>

@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
     images: [String],
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'category',
+        ref: 'Category',
     },
     softDeleted: {
         type: Boolean,
@@ -28,6 +28,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-const product = mongoose.model('product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
-export default product;
+export default Product;

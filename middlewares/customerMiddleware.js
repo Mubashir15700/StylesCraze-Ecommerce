@@ -1,3 +1,4 @@
+import User from "../models/userModel.js";
 
 export const checkAuth = (req, res, next) => {
     if (req.session.user) {
@@ -13,4 +14,12 @@ export const isLoggedIn = (req, res, next) => {
     } else {
         res.redirect("/");
     }
+};
+
+export const isBlocked = async (req, res, next) => {
+    const currentUser = await User.findById(req.session.user);
+    if (currentUser && currentUser.blocked === true) {
+        req.session.user = null;
+    }
+    next();
 };

@@ -17,22 +17,7 @@
                 <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                     <div class="site-top-icons">
                         <ul>
-                            <li><a href="/profile"><span class="icon icon-person"></span></a></li>
-                            <li><a href="/wishlist"><span class="icon icon-heart-o"></span></a></li>
-                            <li>
-                                <a href="/cart" class="site-cart">
-                                    <span class="icon icon-shopping_cart"></span>
-                                </a>
-                            </li>
-                            <li class="ml-3">
-                                <% if (!isLoggedIn) { %>
-                                    <a href="login">Login</a>
-                                    <% } else { %>
-                                        <form action="/logout" method="post">
-                                            <button class="btn btn-light" type="submit">logout</button>
-                                        </form>
-                                        <% } %>
-                            </li>
+                            <%- include('menu-list') -%>
                         </ul>
                     </div>
                 </div>

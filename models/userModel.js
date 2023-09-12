@@ -24,52 +24,45 @@ const userSchema = new mongoose.Schema({
     profile: {
         type: String
     },
-    dob: {
-        type: Date
-    },
-    address: {
-        street: {
-            type: String,
-        },
-        city: {
-            type: String,
-        },
-        state: {
-            type: String,
-        },
-        zip: {
-            type: String,
-        },
-        country: {
-            type: String,
-        },
-    },
-    wishlist: [
+    address: [
         {
-            product_id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'product',
+            pin: {
+                type: Number,
             },
-            name: String,
-            price: Number,
+            state: {
+                type: String,
+            },
+            city: {
+                type: String,
+            },
+            building: {
+                type: String,
+            },
+            area: {
+                type: String,
+            },
         },
+    ],
+    wishlist: [
+        { type: mongoose.Types.ObjectId, ref: 'Product' }
     ],
     cart: [
         {
-            product_id: {
+            product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'product',
+                ref: 'Product',
             },
-            name: String,
-            price: Number,
-            quantity: Number,
+            quantity: {
+                type: Number,
+                default: 1
+            },
         },
     ],
     orders: [
         {
             order_id: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'order',
+                ref: 'Order',
             },
             order_date: {
                 type: Date,
@@ -79,7 +72,7 @@ const userSchema = new mongoose.Schema({
                 {
                     product_id: {
                         type: mongoose.Schema.Types.ObjectId,
-                        ref: 'product',
+                        ref: 'Product',
                     },
                     name: String,
                     price: Number,
@@ -104,6 +97,6 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const user = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default user;
+export default User;

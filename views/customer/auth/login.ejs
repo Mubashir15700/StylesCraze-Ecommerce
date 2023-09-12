@@ -41,7 +41,7 @@
                 </div>
               </form>
               <p>Don't have an account?<a href="register">Sign Up</a></p>
-              <p><a href="#">Forgot password?</a></p>
+              <p><a href="/forgot-password">Forgot password?</a></p>
             </div>
           </div>
         </div>
@@ -64,10 +64,7 @@
       if (!usernameInput.value || !passwordInput.value) {
         hasErrors = true;
         document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
-      } else if (passwordInput.value.length < 6) {
-        hasErrors = true;
-        document.getElementById("password-error-display").innerHTML = "Password must be at least 6 characters long.";
-      }
+      } 
 
       if (hasErrors) {
         event.preventDefault();

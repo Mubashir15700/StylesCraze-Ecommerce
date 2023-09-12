@@ -3,198 +3,180 @@
 
 <%- include('../partials/customer/head') -%>
 
-<body>
+    <body>
 
-    <div class="site-wrap">
-        <header class="site-navbar" role="banner">
-            <div class="site-navbar-top">
-                <div class="container">
-                    <div class="row align-items-center">
-
-                        <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-                            <form action="" class="site-block-top-search">
-                                <span class="icon icon-search2"></span>
-                                <input type="text" class="form-control border-0" placeholder="Search">
-                            </form>
-                        </div>
-
-                        <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
-                            <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
-                        </div>
-
-                        <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-                            <div class="site-top-icons">
-                                <ul>
-                                    <%- include('../partials/customer/menu-list') -%>
-                                </ul>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <nav class="site-navigation text-right text-md-center" role="navigation">
-                <div class="container">
-                    <ul class="site-menu js-clone-nav d-none d-md-block">
-                        <li class="active">
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <a href="/about">About</a>
-                        </li>
-                        <li><a href="/shop">Shop</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-
-        <div class="bg-light py-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                            class="text-black">Cart</strong></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="site-section">
-            <div class="container">
-                <div class="row mb-5">
-                    <form class="col-md-12" method="post">
-                        <div class="site-blocks-table">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="product-thumbnail">Image</th>
-                                        <th class="product-name">Product</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-total">Total</th>
-                                        <th class="product-remove">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <img src="/customer/images/cloth_1.jpg" alt="Image" class="img-fluid">
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Top Up T-Shirt</h2>
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td>
-                                            <div class="input-group mb-3" style="max-width: 120px;">
-                                                <div class="input-group-prepend">
-                                                    <button class="btn btn-outline-primary js-btn-minus"
-                                                        type="button">&minus;</button>
-                                                </div>
-                                                <input type="text" class="form-control text-center" value="1"
-                                                    placeholder="" aria-label="Example text with button addon"
-                                                    aria-describedby="button-addon1">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-primary js-btn-plus"
-                                                        type="button">&plus;</button>
-                                                </div>
-                                            </div>
-
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <img src="/customer/images/cloth_2.jpg" alt="Image" class="img-fluid">
-                                        </td>
-                                        <td class="product-name">
-                                            <h2 class="h5 text-black">Polo Shirt</h2>
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td>
-                                            <div class="input-group mb-3" style="max-width: 120px;">
-                                                <div class="input-group-prepend">
-                                                    <button class="btn btn-outline-primary js-btn-minus"
-                                                        type="button">&minus;</button>
-                                                </div>
-                                                <input type="text" class="form-control text-center" value="1"
-                                                    placeholder="" aria-label="Example text with button addon"
-                                                    aria-describedby="button-addon1">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-primary js-btn-plus"
-                                                        type="button">&plus;</button>
-                                                </div>
-                                            </div>
-
-                                        </td>
-                                        <td>$49.00</td>
-                                        <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row mb-5">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <button class="btn btn-primary btn-sm btn-block">Update Cart</button>
-                            </div>
-                            <div class="col-md-6">
-                                <p><a href="/shop" class="btn btn-outline-primary btn-sm btn-block">Continue Shopping</a></p>
-                            </div>
-                        </div>
+        <div class="site-wrap">
+            <%- include('../partials/customer/header') -%>
+                <div class="bg-light py-3">
+                    <div class="container">
                         <div class="row">
-                            <div class="col-md-12">
-                                <label class="text-black h4" for="coupon">Coupon</label>
-                                <p>Enter your coupon code if you have one.</p>
-                            </div>
-                            <div class="col-md-8 mb-3 mb-md-0">
-                                <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
-                            </div>
-                            <div class="col-md-4">
-                                <button class="btn btn-primary btn-sm">Apply Coupon</button>
-                            </div>
+                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                                    class="text-black">Cart</strong></div>
                         </div>
                     </div>
-                    <div class="col-md-6 pl-5">
-                        <div class="row justify-content-end">
-                            <div class="col-md-7">
+                </div>
+
+                <div class="container">
+                    <div class="site-section">
+                        <% if (!cartProducts.length) { %>
+                            Your cart is empty.
+                            <% } else { %>
                                 <div class="row">
-                                    <div class="col-md-12 text-right border-bottom mb-5">
-                                        <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                                    </div>
+                                    <form class="col-md-12" action="" method="">
+                                        <div class="site-blocks-table">
+                                            <div class="container">
+                                                <% cartProducts.forEach((cartItem)=> { %>
+                                                    <div class="col-lg-12 p-4 border mb-3 d-flex">
+                                                        <div class="col-md-4">
+                                                            <a href="">
+                                                                <img src="<%= cartItem.product.images[0] %>" alt="Image"
+                                                                    height="180px" width="180px" class="img-fluid">
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="d-block text-primary h6 text-uppercase">
+                                                                <%= cartItem.product.name %>
+                                                            </span>
+                                                            <p>
+                                                                <%= cartItem.product.description %><br>
+                                                                    Category: <%= cartItem.product.category.name %><br>
+                                                                        <strong class="text-black">$<%=
+                                                                                cartItem.product.price %>.00</strong>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="text-black">
+                                                                Total Price: $<span id="totalPrice_<%= cartItem._id %>"
+                                                                    class="text-black">
+                                                                    <%=cartItem.product.price * cartItem.quantity %>.00
+                                                                </span>
+                                                            </span>
+                                                            <div class="input-group mb-3" style="max-width: 120px;">
+                                                                <div class="input-group-prepend">
+                                                                    <button class="btn btn-outline-primary js-btn-minus"
+                                                                        type="button"
+                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
+                                                                </div>
+                                                                <input type="text" class="form-control text-center"
+                                                                    value="<%= cartItem.quantity %>"
+                                                                    id="quantityElement"
+                                                                    aria-label="Example text with button addon"
+                                                                    aria-describedby="button-addon1">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-outline-primary js-btn-plus"
+                                                                        type="button"
+                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
+                                                                </div>
+                                                            </div>
+                                                            <form action="/remove-from-cart/<%= cartItem._id %>"
+                                                                method="post" id="<%= cartItem._id %>">
+                                                                <button type="button" class="btn btn-sm btn-primary"
+                                                                    onclick="removeCartItem('<%= cartItem._id %>')">
+                                                                    Remove
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                        </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <span class="text-black">Subtotal</span>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <strong class="text-black">$230.00</strong>
-                                    </div>
-                                </div>
+                                </form>
+                    </div>
+                    <% } %>
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="row mb-5">
                                     <div class="col-md-6">
-                                        <span class="text-black">Total</span>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <strong class="text-black">$230.00</strong>
+                                        <p>
+                                            <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                                                Continue Shopping
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <button class="btn btn-primary btn-lg py-3 btn-block"
-                                            onclick="window.location='checkout.html'">Proceed To Checkout</button>
+                                        <label class="text-black h4" for="coupon">Coupon</label>
+                                        <p>Enter your coupon code if you have one.</p>
+                                    </div>
+                                    <div class="col-md-8 mb-3 mb-md-0">
+                                        <input type="text" class="form-control py-3" id="coupon"
+                                            placeholder="Coupon Code">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-primary btn-sm">Apply Coupon</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 pl-5">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-7">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right border-bottom mb-5">
+                                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-5">
+                                            <div class="col-md-6">
+                                                <span>Grand Total</span>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <span class="text-black">
+                                                    Total Price: $<span id="grandTotalPrice" class="text-black">
+                                                        <%= grandTotal %>.00
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-primary btn-lg py-3 btn-block">
+                                                    Proceed To Checkout
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
-            </div>
         </div>
+
+        <script>
+            // remove fromm cart
+            function removeCartItem(cartItemId) {
+                $.ajax({
+                    url: '/remove-from-cart/' + cartItemId,
+                    type: 'POST',
+                    success: function (response) {
+                        // Handle success, e.g., update the cart UI
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                    }
+                });
+            }
+
+            // update cart
+            function updateCartItem(cartItemId, incOrDec) {
+                const data = {
+                    type: incOrDec
+                };
+                $.ajax({
+                    url: '/update-cart/' + cartItemId,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
+                        $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(status);
+                    }
+                });
+            }
+        </script>
 
         <%- include('../partials/customer/footer') -%>

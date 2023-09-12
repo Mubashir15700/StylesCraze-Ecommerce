@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const userOTPVerificationSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
     },
     otp: {
         type: String,
@@ -12,6 +12,6 @@ const userOTPVerificationSchema = new mongoose.Schema({
     expiresAt: Date
 });
 
-const userOTPVerification = mongoose.model("userOTPVerification", userOTPVerificationSchema);
+const UserOTPVerification = mongoose.model("UserOTPVerification", userOTPVerificationSchema);
 
-export default userOTPVerification;
+export default UserOTPVerification;

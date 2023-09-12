@@ -76,8 +76,8 @@ export const getProduct = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/products/editProduct', { 
-            productData: foundProduct, categoryOptions: foundCategories 
+        res.render('admin/products/editProduct', {
+            productData: foundProduct, categoryOptions: foundCategories
         });
     } catch (error) {
         next(error);
@@ -225,8 +225,9 @@ export const getCustomers = async (req, res, next) => {
 
 export const customerAction = async (req, res, next) => {
     try {
-        let state = req.body.state === "1";
-        await User.findByIdAndUpdate(req.params.id, { $set: { blocked: state } });
+        const state = req.body.state === "1";
+        const customerId = req.params.id;
+        await User.findByIdAndUpdate(customerId, { $set: { blocked: state } });
         res.redirect('/admin/customers');
     } catch (error) {
         next(error);

@@ -17,15 +17,16 @@ app.set('port', process.env.PORT || 3000);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(methodOverride('_method'));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(noCache());
 app.use(cookieParser());
 app.use(session({
-    secret: process.env.SECRETE,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: 600000 * 24 * 7
+        expires: 60000 * 60 * 24 * 7
     }
 }));
 
