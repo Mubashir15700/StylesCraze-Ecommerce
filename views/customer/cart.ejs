@@ -82,10 +82,6 @@
                                         </div>
                                 </div>
                                 </form>
-                    </div>
-                    <% } %>
-                        <div class="row">
-                            <div class="col-md-6">
                                 <div class="row mb-5">
                                     <div class="col-md-6">
                                         <p>
@@ -95,51 +91,67 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="text-black h4" for="coupon">Coupon</label>
-                                        <p>Enter your coupon code if you have one.</p>
-                                    </div>
-                                    <div class="col-md-8 mb-3 mb-md-0">
-                                        <input type="text" class="form-control py-3" id="coupon"
-                                            placeholder="Coupon Code">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-primary btn-sm">Apply Coupon</button>
+                    </div>
+                    <% } %>
+                        <% if (cartProducts.length) { %>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="text-black h4" for="coupon">Coupon</label>
+                                            <p>Enter your coupon code if you have one.</p>
+                                        </div>
+                                        <div class="col-md-8 mb-3 mb-md-0">
+                                            <input type="text" class="form-control py-3" id="coupon"
+                                                placeholder="Coupon Code">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary btn-sm">Apply Coupon</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 pl-5">
-                                <div class="row justify-content-end">
-                                    <div class="col-md-7">
-                                        <div class="row">
-                                            <div class="col-md-12 text-right border-bottom mb-5">
-                                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                <div class="col-md-6 pl-5">
+                                    <div class="row justify-content-end">
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                <div class="col-md-12 text-right border-bottom mb-5">
+                                                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-5">
-                                            <div class="col-md-6">
-                                                <span>Grand Total</span>
-                                            </div>
-                                            <div class="col-md-6 pl-0">
-                                                <span class="text-black">
-                                                    Total Price: $<span id="grandTotalPrice" class="text-black">
-                                                        <%= grandTotal %>.00
+                                            <div class="row mb-5">
+                                                <div class="col-md-6">
+                                                    <span>Total Price</span>
+                                                </div>
+                                                <div class="col-md-6 pl-0">
+                                                    <span class="h5 text-black">
+                                                        $<span id="grandTotalPrice" class="text-black">
+                                                            <%= grandTotal %>.00
+                                                        </span>
                                                     </span>
-                                                </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <button class="btn btn-primary btn-lg py-3 btn-block">
-                                                    Proceed To Checkout
-                                                </button>
+                                            <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                    <a href="/checkout" class="btn btn-primary btn-lg py-3 btn-block">
+                                                        Proceed To Checkout
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <% } else { %>
+                                <div class="row mb-5">
+                                    <div class="col-md-6">
+                                        <p>
+                                            <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                                                Go To Shop
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% } %>
                 </div>
         </div>
 
@@ -151,6 +163,7 @@
                     type: 'POST',
                     success: function (response) {
                         // Handle success, e.g., update the cart UI
+                        location.reload();
                     },
                     error: function (xhr, status, error) {
                         // Handle errors

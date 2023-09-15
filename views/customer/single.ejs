@@ -131,7 +131,31 @@
         </div>
 
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const quantityInput = document.querySelector('input[name="quantity"]');
+                const minusButton = document.querySelector('.js-btn-minus');
+                const plusButton = document.querySelector('.js-btn-plus');
 
+                minusButton.addEventListener('click', function () {
+                    // Parse the current input value as an integer
+                    let quantity = parseInt(quantityInput.value);
+
+                    // Decrement the quantity (if it's greater than 1)
+                    if (quantity > 1) {
+                        quantity--;
+                        quantityInput.value = quantity;
+                    }
+                });
+
+                plusButton.addEventListener('click', function () {
+                    // Parse the current input value as an integer
+                    let quantity = parseInt(quantityInput.value);
+
+                    // Increment the quantity
+                    quantity++;
+                    quantityInput.value = quantity;
+                });
+            });
         </script>
 
         <%- include('../partials/customer/footer') -%>

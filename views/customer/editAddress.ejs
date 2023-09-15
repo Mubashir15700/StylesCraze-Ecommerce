@@ -23,38 +23,38 @@
                         <h2 class="h3 mb-3 text-black">Delivery Address</h2>
                     </div>
                     <div class="col-md-7">
-                        <form action="/edit-address/<%= currentAddress.address[0]._id %>" method="post">
+                        <form action="/edit-address/<%= currentAddress._id %>" method="post">
                             <div class="p-3 p-lg-5 border">
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="pincode" class="text-black">Pincode <span
                                                 class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" name="pincode" value="<%= currentAddress.address[0].pincode %>" required>
+                                        <input type="number" class="form-control" name="pincode" value="<%= currentAddress.pincode %>" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="state" class="text-black">State <span
                                                 class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="state" value="<%= currentAddress.address[0].state %>" required>
+                                        <input type="text" class="form-control" name="state" value="<%= currentAddress.state %>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <label for="city" class="text-black">City <span
                                                 class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="city" value="<%= currentAddress.address[0].city %>" required>
+                                        <input type="text" class="form-control" name="city" value="<%= currentAddress.city %>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <label for="building" class="text-black">House No., Building Name </label>
-                                        <input type="text" class="form-control" name="building" value="<%= currentAddress.address[0].building %>" required>
+                                        <input type="text" class="form-control" name="building" value="<%= currentAddress.building %>" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <label for="area" class="text-black">Road Name, Area, Colony </label>
-                                        <input type="text" class="form-control" name="area" value="<%= currentAddress.address[0].area %>" required>
+                                        <input type="text" class="form-control" name="area" value="<%= currentAddress.area %>" required>
                                     </div>
                                 </div>
                                 <p class="text-danger"><%= error %></p>

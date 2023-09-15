@@ -24,25 +24,6 @@ const userSchema = new mongoose.Schema({
     profile: {
         type: String
     },
-    address: [
-        {
-            pin: {
-                type: Number,
-            },
-            state: {
-                type: String,
-            },
-            city: {
-                type: String,
-            },
-            building: {
-                type: String,
-            },
-            area: {
-                type: String,
-            },
-        },
-    ],
     wishlist: [
         { type: mongoose.Types.ObjectId, ref: 'Product' }
     ],
@@ -56,30 +37,6 @@ const userSchema = new mongoose.Schema({
                 type: Number,
                 default: 1
             },
-        },
-    ],
-    orders: [
-        {
-            order_id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Order',
-            },
-            order_date: {
-                type: Date,
-                default: Date.now,
-            },
-            products: [
-                {
-                    product_id: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref: 'Product',
-                    },
-                    name: String,
-                    price: Number,
-                    quantity: Number,
-                },
-            ],
-            total_amount: Number,
         },
     ],
     password: {

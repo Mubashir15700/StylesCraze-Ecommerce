@@ -77,11 +77,42 @@
                                                                 <p class="mb-0">
                                                                     <%= product.description %>
                                                                 </p>
-                                                                <p class="text-primary font-weight-bold">
-                                                                    $<%= product.price %>.00
-                                                                        <a href="#" class="ml-2"><span
-                                                                                class="icon icon-heart-o"></span></a>
-                                                                </p>
+                                                                <% if (isLoggedIn) { %>
+                                                                    <form action="/wishlist" method="post"
+                                                                        id="wishlistForm_<%= product._id %>">
+                                                                        <p class="text-primary font-weight-bold">
+                                                                            $<%= product.price %>.00
+                                                                                <input type="hidden" name="productId"
+                                                                                    value="<%= product._id %>">
+                                                                                <% if
+                                                                                    (currentUser.wishlist.some((item)=>
+                                                                                    item.toString() ===
+                                                                                    product._id.toString() )) { %>
+                                                                                    <a href="#"
+                                                                                        class="ml-2 updateWishlist"
+                                                                                        data-product-id="<%= product._id %>"
+                                                                                        data-to-do="remove"
+                                                                                        >
+                                                                                        <span
+                                                                                            class="icon icon-heart"></span>
+                                                                                    </a>
+                                                                                    <% } else { %>
+                                                                                        <a href="#"
+                                                                                            class="ml-2 updateWishlist"
+                                                                                            data-product-id="<%= product._id %>"
+                                                                                            data-to-do="add"
+                                                                                            >
+                                                                                            <span
+                                                                                                class="icon icon-heart-o"></span>
+                                                                                        </a>
+                                                                                        <% } %>
+                                                                        </p>
+                                                                    </form>
+                                                                    <% } else { %>
+                                                                        <p class="text-primary font-weight-bold">
+                                                                            $<%= product.price %>.00
+                                                                        </p>
+                                                                        <% } %>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -174,5 +205,46 @@
                         <%- include('../partials/customer/category') -%>
                     </div>
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        $('.updateWishlist').on('click', function (event) {
+                            event.preventDefault();
+
+                            const productId = $(this).data('product-id');
+                            const todo = $(this).data('to-do');
+
+                            $.ajax({
+                                url: '/update-wishlist',
+                                type: 'POST',
+                                data: { productId, todo },
+                                success: function (response) {
+                                    const element = event.target;
+                                    if (response.message === "added") {
+                                        if (element.classList.contains('icon-heart-o')) {
+                                            element.classList.remove('icon-heart-o');
+                                            element.classList.add('icon-heart');
+                                        } else {
+                                            element.classList.remove('icon-heart');
+                                            element.classList.add('icon-heart-o');
+                                        }
+                                    } else {
+                                        if (element.classList.contains('icon-heart')) {
+                                            element.classList.remove('icon-heart');
+                                            element.classList.add('icon-heart-o');
+                                        } else {
+                                            element.classList.remove('icon-heart-o');
+                                            element.classList.add('icon-heart');
+                                        }
+                                    }
+                                },
+                                error: function (err) {
+                                    console.error('Error:', err);
+                                }
+                            });
+                        });
+
+                    });
+                </script>
 
                 <%- include('../partials/customer/footer') -%>

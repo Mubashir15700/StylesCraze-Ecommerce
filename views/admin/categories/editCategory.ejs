@@ -179,7 +179,6 @@
         const previewArea = document.getElementById('preview-group');
         const previewInput = document.getElementById('preview-input');
         const previewImg = document.getElementById('preview-img');
-
         previewInput.onchange = e => {
             if (e.target.files && e.target.files.length) {
                 const imgSrc = URL.createObjectURL(e.target.files[0]);

@@ -107,65 +107,6 @@ export const registerCustomer = async (req, res, next) => {
     }
 };
 
-export const Verification = async (req, res) => {
-    try {
-        let { userId, otp } = req.body;
-        if (!userId || !otp) {
-            throw Error("Empty details are not allowed");
-        } else {
-            const verificationRecords = await UserOTPVerification.findOne({ userId });
-            if (!verificationRecords) {
-                throw new Error(
-                    "Account record doesn't exist or has been verified already. Please sign in."
-                );
-            } else {
-                const { expiresAt } = verificationRecords;
-                const hashedOTP = verificationRecords.otp;
-                if (expiresAt < Date.now()) {
-                    await verificationRecords.deleteOne({ userId });
-                    throw new Error("Code has expired. Please try again.");
-                } else {
-                    const isValid = await bcrypt.compare(otp, hashedOTP);
-                    if (!isValid) {
-                        throw new Error("Invalid code. Please check your inbox.");
-                    } else {
-                        await User.updateOne({ _id: userId }, { verified: true });
-                        await verificationRecords.deleteOne({ userId });
-                        if (req.body.isForgotPassword === 'true') {
-                            res.render("customer/auth/changePassword", {
-                                isLoggedIn: req.session.user ? true : false,
-                                currentUser: "",
-                                error: "",
-                                isForgotPassword: true,
-                                email: req.body.email
-                            });
-                        } else {
-                            res.redirect("/");
-                        }
-                    }
-                }
-            }
-        }
-    } catch (error) {
-        res.render('customer/auth/verification', {
-            userId: req.body.userId,
-            email: req.body.email,
-            error: error,
-            isForgotPassword: req.body.isForgotPassword
-        });
-    }
-};
-
-export const resendOTP = async (req, res, next) => {
-    try {
-        await UserOTPVerification.deleteOne({ userId: req.body.id });
-        sendToMail(req, res, req.body.id, false);
-    } catch (error) {
-        next(error);
-    }
-};
-
-
 // to separate
 export const changePassword = async (req, res) => {
     let foundUser;
@@ -213,7 +154,6 @@ export const changePassword = async (req, res) => {
         }
     } else {
         try {
-            console.log("forgot change");
             const { newPassword, confirmPassword } = req.body;
 
             if (!newPassword || !confirmPassword) {
@@ -258,6 +198,68 @@ export const sendOTP = async (req, res, next) => {
         }
     } catch (error) {
         next(error);
+    }
+};
+
+export const resendOTP = async (req, res, next) => {
+    try {
+        await UserOTPVerification.deleteMany({ userId: req.body.id });
+        if (req.body.isForgotPassword === "true") {
+            sendToMail(req, res, req.body.id, true);
+        } else {
+            sendToMail(req, res, req.body.id, false);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const Verification = async (req, res) => {
+    try {
+        let { userId, otp } = req.body;
+        if (!userId || !otp) {
+            throw Error("Empty details are not allowed");
+        } else {
+            const verificationRecords = await UserOTPVerification.findOne({ userId });
+            if (!verificationRecords) {
+                throw new Error(
+                    "Account record doesn't exist or has been verified already. Please sign in."
+                );
+            } else {
+                const { expiresAt } = verificationRecords;
+                const hashedOTP = verificationRecords.otp;
+                if (expiresAt < Date.now()) {
+                    await verificationRecords.deleteOne({ userId });
+                    throw new Error("Code has expired. Please try again.");
+                } else {
+                    const isValid = await bcrypt.compare(otp, hashedOTP);
+                    if (!isValid) {
+                        throw new Error("Invalid code. Please check your inbox.");
+                    } else {
+                        await User.updateOne({ _id: userId }, { verified: true });
+                        await verificationRecords.deleteOne({ userId });
+                        if (req.body.isForgotPassword === 'true') {
+                            res.render("customer/auth/changePassword", {
+                                isLoggedIn: req.session.user ? true : false,
+                                currentUser: "",
+                                error: "",
+                                isForgotPassword: true,
+                                email: req.body.email
+                            });
+                        } else {
+                            res.redirect("/");
+                        }
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        res.render('customer/auth/verification', {
+            userId: req.body.userId,
+            email: req.body.email,
+            error: error,
+            isForgotPassword: req.body.isForgotPassword
+        });
     }
 };
 

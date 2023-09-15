@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
+import { sendToMail } from '../utils/sendMail.js';
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
 import User from "../models/userModel.js";
+import Order from "../models/orderModel.js";
+import Address from "../models/addressModel.js";
 
 const isLoggedIn = (req, res) => {
     if (req.session.user) {
@@ -123,10 +126,12 @@ export const getEnterEmail = (req, res) => {
 
 export const getProfile = async (req, res, next) => {
     try {
+        const addresses = await Address.find({ user: req.session.user });
         res.render("customer/profile", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            error: ""
+            error: "",
+            addresses
         });
     } catch (error) {
         next(error);
@@ -135,6 +140,7 @@ export const getProfile = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
+        const addresses = await Address.find({ user: req.session.user });
         const { profile, username, phone, email } = req.body;
         await User.updateOne({ _id: req.session.user }, {
             $set: {
@@ -147,7 +153,8 @@ export const updateProfile = async (req, res, next) => {
         res.render("customer/profile", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            error: ""
+            error: "",
+            addresses
         });
     } catch (error) {
         next(error);
@@ -170,26 +177,18 @@ export const addNewAddress = async (req, res, next) => {
     try {
         const { pincode, state, city, building, area } = req.body;
         if (pincode, state, city, building, area) {
-            const currentUser = await getCurrentUser(req, res);
-            currentUser.address.push({
+            const otherAddress = await Address.find({ user: req.session.user });
+            const newAddress = new Address({
+                user: req.session.user,
                 pincode,
                 state,
                 city,
                 building,
-                area
+                area,
+                default: (otherAddress.length === 0) ? true : false,
             });
-            await currentUser.save();
-            res.render("customer/profile", {
-                isLoggedIn: isLoggedIn(req, res),
-                currentUser: await getCurrentUser(req, res),
-                error: ""
-            });
-        } else {
-            res.render("customer/newAddress", {
-                isLoggedIn: isLoggedIn(req, res),
-                currentUser: await getCurrentUser(req, res),
-                error: "All fields are required"
-            });
+            await newAddress.save();
+            res.redirect("/profile");
         }
     } catch (error) {
         next(error);
@@ -198,11 +197,7 @@ export const addNewAddress = async (req, res, next) => {
 
 export const getEditAddress = async (req, res, next) => {
     try {
-        const currentAddress = await User.findOne({ _id: req.session.user, 'address._id': req.params.id },
-            {
-                'address.$': 1,
-                _id: 0
-            });
+        const currentAddress = await Address.findOne({ _id: req.params.id });
         res.render("customer/editAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
@@ -223,26 +218,21 @@ export const editAddress = async (req, res, next) => {
             building: req.body.building,
             area: req.body.area,
         };
-        await User.updateOne(
+        await Address.updateOne(
             {
-                _id: req.session.user,
-                'address._id': req.params.id,
+                _id: req.params.id,
             },
             {
                 $set: {
-                    'address.$.pincode': updatedAddressData.pincode,
-                    'address.$.state': updatedAddressData.state,
-                    'address.$.city': updatedAddressData.city,
-                    'address.$.building': updatedAddressData.building,
-                    'address.$.area': updatedAddressData.area,
+                    pincode: updatedAddressData.pincode,
+                    state: updatedAddressData.state,
+                    city: updatedAddressData.city,
+                    building: updatedAddressData.building,
+                    area: updatedAddressData.area,
                 },
             }
         );
-        res.render("customer/profile", {
-            isLoggedIn: isLoggedIn(req, res),
-            currentUser: await getCurrentUser(req, res),
-            error: ""
-        });
+        res.redirect("/profile");
     } catch (error) {
         next(error);
     }
@@ -250,21 +240,32 @@ export const editAddress = async (req, res, next) => {
 
 export const deleteAddress = async (req, res, next) => {
     try {
-        await User.updateOne(
-            {
-                _id: req.session.user,
-            },
-            {
-                $pull: {
-                    address: { _id: req.params.id },
-                },
-            }
-        );
-        res.render("customer/profile", {
+        await Address.deleteOne({ _id: req.params.id });
+
+        res.redirect("/profile");
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getAddresses = async (req, res, next) => {
+    try {
+        const addresses = await Address.find({ user: req.session.user });
+        res.render("customer/selectAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            error: ""
+            addresses,
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const changeAddress = async (req, res, next) => {
+    try {
+        await Address.updateOne({ user: req.session.user, default: true }, { $set: { default: false } });
+        await Address.findByIdAndUpdate(req.body.addressId, { $set: { default: true } });
+        res.redirect("/checkout");
     } catch (error) {
         next(error);
     }
@@ -281,11 +282,26 @@ export const getChangePassword = async (req, res) => {
     });
 };
 
-export const getOrders = async (req, res, next) => {
+export const updateWishlist = async (req, res, next) => {
     try {
-        res.render("customer/orders", {
-            isLoggedIn: isLoggedIn(req, res),
-            currentUser: await getCurrentUser(req, res),
+        const currentUser = await getCurrentUser(req, res);
+        if (req.body.todo === "add") {
+            await currentUser.wishlist.push(req.body.productId);
+        } else {
+            const updatedWishlist = currentUser.wishlist.filter(
+                (productId) => productId && !productId.equals(req.body.productId)
+            );
+            currentUser.wishlist = updatedWishlist;
+        }
+
+        await currentUser.save();
+
+        if (req.body.goto) {
+            return res.redirect("/wishlist");
+        } 
+
+        return res.status(200).json({
+            message: req.body.todo === "add"? "added" : "removed",
         });
     } catch (error) {
         next(error);
@@ -294,9 +310,10 @@ export const getOrders = async (req, res, next) => {
 
 export const getWishlist = async (req, res, next) => {
     try {
+        const currentUser = await User.findById(req.session.user).populate('wishlist');
         res.render("customer/wishlist", {
             isLoggedIn: isLoggedIn(req, res),
-            currentUser: await getCurrentUser(req, res),
+            currentUser,
         });
     } catch (error) {
         next(error);
@@ -323,6 +340,29 @@ export const getCart = async (req, res, next) => {
     }
 };
 
+export const addToCart = async (req, res, next) => {
+    try {
+        const currentUser = await getCurrentUser(req, res);
+        const { product, quantity } = req.body;
+
+        const existingCartItem = currentUser.cart.find(item => item.product.toString() === product);
+
+        if (existingCartItem) {
+            existingCartItem.quantity += parseInt(quantity);
+        } else {
+            const cartItem = {
+                product,
+                quantity: parseInt(quantity),
+            };
+            currentUser.cart.push(cartItem);
+        }
+        await currentUser.save();
+        res.redirect("/shop");
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const removeFromCart = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
@@ -332,11 +372,7 @@ export const removeFromCart = async (req, res, next) => {
             currentUser.cart.splice(cartItemIndex, 1);
             await currentUser.save();
 
-            res.render("customer/cart", {
-                isLoggedIn: isLoggedIn(req, res),
-                currentUser,
-                cartProducts: currentUser.cart
-            });
+            res.redirect("/cart");
         } else {
             console.log('Cart item not found in the user\'s cart');
         }
@@ -376,23 +412,120 @@ export const updateCart = async (req, res, next) => {
     }
 };
 
-export const addToCart = async (req, res, next) => {
+export const getCheckout = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
-        const { product, quantity } = req.body;
-
-        const existingCartItem = currentUser.cart.find(item => item.product.toString() === product);
-
-        if (existingCartItem) {
-            existingCartItem.quantity += parseInt(quantity);
+        if (currentUser.verified) {
+            const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
+            await currentUser.populate('cart.product');
+            await currentUser.populate('cart.product.category');
+            const cartProducts = currentUser.cart;
+            const grandTotal = cartProducts.reduce((total, element) => {
+                return total + (element.quantity * element.product.price);
+            }, 0);
+            res.render("customer/checkout", {
+                isLoggedIn: isLoggedIn(req, res),
+                currentUser,
+                cartProducts,
+                currentAddress: defaultAddress,
+                grandTotal
+            });
         } else {
-            const cartItem = {
-                product,
-                quantity: parseInt(quantity),
-            };
-            currentUser.cart.push(cartItem);
+            req.body.email = currentUser.email;
+            sendToMail(req, res, currentUser._id, false);
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const placeOrder = async (req, res, next) => {
+    try {
+        const currentUser = await getCurrentUser(req, res);
+        const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
+        await currentUser.populate('cart.product');
+        const grandTotal = currentUser.cart.reduce((total, element) => {
+            return total + (element.quantity * element.product.price);
+        }, 0);
+        const orderedProducts = currentUser.cart.map((item) => {
+            return {
+                product: item.product._id,
+                quantity: item.quantity,
+            }
+        });
+        const newOrder = new Order({
+            user: req.session.user,
+            products: orderedProducts,
+            totalAmount: grandTotal + 5,
+            paymentMethod: req.body.method,
+            deliveryAddress: deliveryAddress._id
+        });
+        await newOrder.save();
+
+        currentUser.cart.forEach(async (item) => {
+            const foundProduct = await Product.findById(item.product._id);
+            foundProduct.stock -= item.quantity;
+            await foundProduct.save();
+        });
+
+        currentUser.cart = [];
         await currentUser.save();
+        res.redirect("/orders");
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getOrders = async (req, res, next) => {
+    try {
+        const currentUser = await User.findById(req.session.user);
+
+        const orders = await Order.aggregate([
+            { $match: { user: new mongoose.Types.ObjectId(req.session.user) } },
+            { $unwind: "$products" },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.product",
+                    foreignField: "_id",
+                    as: "orderedProducts"
+                }
+            },
+            {
+                $lookup: {
+                    from: "addresses",
+                    localField: "deliveryAddress",
+                    foreignField: "_id",
+                    as: "deliveryAddress"
+                }
+            },
+            { $sort: { orderDate: -1 } }
+        ]);
+        res.render("customer/orders", {
+            isLoggedIn: isLoggedIn(req, res),
+            currentUser,
+            orders
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const cancelOrder = async (req, res, next) => {
+    try {
+        const foundOrder = await Order.findById(req.body.orderId).populate('products.product');
+        const foundProduct = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
+        foundProduct.isCancelled = true;
+
+        const foundOrderTest = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
+        const foundProductTest = await Product.findById(req.body.productId);
+        const currentStock = foundProductTest.stock;
+        foundProductTest.stock = currentStock + foundOrderTest.quantity;
+
+        await foundProductTest.save();
+        await foundOrder.save();
+
+        res.redirect("/orders");
     } catch (error) {
         next(error);
     }

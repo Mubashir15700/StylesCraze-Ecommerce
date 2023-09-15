@@ -1,42 +1,49 @@
-
 <div class="site-section block-3 site-blocks-2 bg-light">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-7 site-section-heading text-center pt-4">
-          <h2>Featured Products</h2>
-        </div>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7 site-section-heading text-center pt-4">
+        <h2>Featured Products</h2>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="nonloop-block-3 owl-carousel">
-            <% if (!productDatas.length) { %>
-              No products found.
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="nonloop-block-3 owl-carousel">
+          <% if (!productDatas.length) { %>
+            No products found.
             <% } else { %>
-              <% productDatas.forEach((product) => { %>
-                <% if (product.category.removed === false) { %>
+              <% productDatas.forEach((product)=> { %>
+                <% if (product.category.removed===false) { %>
                   <div class="item">
                     <div class="block-4 text-center">
                       <figure class="block-4-image">
                         <img src="<%= product.images[0] %>" alt="Image placeholder" class="img-fluid">
                       </figure>
                       <div class="block-4-text p-4">
-                        <h3><a href="/single/<%= product._id %>"><%= product.name %></a></h3>
-                        <p class="mb-0"><%= product.description %></p>
-                        <form action="/wishlist" method="post">
-                          <p class="text-primary font-weight-bold">
-                            $<%= product.price %>.00
-                            <input type="hidden" name="productId" value="<%= product._id %>">
-                            <a href="#" class="ml-2"><span class="icon icon-heart-o"></span></a>
-                          </p>
-                        </form>
+                        <h3><a href="/single/<%= product._id %>">
+                            <%= product.name %>
+                          </a></h3>
+                        <p class="mb-0">
+                          <%= product.description %>
+                        </p>
+                        <% if (isLoggedIn) { %>
+                          <form action="/wishlist" method="post" id="wishlistForm_<%= product._id %>">
+                            <p class="text-primary font-weight-bold">
+                              $<%= product.price %>.00
+                            </p>
+                          </form>
+                          <% } else { %>
+                            <p class="text-primary font-weight-bold">
+                              $<%= product.price %>.00
+                            </p>
+                          <% } %>
                       </div>
                     </div>
                   </div>
-                <% } %>
-              <% }) %>
-            <% } %>
-          </div>
+                  <% } %>
+                    <% }) %>
+                      <% } %>
         </div>
       </div>
     </div>
   </div>
+</div>

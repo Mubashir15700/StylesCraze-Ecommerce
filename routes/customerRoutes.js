@@ -6,41 +6,47 @@ import {
 import { 
     getHome, getAbout, getShop, getCategoryProducts, getSingle, getContact, 
     getLogin, getRegister, getEnterEmail, getProfile, updateProfile, getNewAddress, addNewAddress,
-    getEditAddress, editAddress, deleteAddress, getChangePassword, getOrders,
-    getWishlist, getCart, addToCart, removeFromCart, updateCart
+    getEditAddress, editAddress, deleteAddress, getAddresses, changeAddress, getChangePassword, 
+    getOrders, getWishlist, updateWishlist, getCart, addToCart, removeFromCart, updateCart, getCheckout, 
+    placeOrder, cancelOrder,
 } from '../controllers/customerController.js';
-import { checkAuth, isLoggedIn, isBlocked } from '../middlewares/customerMiddleware.js';
+import { checkAuth, isLoggedIn, toBlock } from '../middlewares/customerMiddleware.js';
 
 const router = Router();
 
-router.get("/", isBlocked, getHome);
-router.get("/about",isBlocked, getAbout);
-router.get("/shop", isBlocked, getShop);
-router.get("/shop/:id", isBlocked, getCategoryProducts);
-router.get("/single/:id", isBlocked, getSingle);
-router.get("/contact", isBlocked, getContact);
+router.get("/", toBlock, getHome);
+router.get("/about",toBlock, getAbout);
+router.get("/shop", toBlock, getShop);
+router.get("/shop/:id", toBlock, getCategoryProducts);
+router.get("/single/:id", toBlock, getSingle);
+router.get("/contact", toBlock, getContact);
 router.route("/login").get(isLoggedIn, getLogin).post(loginCustomer);
 router.route("/register").get(isLoggedIn, getRegister).post(registerCustomer);
-router.post("/verification", Verification);
-router.post("/resend-otp", resendOTP);
-router.route("/forgot-password").get(isLoggedIn, getEnterEmail).post(sendOTP);
 router.post("/logout", logoutCustomer);
 
-router.route("/profile").get(isBlocked, checkAuth, getProfile).post(checkAuth, updateProfile);
-router.route("/new-address").get(isBlocked, checkAuth, getNewAddress).post(checkAuth, addNewAddress);
-router.route("/edit-address/:id").get(isBlocked, checkAuth, getEditAddress).post(checkAuth, editAddress);
-router.post("/delete-address/:id", checkAuth, deleteAddress);
-router.route("/change-password").get(isBlocked, checkAuth, getChangePassword).post(changePassword);
-router.get("/orders", isBlocked, checkAuth, getOrders);
+// to check blocked or not
+router.route("/forgot-password").get(isLoggedIn, getEnterEmail).post(sendOTP);
+router.post("/resend-otp", resendOTP);
+router.post("/verification", Verification);
 
-router.get("/wishlist", isBlocked, checkAuth, getWishlist);
-router.post("/wishlist", checkAuth, (req, res) => {
-    console.log(req.body);
-});
+router.route("/profile").get(toBlock, checkAuth, getProfile).post(toBlock, checkAuth, updateProfile);
+router.route("/new-address").get(toBlock, checkAuth, getNewAddress).post(toBlock, checkAuth, addNewAddress);
+router.route("/edit-address/:id").get(toBlock, checkAuth, getEditAddress).post(toBlock, checkAuth, editAddress);
+router.post("/delete-address/:id", toBlock, checkAuth, deleteAddress);
+router.route("/change-address").get(toBlock, checkAuth, getAddresses).post(toBlock, checkAuth, changeAddress);
+router.route("/change-password").get(toBlock, checkAuth, getChangePassword).post(toBlock, changePassword);
 
-router.get("/cart", isBlocked, checkAuth, getCart);
-router.post("/add-to-cart", checkAuth, addToCart);
-router.post("/remove-from-cart/:id", checkAuth, removeFromCart);
-router.post("/update-cart/:id", checkAuth, updateCart);
+router.get("/orders", toBlock, checkAuth, getOrders);
+
+router.get("/wishlist", toBlock, checkAuth, getWishlist);
+router.post("/update-wishlist", toBlock, checkAuth, updateWishlist);
+
+router.get("/cart", toBlock, checkAuth, getCart);
+router.post("/add-to-cart", toBlock, checkAuth, addToCart);
+router.post("/remove-from-cart/:id", toBlock, checkAuth, removeFromCart);
+router.post("/update-cart/:id", toBlock, checkAuth, updateCart);
+
+router.route("/checkout").get(toBlock, checkAuth, getCheckout).post(toBlock, checkAuth, placeOrder);
+router.post("/cancel-order", toBlock, checkAuth, cancelOrder);
 
 export default router;

@@ -5,6 +5,7 @@ import { dirname } from 'path';
 import User from '../models/userModel.js';
 import Category from '../models/categoryModel.js';
 import Product from '../models/productModel.js';
+import Order from '../models/orderModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,10 +24,6 @@ export const getNotifications = (req, res) => {
 
 export const getProfile = (req, res) => {
     res.render('admin/profile');
-};
-
-export const getOrders = (req, res) => {
-    res.render('admin/orders');
 };
 
 export const getProducts = async (req, res, next) => {
@@ -84,8 +81,21 @@ export const getProduct = async (req, res, next) => {
     }
 };
 
-export const editProduct = (req, res) => {
-    console.log(req.body);
+export const editProduct = async (req, res, next) => {
+    try {
+        await Product.findByIdAndUpdate(req.params.id, {
+            $set: {
+                name: req.body.name,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                stock: req.body.stock
+            }
+        });
+        res.redirect("/admin/products");
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const deleteImage = async (req, res, next) => {
@@ -229,6 +239,19 @@ export const customerAction = async (req, res, next) => {
         const customerId = req.params.id;
         await User.findByIdAndUpdate(customerId, { $set: { blocked: state } });
         res.redirect('/admin/customers');
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find().populate([ 
+            { path: 'user' }, 
+            { path: 'products.product' }, 
+            { path: 'deliveryAddress' }
+        ]);
+        res.render('admin/orders', { orders });
     } catch (error) {
         next(error);
     }

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+    <body>
+
+        <div class="site-wrap">
+            <%- include('../partials/customer/header') -%>
+                <div class="bg-light py-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                                    class="text-black">Checkout</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="site-section">
+                        <% if (!cartProducts.length) { %>
+                            Your cart is empty.
+                            <% } else { %>
+                                <div class="row">
+                                    <form class="col-md-12" action="" method="">
+                                        <div class="site-blocks-table">
+                                            <div class="container">
+                                                <% cartProducts.forEach((cartItem)=> { %>
+                                                    <div class="col-lg-12 p-4 border mb-3 d-flex">
+                                                        <div class="col-md-4">
+                                                            <a href="">
+                                                                <img src="<%= cartItem.product.images[0] %>" alt="Image"
+                                                                    height="180px" width="180px" class="img-fluid">
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="d-block text-primary h6 text-uppercase">
+                                                                <%= cartItem.product.name %>
+                                                            </span>
+                                                            <p>
+                                                                <%= cartItem.product.description %><br>
+                                                                    Category: <%= cartItem.product.category.name %><br>
+                                                                        <strong class="text-black">$<%=
+                                                                                cartItem.product.price %>.00</strong>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <span class="text-black">
+                                                                Total Price: $<span id="totalPrice_<%= cartItem._id %>"
+                                                                    class="text-black">
+                                                                    <%=cartItem.product.price * cartItem.quantity %>.00
+                                                                </span>
+                                                            </span>
+                                                            <div class="input-group mb-3" style="max-width: 120px;">
+                                                                <div class="input-group-prepend">
+                                                                    <button class="btn btn-outline-primary js-btn-minus"
+                                                                        type="button"
+                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
+                                                                </div>
+                                                                <input type="text" class="form-control text-center"
+                                                                    value="<%= cartItem.quantity %>"
+                                                                    id="quantityElement"
+                                                                    aria-label="Example text with button addon"
+                                                                    aria-describedby="button-addon1">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-outline-primary js-btn-plus"
+                                                                        type="button"
+                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                        </div>
+                                </div>
+                                </form>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-5">
+                                        <div class="d-flex">
+                                            <p class="m-3">
+                                                <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                                                    Continue Shopping
+                                                </a>
+                                            </p>
+                                            <p class="m-3">
+                                                <a href="/cart" class="btn btn-primary btn-sm btn-block">
+                                                    Back To cart
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 address border p-3">
+                                        <div class="d-flex justify-content-between">
+                                            <h3>Shipping Address</h3>
+                                            <a href="/change-address" class="btn btn-primary">Change</a>
+                                        </div>
+                                        <% if (currentAddress) { %>
+                                            <p>
+                                                <%= currentAddress.state %>, 
+                                                <%= currentAddress.city %>
+                                                <%= currentAddress.area %>, 
+                                                <%= currentAddress.building %>,
+                                                <%= currentAddress.pincode %>
+                                            </p>
+                                            <% } else { %>
+                                                <p>No delivery address found.</p>
+                                                <% } %>
+                                    </div>
+                                </div>
+
+                    </div>
+                    <% } %>
+                    <form action="/checkout" method="post">
+                        <div class="row">
+                            <div class="col-md-6 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div>
+                                        <label class="text-black h4" for="payment">Payment Methods</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="method"
+                                            value="UPI" checked>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            UPI
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="method"
+                                            value="Cash on Delivery">
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Cash on Delivery
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="text-black h4" for="coupon">Coupon</label>
+                                        <p>Enter your coupon code if you have one.</p>
+                                    </div>
+                                    <div class="col-md-8 mb-3 mb-md-0">
+                                        <input type="text" class="form-control py-3" id="coupon"
+                                            placeholder="Coupon Code">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-primary btn-sm">Apply Coupon</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 pl-5">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-7">
+                                        <div class="row">
+                                            <div class="col-md-12 text-right border-bottom mb-5">
+                                                <h3 class="text-black h4 text-uppercase">Price Details</h3>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <span>Price (<%= cartProducts.length %> items)</span>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <span class="text-black">
+                                                    $<span id="totalPrice" class="text-black">
+                                                        <%= grandTotal %>.00
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <span>Delivery Charges</span>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <span class="text-black">
+                                                    $<span class="text-black">
+                                                        5.00
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-5">
+                                            <div class="col-md-6">
+                                                <span>Grand Total</span>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <span class="h5 text-black">
+                                                    $<span id="grandTotalPrice" class="text-black">
+                                                        <%= grandTotal + 5 %>.00
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-5">
+                                            <div class="col-md-12">
+                                                <% if (!currentAddress) { %>
+                                                    <p class="text-center">No Address found.</p>
+                                                    <a href="/profile" class="btn btn-outline-primary btn-lg btn-block">
+                                                        Go To Profile
+                                                    </a>
+                                                    <% } else { %>
+                                                        <div>
+                                                            <input type="hidden" name="addressId"
+                                                                value="<%= currentAddress._id %>">
+                                                            <button type="submit"
+                                                                class="btn btn-primary btn-lg py-3 btn-block">
+                                                                Place Order
+                                                            </button>
+                                                        </div>
+                                                        <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        </div>
+
+        <script>
+            // update cart
+            function updateCartItem(cartItemId, incOrDec) {
+                const data = {
+                    type: incOrDec
+                };
+                $.ajax({
+                    url: '/update-cart/' + cartItemId,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
+                        $('#totalPrice').text(response.grandTotal.toFixed(2));
+                        $('#grandTotalPrice').text((response.grandTotal + 5).toFixed(2));
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(status);
+                    }
+                });
+            }
+        </script>
+
+        <%- include('../partials/customer/footer') -%>

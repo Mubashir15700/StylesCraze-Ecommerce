@@ -24,7 +24,11 @@ router.get("/products", checkAuth, getProducts);
 router.route("/new-product")
 .get(checkAuth, newProduct)
 .post(checkAuth, uploadProductImages, resizeProductImages, addNewProduct);
-router.route("/edit-product/:id").get(checkAuth, getProduct).post(checkAuth, editProduct);
+
+router.route("/edit-product/:id")
+.get(checkAuth, getProduct)
+.post(checkAuth, editProduct);
+
 router.delete("/products/img-delete/:id", checkAuth, deleteImage);
 router.patch("/products/img-add/:id", checkAuth, uploadProductImages, resizeProductImages, addImage);
 router.patch("/products/action/:id", checkAuth, productAction);
@@ -33,9 +37,11 @@ router.get("/categories", checkAuth, getCategories);
 router.route("/new-category")
 .get(checkAuth, newCategory)
 .post(checkAuth, uploadCategoryImage, resizeCategoryImage, addNewCategory);
+
 router.route("/edit-category/:id")
 .get(checkAuth, getCategory)
 .patch(checkAuth, uploadCategoryImage, resizeCategoryImage, editCategory);
+
 router.patch("/categories/action/:id", checkAuth, categoryAction);
 
 router.get("/customers", checkAuth, getCustomers);

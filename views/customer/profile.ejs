@@ -81,13 +81,13 @@
                         </div>
 
                         <div>
-                            <% if (currentUser.address.length) { %>
+                            <% if (addresses.length) { %>
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <label for="address" class="text-black">
-                                            <%= currentUser.address.length %> Saved Address
+                                            <%= addresses.length %> Saved Address
                                         </label> 
-                                        <% currentUser.address.forEach((address) => { %>
+                                        <% addresses.forEach((address) => { %>
                                             <div class="col-lg-12 p-4 border mb-3">
                                                 <span class="d-block text-primary h6 text-uppercase"><%= address.state %></span>
                                                 <p class="mb-0">
@@ -108,7 +108,7 @@
                                     </div>
                                 </div>
                             <% } %>
-                            <% if (currentUser.address.length < 3) { %>
+                            <% if (addresses.length < 3) { %>
                                 <div class="form-group row">
                                     <div class="col-lg-12">
                                         <a href="/new-address" class="btn btn-outline-primary btn-lg btn-block">

@@ -12,9 +12,6 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="card-title">Orders</h4>
-                                    <p class="card-description">
-                                        Add class <code>.table-striped</code>
-                                    </p>
                                     <div class="table-responsive">
                                         <table class="table table-striped">
                                             <thead>
@@ -23,89 +20,61 @@
                                                         User
                                                     </th>
                                                     <th>
-                                                        Username
+                                                        Details
                                                     </th>
                                                     <th>
-                                                        Email
+                                                        Order Date
                                                     </th>
                                                     <th>
-                                                        Phone
+                                                        Delivery Address
                                                     </th>
                                                     <th>
-                                                        Verified
-                                                    </th>
-                                                    <th>
-                                                        Actions
+                                                        Status
                                                     </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td class="py-1">
-                                                        <img src="../../images/faces/face1.jpg" alt="image" />
-                                                    </td>
-                                                    <td>
-                                                        Herman Beck
-                                                    </td>
-                                                    <td>
-                                                        <div class="progress">
-                                                            <div class="progress-bar bg-success" role="progressbar"
-                                                                style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                                                                aria-valuemax="100"></div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        $ 77.99
-                                                    </td>
-                                                    <td>
-                                                        May 15, 2015
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="py-1">
-                                                        <img src="../../images/faces/face2.jpg" alt="image" />
-                                                    </td>
-                                                    <td>
-                                                        Messsy Adam
-                                                    </td>
-                                                    <td>
-                                                        <div class="progress">
-                                                            <div class="progress-bar bg-danger" role="progressbar"
-                                                                style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                                                                aria-valuemax="100"></div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        $245.30
-                                                    </td>
-                                                    <td>
-                                                        July 1, 2015
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="py-1">
-                                                        <img src="../../images/faces/face3.jpg" alt="image" />
-                                                    </td>
-                                                    <td>
-                                                        John Richards
-                                                    </td>
-                                                    <td>
-                                                        <div class="progress">
-                                                            <div class="progress-bar bg-warning" role="progressbar"
-                                                                style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                                                                aria-valuemax="100"></div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        $138.00
-                                                    </td>
-                                                    <td>
-                                                        Apr 12, 2015
-                                                    </td>
-                                                    <td></td>
-                                                </tr>
+                                                <% if (!orders.length) { %>
+                                                    <tr>
+                                                        <td colspan="5">No orders found.</td>
+                                                    </tr>
+                                                <% } else { %>
+                                                    <% orders.forEach((order) => { %>
+                                                        <tr>
+                                                            <td>
+                                                               <%= order.user.username %><br>
+                                                               <p class="text-dark"><%= order.user.email %></p><br>
+                                                               <%= order.user.phone %>
+                                                            </td>
+                                                            <td>
+                                                                <% order.products.forEach((product) => { %>
+                                                                    Product: <%= product.product.name %> <br>
+                                                                    Price: <%= product.product.price %> <br>
+                                                                    Quantity: <%= product.quantity %> <br>
+                                                                <% }) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.orderDate.toLocaleDateString() %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.deliveryAddress.state %>,
+                                                                <%= order.deliveryAddress.city %><br>
+                                                                <%= order.deliveryAddress.area %>,
+                                                                Pincode: <%= order.deliveryAddress.pincode %><br>
+                                                                House No.: <%= order.deliveryAddress.building %>
+                                                            </td>
+                                                            <td>
+                                                                <% order.products.forEach((product) => { %>
+                                                                    <% if(product.isCancelled) { %>
+                                                                        <p class="text-danger">Cancelled</p>
+                                                                    <% } else { %>
+                                                                        <%= order.status %>
+                                                                    <% } %>
+                                                                <% }) %>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
+                                                <% } %>
                                             </tbody>
                                         </table>
                                     </div>
