@@ -37,8 +37,11 @@
                                                 Price: <%= order.orderedProducts[0].price %>,
                                                 Quantity: <%= order.products.quantity %>,<br>
                                                 Status: <%= order.status %>,
-                                                Payment Method: <%= order.paymentMethod %>
-                                                <%= order.deliveryAddress[0].state %>
+                                                Payment Method: <%= order.paymentMethod %><br>
+                                                Delivery Address: <%= order.deliveryAddress[0].state %>,
+                                                <%= order.deliveryAddress[0].city %>,
+                                                <%= order.deliveryAddress[0].area %>,
+                                                <%= order.deliveryAddress[0].pincode %>
                                             </p>
                                             <div class="d-flex">
                                                 <div>

@@ -65,3 +65,23 @@ export const resizeCategoryImage = async (req, res, next) => {
         console.log(error.message);
     }
 };
+
+export const uploadProfileImage = upload.single('photo');
+
+export const resizeProfileImage = async (req, res, next) => {
+    try {
+        if (!req.file) return next();
+        req.file.originalname = 'profile-' + v4() + '-' + '.png';
+        req.body.photo = req.file.originalname;
+        await sharp(req.file.buffer)
+            .resize(200, 200)
+            .toFormat('png')
+            .png({ quality: 90 })
+            .toFile(path.join(__dirname, '../public', 'profiles', req.file.originalname));
+
+        next();
+
+    } catch (error) {
+        console.log(error.message);
+    }
+};

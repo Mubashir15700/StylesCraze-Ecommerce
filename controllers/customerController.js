@@ -52,15 +52,14 @@ export const getAbout = async (req, res, next) => {
 export const getShop = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({ softDeleted: false }).populate('category');
-        const currentPage = parseInt(req.query.page) || 1;
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
             productDatas: foundProducts,
             currentUser: await getCurrentUser(req, res),
-            currentPage,
-            categoryName: "Shop All",
-            categoryDatas: foundCategories
+            category: { name: "Shop All", id: "" },
+            categoryDatas: foundCategories,
+            categoryBased: false,
         });
     } catch (error) {
         next(error);
@@ -69,19 +68,36 @@ export const getShop = async (req, res, next) => {
 
 export const getCategoryProducts = async (req, res, next) => {
     try {
-        const foundProducts = await Product.find({
-            softDeleted: false, category: req.params.id
-        }).populate('category');
-        const currentPage = parseInt(req.query.page) || 1;
-        const currentCategory = await Category.findById(req.params.id);
+        const categoryId = req.params.id;
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3; 
+        const skip = (page - 1) * pageSize;
+
+        const foundProducts = await Product
+            .find({ softDeleted: false, category: categoryId })
+            .populate('category')
+            .skip(skip) 
+            .limit(pageSize); 
+
+        const currentCategory = await Category.findById(categoryId);
         const foundCategories = await Category.find({ removed: false });
+
+        const totalProductsInCategory = await Product.countDocuments({
+            softDeleted: false,
+            category: categoryId
+        });
+
+        const totalPages = Math.ceil(totalProductsInCategory / pageSize);
+
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
             productDatas: foundProducts,
             currentUser: await getCurrentUser(req, res),
-            currentPage,
-            categoryName: currentCategory.name,
-            categoryDatas: foundCategories
+            currentPage: page,
+            category: { name: currentCategory.name, id: currentCategory._id },
+            categoryDatas: foundCategories,
+            totalPages: totalPages,
+            categoryBased: true,
         });
     } catch (error) {
         next(error);
@@ -140,6 +156,7 @@ export const getProfile = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
+        console.log(req.body);
         const addresses = await Address.find({ user: req.session.user });
         const { profile, username, phone, email } = req.body;
         await User.updateOne({ _id: req.session.user }, {
@@ -298,10 +315,10 @@ export const updateWishlist = async (req, res, next) => {
 
         if (req.body.goto) {
             return res.redirect("/wishlist");
-        } 
+        }
 
         return res.status(200).json({
-            message: req.body.todo === "add"? "added" : "removed",
+            message: req.body.todo === "add" ? "added" : "removed",
         });
     } catch (error) {
         next(error);

@@ -26,7 +26,7 @@
                                     <div class="col-md-12 mb-5">
                                         <div class="float-md-left mb-4">
                                             <h2 class="text-black h5">
-                                                <%= categoryName %>
+                                                <%= category.name %>
                                             </h2>
                                         </div>
                                         <div class="d-flex">
@@ -62,7 +62,7 @@
                                         No products found.
                                         <% } else { %>
                                             <% productDatas.forEach((product, index)=> { %>
-                                                <% if (index < 3 && product.category.removed===false) { %>
+                                                <% if (product.category.removed===false) { %>
                                                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                                                         <div class="block-4 text-center border">
                                                             <figure class="block-4-image">
@@ -91,8 +91,7 @@
                                                                                     <a href="#"
                                                                                         class="ml-2 updateWishlist"
                                                                                         data-product-id="<%= product._id %>"
-                                                                                        data-to-do="remove"
-                                                                                        >
+                                                                                        data-to-do="remove">
                                                                                         <span
                                                                                             class="icon icon-heart"></span>
                                                                                     </a>
@@ -100,8 +99,7 @@
                                                                                         <a href="#"
                                                                                             class="ml-2 updateWishlist"
                                                                                             data-product-id="<%= product._id %>"
-                                                                                            data-to-do="add"
-                                                                                            >
+                                                                                            data-to-do="add">
                                                                                             <span
                                                                                                 class="icon icon-heart-o"></span>
                                                                                         </a>
@@ -125,15 +123,25 @@
                                 <div class="row" data-aos="fade-up">
                                     <div class="col-md-12 text-center">
                                         <div class="site-block-27">
-                                            <ul>
-                                                <li><a href="#">&lt;</a></li>
-                                                <% for (let i=1; i <=productDatas.length; i++) { %>
-                                                    <li class="<%= currentPage === i ? 'active' : '' %>"><span>
-                                                            <%= i %>
-                                                        </span></li>
+                                            <% if (categoryBased) { %>
+                                                <ul>
+                                                    <% if (currentPage > 1) { %>
+                                                        <li><a href="/shop/<%= category.id %>/<%= currentPage - 1 %>">&lt;</a></li>
                                                     <% } %>
-                                                        <li><a href="#">&gt;</a></li>
-                                            </ul>
+                                    
+                                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                                        <li <% if (i === currentPage) { %>class="active"<% } %>>
+                                                            <a href="/shop/<%= i %>">
+                                                                <%= i %>
+                                                            </a>
+                                                        </li>
+                                                    <% } %>
+                                    
+                                                    <% if (currentPage < totalPages) { %>
+                                                        <li><a href="/shop/<%= category.id %>/<%= currentPage + 1 %>">&gt;</a></li>
+                                                    <% } %>
+                                                </ul>
+                                                <% } %>
                                         </div>
                                     </div>
                                 </div>

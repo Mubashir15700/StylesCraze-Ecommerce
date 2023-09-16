@@ -26,13 +26,13 @@
                     <div class="col-md-6">
                         <form action="/profile" method="post">
                             <div class="p-3 p-lg-5 border">
-                                <div class="form-group">
-                                    <img src="/admin/images/faces/face1.jpg" style="border-radius: 10px;" alt="profileImage">
+                                <div class="form-group" id="preview-group" style="display: none;">
+                                    <img src="" style="border-radius: 10px;" height="100px" width="100px" id="preview-img" alt="profileImage">
                                 </div>
                                 <div class="form-group row">
                                     <div class="form-group">
                                         <label for="profileImage">Profile Image</label>
-                                        <input type="file" name="profile" id="profileImage" accept=".jpg, .jpeg, .png">
+                                        <input type="file" name="profile" id="preview-input" accept=".jpg, .jpeg, .png">
                                       </div>
                                     <div class="col-md-6">
                                         <label for="username" class="text-black">Username <span
@@ -124,5 +124,19 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            const previewArea = document.getElementById('preview-group');
+            const previewInput = document.getElementById('preview-input');
+            const previewImg = document.getElementById('preview-img');
+
+            previewInput.onchange = e => {
+                if (e.target.files && e.target.files.length) {
+                    const imgSrc = URL.createObjectURL(e.target.files[0]);
+                    previewImg.src = imgSrc;
+                    previewArea.style.display = 'block';
+                }
+            }
+        </script>
 
     <%- include('../partials/customer/footer') -%>

@@ -47,14 +47,20 @@
                                                                <%= order.user.phone %>
                                                             </td>
                                                             <td>
+                                                                <div>
                                                                 <% order.products.forEach((product) => { %>
-                                                                    Product: <%= product.product.name %> <br>
-                                                                    Price: <%= product.product.price %> <br>
-                                                                    Quantity: <%= product.quantity %> <br>
+                                                                    <div class="border-bottom mb-3">
+                                                                        <span class="text-primary h6 text-uppercase">
+                                                                            <%= product.product.name %> 
+                                                                        </span><br>
+                                                                        Price: <%= product.product.price %> <br>
+                                                                        Quantity: <%= product.quantity %> <br>
+                                                                    </div>
                                                                 <% }) %>
                                                             </td>
                                                             <td>
-                                                                <%= order.orderDate.toLocaleDateString() %>
+                                                                Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
+                                                                Delivery, <%= order.deliveryDate.toLocaleDateString() %>
                                                             </td>
                                                             <td>
                                                                 <%= order.deliveryAddress.state %>,
@@ -68,7 +74,7 @@
                                                                     <% if(product.isCancelled) { %>
                                                                         <p class="text-danger">Cancelled</p>
                                                                     <% } else { %>
-                                                                        <%= order.status %>
+                                                                    <p class="text-primary"><%= order.status %></p>
                                                                     <% } %>
                                                                 <% }) %>
                                                             </td>
