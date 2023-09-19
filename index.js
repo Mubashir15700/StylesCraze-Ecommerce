@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from "dotenv";
+dotenv.config();
 import noCache from 'nocache';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
@@ -7,9 +8,7 @@ import session from 'express-session';
 import Connection from './database/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
-import customError from './middlewares/errorMiddleware.js'; 
-
-dotenv.config();
+import customError from './middlewares/errorMiddleware.js';
 
 const app = express();
 
@@ -34,7 +33,7 @@ app.use("/", customerRoutes);
 app.use("/admin", adminRoutes);
 
 app.use((req, res) => {
-    res.render("404");
+    res.render("error/404");
 });
 
 app.use(customError);

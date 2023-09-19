@@ -55,33 +55,36 @@
                                                                 <td>
                                                                     <%= category.name %>
                                                                 </td>
-                                                                <td class="d-flex">
-                                                                    <a href="/admin/edit-category/<%= category._id %>"
-                                                                        class="btn btn-info btn-sm mr-1">
-                                                                        Edit
-                                                                    </a>
-                                                                    <form
-                                                                        action="/admin/categories/action/<%= category._id %>?_method=PATCH"
-                                                                        method="post">
-                                                                        <% if(category.removed===true) { %>
-                                                                            <input type="hidden" name="state" value="">
-                                                                            <button type="submit"
-                                                                                class="btn btn-warning btn-sm">
-                                                                                Activate
-                                                                            </button>
-                                                                            <% } else { %>
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <a href="/admin/edit-category/<%= category._id %>"
+                                                                            class="btn btn-info btn-sm mr-1">
+                                                                            Edit
+                                                                        </a>
+                                                                        <form
+                                                                            action="/admin/categories/action/<%= category._id %>?_method=PATCH"
+                                                                            method="post">
+                                                                            <% if(category.removed===true) { %>
                                                                                 <input type="hidden" name="state"
-                                                                                    value="1">
+                                                                                    value="">
                                                                                 <button type="submit"
-                                                                                    class="btn btn-danger btn-sm">
-                                                                                    Deactivate
+                                                                                    class="btn btn-warning btn-sm">
+                                                                                    Activate
                                                                                 </button>
-                                                                            <% } %>
-                                                                    </form>
+                                                                                <% } else { %>
+                                                                                    <input type="hidden" name="state"
+                                                                                        value="1">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-danger btn-sm">
+                                                                                        Deactivate
+                                                                                    </button>
+                                                                                    <% } %>
+                                                                        </form>
+                                                                    </div>
                                                                 </td>
                                                             </tr>
-                                                    <% }) %>
-                                                <% } %>
+                                                            <% }) %>
+                                                                <% } %>
                                             </tbody>
                                         </table>
                                     </div>

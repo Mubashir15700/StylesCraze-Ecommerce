@@ -35,6 +35,12 @@
                                                         Stock
                                                     </th>
                                                     <th>
+                                                        Size
+                                                    </th>
+                                                    <th>
+                                                        Color
+                                                    </th>
+                                                    <th>
                                                         Actions
                                                     </th>
                                                 </tr>
@@ -78,24 +84,33 @@
                                                                 <td>
                                                                     <%= product.stock %>
                                                                 </td>
-                                                                <td class="d-flex">
-                                                                    <a href="/admin/edit-product/<%= product._id %>"
-                                                                        class="btn btn-info btn-sm mr-1">
-                                                                        Edit
-                                                                    </a>
-                                                                    <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post">
-                                                                        <% if (product.softDeleted) { %>
-                                                                            <input type="hidden" name="state" value="">
-                                                                            <button type="submit" class="btn btn-warning btn-sm">
-                                                                                Activate
-                                                                            </button>
-                                                                        <% } else { %>
-                                                                            <input type="hidden" name="state" value="1">
-                                                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                                                Deactivate
-                                                                            </button>
-                                                                        <% } %>
-                                                                    </form>
+                                                                <td>
+                                                                    <%= product.size %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product.color %>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <a href="/admin/edit-product/<%= product._id %>"
+                                                                            class="btn btn-info btn-sm mr-1">
+                                                                            Edit
+                                                                        </a>
+                                                                        <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post">
+                                                                            <input type="hidden" name="category" value="<%= product.category.name %>">
+                                                                            <% if (product.softDeleted) { %>
+                                                                                <input type="hidden" name="state" value="">
+                                                                                <button type="submit" class="btn btn-warning btn-sm">
+                                                                                    Activate
+                                                                                </button>
+                                                                            <% } else { %>
+                                                                                <input type="hidden" name="state" value="1">
+                                                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                                                    Deactivate
+                                                                                </button>
+                                                                            <% } %>
+                                                                        </form>
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         <% }) %>

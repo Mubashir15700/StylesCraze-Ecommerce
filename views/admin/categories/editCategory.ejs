@@ -138,8 +138,9 @@
                                             <label for="exampleInputName1">Category Name</label>
                                             <input type="text" class="form-control" name="name" id="exampleInputName1"
                                                 placeholder="Name" value="<%= categoryData.name %>" required>
+                                            <p class="text-danger" id="error-message"></p>
+                                            <p class="text-danger mb-3"><%= error %></p>
                                         </div>
-
                                         <div class="form-group">
                                             <label>Upload New Image</label>
                                             <div class="input-group col-xs-12">

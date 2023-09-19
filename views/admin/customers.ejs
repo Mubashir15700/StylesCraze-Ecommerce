@@ -45,8 +45,18 @@
                                             <% customerDatas.forEach((customer) => { %>
                                                 <tr>
                                                     <td class="py-1">
-                                                        <img src="<%= customer.image %>" alt="image" />
+                                                        <img src="<%= customer.profile %>" alt="profile"
+                                                        onclick="openModal('<%= customer.profile %>')" />
                                                     </td>
+                                                    <!-- for display and zoom image -->
+                                                    <div id="imageModal" class="modal">
+                                                        <button id="closeButton" class="close-button">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                        <div class="image-zoom mt-5">
+                                                            <img src="" id="modalImage" alt="Image">
+                                                        </div>
+                                                    </div>
                                                     <td>
                                                         <%= customer.username %>
                                                     </td>

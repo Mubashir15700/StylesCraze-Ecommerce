@@ -99,6 +99,25 @@
                 if (passwordInput.value.length < 6) {
                     hasErrors = true;
                     document.getElementById("password-error-display").innerHTML = "Password must be at least 6 characters long.";
+                } else {
+                    const specialCharacters = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+                    if (!specialCharacters.test(passwordInput.value)) {
+                        hasErrors = true;
+                        document.getElementById("password-error-display").innerHTML = 
+                        "Password must contain at least 1 special character.";
+                    }
+                    const capitalLetters = /[A-Z]/;
+                    if (!capitalLetters.test(passwordInput.value)) {
+                        hasErrors = true;
+                        document.getElementById("password-error-display").innerHTML = 
+                        "Password must contain at least 1 capital letter.";
+                    }
+                    const smallLetters = /[a-z]/;
+                    if (!smallLetters.test(passwordInput.value)) {
+                        hasErrors = true;
+                        document.getElementById("password-error-display").innerHTML = 
+                        "Password must contain at least 1 small letter.";
+                    }   
                 }
                 if (passwordInput.value !== confirmPasswordInput.value) {
                     hasErrors = true;

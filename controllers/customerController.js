@@ -1,10 +1,18 @@
 import mongoose from "mongoose";
 import { sendToMail } from '../utils/sendMail.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import Product from "../models/productModel.js";
 import Category from "../models/categoryModel.js";
 import User from "../models/userModel.js";
 import Order from "../models/orderModel.js";
 import Address from "../models/addressModel.js";
+import { razorpay } from "../utils/razorpayConfig.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const isLoggedIn = (req, res) => {
     if (req.session.user) {
@@ -53,6 +61,7 @@ export const getShop = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({ softDeleted: false }).populate('category');
         const foundCategories = await Category.find({ removed: false });
+
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
             productDatas: foundProducts,
@@ -70,14 +79,14 @@ export const getCategoryProducts = async (req, res, next) => {
     try {
         const categoryId = req.params.id;
         const page = parseInt(req.params.page) || 1;
-        const pageSize = 3; 
+        const pageSize = 3;
         const skip = (page - 1) * pageSize;
 
         const foundProducts = await Product
             .find({ softDeleted: false, category: categoryId })
             .populate('category')
-            .skip(skip) 
-            .limit(pageSize); 
+            .skip(skip)
+            .limit(pageSize);
 
         const currentCategory = await Category.findById(categoryId);
         const foundCategories = await Category.find({ removed: false });
@@ -104,13 +113,38 @@ export const getCategoryProducts = async (req, res, next) => {
     }
 };
 
-export const getSingle = async (req, res, next) => {
+export const getSingleProduct = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         res.render("customer/single", {
             isLoggedIn: isLoggedIn(req, res),
             productData: foundProduct,
             currentUser: await getCurrentUser(req, res),
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const searchProducts = async (req, res, next) => {
+    try {
+        const foundProducts = await Product.find({
+            softDeleted: false,
+            $or: [
+                { name: { $regex: req.body.product, $options: 'i' } },
+                { description: { $regex: req.body.product, $options: 'i' } },
+            ]
+        }).populate('category');
+
+        const foundCategories = await Category.find({ removed: false });
+
+        res.render("customer/shop", {
+            isLoggedIn: isLoggedIn(req, res),
+            productDatas: foundProducts,
+            currentUser: await getCurrentUser(req, res),
+            category: { name: "Shop All", id: "" },
+            categoryDatas: foundCategories,
+            categoryBased: false,
         });
     } catch (error) {
         next(error);
@@ -155,24 +189,25 @@ export const getProfile = async (req, res, next) => {
 };
 
 export const updateProfile = async (req, res, next) => {
+    const { profile, username, phone, email } = req.body;
     try {
-        console.log(req.body);
-        const addresses = await Address.find({ user: req.session.user });
-        const { profile, username, phone, email } = req.body;
-        await User.updateOne({ _id: req.session.user }, {
-            $set: {
-                profile,
-                username,
-                phone,
-                email
-            }
-        });
-        res.render("customer/profile", {
-            isLoggedIn: isLoggedIn(req, res),
-            currentUser: await getCurrentUser(req, res),
-            error: "",
-            addresses
-        });
+        const currentUser = await User.findById(req.session.user);
+        let updatedObj = {
+            username, phone, email
+        };
+
+        // [Error: EPERM: operation not permitted, unlink 'D:\BroCamp\Badging-2\week-10-15(First project)\Ecommerce\public'] 
+        if (typeof profile !== "undefined" && profile !== "") {
+            fs.unlink(path.join(__dirname, "../public", currentUser.profile), (err) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+            updatedObj.profile = "/profiles/" + profile;
+        }
+
+        await currentUser.updateOne(updatedObj);
+        res.redirect("/profile");
     } catch (error) {
         next(error);
     }
@@ -180,7 +215,7 @@ export const updateProfile = async (req, res, next) => {
 
 export const getNewAddress = async (req, res, next) => {
     try {
-        res.render("customer/newAddress", {
+        res.render("customer/address/newAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             error: ""
@@ -215,7 +250,7 @@ export const addNewAddress = async (req, res, next) => {
 export const getEditAddress = async (req, res, next) => {
     try {
         const currentAddress = await Address.findOne({ _id: req.params.id });
-        res.render("customer/editAddress", {
+        res.render("customer/address/editAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             currentAddress,
@@ -228,28 +263,32 @@ export const getEditAddress = async (req, res, next) => {
 
 export const editAddress = async (req, res, next) => {
     try {
-        const updatedAddressData = {
-            pincode: req.body.pincode,
-            state: req.body.state,
-            city: req.body.city,
-            building: req.body.building,
-            area: req.body.area,
-        };
-        await Address.updateOne(
-            {
-                _id: req.params.id,
-            },
-            {
-                $set: {
-                    pincode: updatedAddressData.pincode,
-                    state: updatedAddressData.state,
-                    city: updatedAddressData.city,
-                    building: updatedAddressData.building,
-                    area: updatedAddressData.area,
+        const { pincode, state, city, building, area } = req.body;
+        if (!pincode || !state || !city || !building || !area) {
+            const currentAddress = await Address.findOne({ _id: req.params.id });
+            res.render("customer/address/editAddress", {
+                isLoggedIn: isLoggedIn(req, res),
+                currentUser: await getCurrentUser(req, res),
+                currentAddress,
+                error: "All fields are required."
+            });
+        } else {
+            await Address.updateOne(
+                {
+                    _id: req.params.id,
                 },
-            }
-        );
-        res.redirect("/profile");
+                {
+                    $set: {
+                        pincode,
+                        state,
+                        city,
+                        building,
+                        area,
+                    },
+                }
+            );
+            res.redirect("/profile");
+        }
     } catch (error) {
         next(error);
     }
@@ -258,7 +297,6 @@ export const editAddress = async (req, res, next) => {
 export const deleteAddress = async (req, res, next) => {
     try {
         await Address.deleteOne({ _id: req.params.id });
-
         res.redirect("/profile");
     } catch (error) {
         next(error);
@@ -268,7 +306,7 @@ export const deleteAddress = async (req, res, next) => {
 export const getAddresses = async (req, res, next) => {
     try {
         const addresses = await Address.find({ user: req.session.user });
-        res.render("customer/selectAddress", {
+        res.render("customer/address/selectAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             addresses,
@@ -278,7 +316,7 @@ export const getAddresses = async (req, res, next) => {
     }
 };
 
-export const changeAddress = async (req, res, next) => {
+export const changeDefaultAddress = async (req, res, next) => {
     try {
         await Address.updateOne({ user: req.session.user, default: true }, { $set: { default: false } });
         await Address.findByIdAndUpdate(req.body.addressId, { $set: { default: true } });
@@ -288,15 +326,19 @@ export const changeAddress = async (req, res, next) => {
     }
 };
 
-export const getChangePassword = async (req, res) => {
-    let currentUser = await getCurrentUser(req, res);
-    res.render("customer/auth/changePassword", {
-        isLoggedIn: isLoggedIn(req, res),
-        currentUser: await getCurrentUser(req, res),
-        error: "",
-        isForgotPassword: false,
-        email: currentUser.email
-    });
+export const getChangePassword = async (req, res, next) => {
+    try {
+        const currentUser = await getCurrentUser(req, res);
+        res.render("customer/auth/changePassword", {
+            isLoggedIn: isLoggedIn(req, res),
+            currentUser: await getCurrentUser(req, res),
+            error: "",
+            isForgotPassword: false,
+            email: currentUser.email
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const updateWishlist = async (req, res, next) => {
@@ -360,21 +402,26 @@ export const getCart = async (req, res, next) => {
 export const addToCart = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
-        const { product, quantity } = req.body;
+        const { product, hiddenQuantity } = req.body;
 
         const existingCartItem = currentUser.cart.find(item => item.product.toString() === product);
 
         if (existingCartItem) {
-            existingCartItem.quantity += parseInt(quantity);
+            existingCartItem.quantity += parseInt(hiddenQuantity);
         } else {
             const cartItem = {
                 product,
-                quantity: parseInt(quantity),
+                quantity: parseInt(hiddenQuantity),
             };
             currentUser.cart.push(cartItem);
         }
         await currentUser.save();
-        res.redirect("/shop");
+
+        if (req.body.from) {
+            res.redirect("/wishlist");
+        } else {
+            res.redirect("/shop");
+        }
     } catch (error) {
         next(error);
     }
@@ -458,40 +505,91 @@ export const getCheckout = async (req, res, next) => {
 
 export const placeOrder = async (req, res, next) => {
     try {
-        const currentUser = await getCurrentUser(req, res);
-        const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
-        await currentUser.populate('cart.product');
-        const grandTotal = currentUser.cart.reduce((total, element) => {
-            return total + (element.quantity * element.product.price);
-        }, 0);
-        const orderedProducts = currentUser.cart.map((item) => {
-            return {
-                product: item.product._id,
-                quantity: item.quantity,
-            }
-        });
-        const newOrder = new Order({
-            user: req.session.user,
-            products: orderedProducts,
-            totalAmount: grandTotal + 5,
-            paymentMethod: req.body.method,
-            deliveryAddress: deliveryAddress._id
-        });
-        await newOrder.save();
+        if (req.body.method === 'cod') {
+            const currentUser = await getCurrentUser(req, res);
+            const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
+            await currentUser.populate('cart.product');
+            const grandTotal = currentUser.cart.reduce((total, element) => {
+                return total + (element.quantity * element.product.price);
+            }, 0);
+            const orderedProducts = currentUser.cart.map((item) => {
+                return {
+                    product: item.product._id,
+                    quantity: item.quantity,
+                }
+            });
+            const newOrder = new Order({
+                user: req.session.user,
+                products: orderedProducts,
+                totalAmount: grandTotal + 5,
+                paymentMethod: req.body.method,
+                deliveryAddress,
+            });
+            await newOrder.save();
 
-        currentUser.cart.forEach(async (item) => {
-            const foundProduct = await Product.findById(item.product._id);
-            foundProduct.stock -= item.quantity;
-            await foundProduct.save();
-        });
+            currentUser.cart.forEach(async (item) => {
+                const foundProduct = await Product.findById(item.product._id);
+                foundProduct.stock -= item.quantity;
+                await foundProduct.save();
+            });
 
-        currentUser.cart = [];
-        await currentUser.save();
-        res.redirect("/orders");
+            currentUser.cart = [];
+            await currentUser.save();
+
+            res.redirect("/orders");
+        } else if (req.body.method === 'rzp') {
+            const currentUser = await getCurrentUser(req, res);
+            await currentUser.populate('cart.product');
+            const grandTotal = currentUser.cart.reduce((total, element) => {
+                return total + (element.quantity * element.product.price);
+            }, 0);
+
+            const razorpayOrder = await razorpay.orders.create({
+                amount: (grandTotal + 5) * 100,
+                currency: 'INR',
+                receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`,
+            });
+            return res.render('customer/rzp', {
+                order: razorpayOrder,
+                key_id: process.env.RAZORPAY_ID_KEY,
+                user: currentUser,
+                razorpayOrderId: razorpayOrder.id
+            });
+        }
     } catch (error) {
         next(error);
     }
 };
+
+export const placePaidOrder = async (req, res) => {
+    const currentUser = await getCurrentUser(req, res);
+    await currentUser.populate('cart.product');
+    const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
+
+    const orderedProducts = currentUser.cart.map((item) => {
+        return {
+            product: item.product._id,
+            quantity: item.quantity,
+        }
+    });
+    const grandTotal = currentUser.cart.reduce((total, element) => {
+        return total + (element.quantity * element.product.price);
+    }, 0);
+
+    const newOrder = new Order({
+        user: req.session.user,
+        products: orderedProducts,
+        totalAmount: grandTotal + 5,
+        paymentMethod: 'razorpay',
+        deliveryAddress,
+        razorpayOrderId: req.body.razorpayOrderId,
+    });
+    await newOrder.save();
+
+    res.redirect("/orders");
+    currentUser.cart = [];
+    await currentUser.save();
+}
 
 export const getOrders = async (req, res, next) => {
     try {
@@ -506,14 +604,6 @@ export const getOrders = async (req, res, next) => {
                     localField: "products.product",
                     foreignField: "_id",
                     as: "orderedProducts"
-                }
-            },
-            {
-                $lookup: {
-                    from: "addresses",
-                    localField: "deliveryAddress",
-                    foreignField: "_id",
-                    as: "deliveryAddress"
                 }
             },
             { $sort: { orderDate: -1 } }

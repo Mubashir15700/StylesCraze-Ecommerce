@@ -24,46 +24,62 @@
                                     <div class="container">
                                         <% if (!currentUser.wishlist.length) { %>
                                             Your wishlist is empty.
-                                        <% } else { %>
-                                            <% currentUser.wishlist.forEach((item) => { %>
-                                                <div class="col-lg-12 p-4 border mb-3 d-flex">
-                                                    <div class="col-md-6">
-                                                        <a href="">
-                                                            <img src="<%= item.images[0] %>" alt="Image" height="180px"
-                                                                width="180px" class="img-fluid">
-                                                        </a>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <span class="d-block text-primary h6 text-uppercase">Product</span>
-                                                        <p><%= item.description %>, 
-                                                            <%= item.price %>, 
-                                                            <%= item.stock %>, 
-                                                        </p>
-                                                        <form action="/update-wishlist" method="post">
-                                                            <input type="hidden" name="productId" value="<%= item._id %>">
-                                                            <input type="hidden" name="todo" value="remove">
-                                                            <input type="hidden" name="goto" value="toWishlist">
-                                                            <button type="submit" class="btn btn-sm btn-primary">
-                                                                Remove
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            <% }) %>
-                                        <% } %>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <p><a href="/shop"
-                                                                class="btn btn-outline-primary btn-sm btn-block">Continue
-                                                                Shopping
+                                            <% } else { %>
+                                                <% currentUser.wishlist.forEach((item)=> { %>
+                                                    <div class="col-lg-12 p-4 border mb-3 d-flex">
+                                                        <div class="col-md-6">
+                                                            <a href="">
+                                                                <img src="<%= item.images[0] %>" alt="Image"
+                                                                    height="180px" width="180px" class="img-fluid">
                                                             </a>
-                                                        </p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <span
+                                                                class="d-block text-primary h6 text-uppercase">Product</span>
+                                                            <p>
+                                                                <%= item.description %>,
+                                                                    <%= item.price %>,
+                                                                        <%= item.stock %>,
+                                                            </p>
+                                                            <div class="d-flex">
+                                                                <form action="/add-to-cart" method="post">
+                                                                    <input type="hidden" name="product"
+                                                                        value="<%= item._id %>">
+                                                                    <input type="hidden" name="from"
+                                                                        value="wishlist">
+                                                                    <input type="hidden" name="hiddenQuantity" value="1">
+                                                                    <button type="submit"
+                                                                        class="buy-now btn btn-sm btn-outline-primary mr-3">
+                                                                        Add To Cart
+                                                                    </button>
+                                                                </form>
+                                                                <form action="/update-wishlist" method="post">
+                                                                    <input type="hidden" name="productId"
+                                                                        value="<%= item._id %>">
+                                                                    <input type="hidden" name="todo" value="remove">
+                                                                    <input type="hidden" name="goto" value="toWishlist">
+                                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                                        Remove
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                    <% }) %>
+                                                        <% } %>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <p><a href="/shop"
+                                                                                    class="btn btn-outline-primary btn-sm btn-block">Continue
+                                                                                    Shopping
+                                                                                </a>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                     </div>
                                 </div>
                             </div>

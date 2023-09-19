@@ -125,21 +125,25 @@
                                         <div class="site-block-27">
                                             <% if (categoryBased) { %>
                                                 <ul>
-                                                    <% if (currentPage > 1) { %>
-                                                        <li><a href="/shop/<%= category.id %>/<%= currentPage - 1 %>">&lt;</a></li>
-                                                    <% } %>
-                                    
-                                                    <% for (let i = 1; i <= totalPages; i++) { %>
-                                                        <li <% if (i === currentPage) { %>class="active"<% } %>>
-                                                            <a href="/shop/<%= i %>">
-                                                                <%= i %>
-                                                            </a>
+                                                    <% if (currentPage> 1) { %>
+                                                        <li><a
+                                                                href="/shop/<%= category.id %>/<%= currentPage - 1 %>">&lt;</a>
                                                         </li>
-                                                    <% } %>
-                                    
-                                                    <% if (currentPage < totalPages) { %>
-                                                        <li><a href="/shop/<%= category.id %>/<%= currentPage + 1 %>">&gt;</a></li>
-                                                    <% } %>
+                                                        <% } %>
+
+                                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                                <li <% if (i===currentPage) { %>class="active"<% } %>>
+                                                                        <a href="/shop/<%= i %>">
+                                                                            <%= i %>
+                                                                        </a>
+                                                                </li>
+                                                                <% } %>
+
+                                                                    <% if (currentPage < totalPages) { %>
+                                                                        <li><a
+                                                                                href="/shop/<%= category.id %>/<%= currentPage + 1 %>">&gt;</a>
+                                                                        </li>
+                                                                        <% } %>
                                                 </ul>
                                                 <% } %>
                                         </div>
@@ -151,12 +155,20 @@
                                 <div class="border p-4 rounded mb-4">
                                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Categories</h3>
                                     <ul class="list-unstyled mb-0">
-                                        <li class="mb-1"><a href="#" class="d-flex"><span>Men</span> <span
-                                                    class="text-black ml-auto">(2,220)</span></a></li>
-                                        <li class="mb-1"><a href="#" class="d-flex"><span>Women</span> <span
-                                                    class="text-black ml-auto">(2,550)</span></a></li>
-                                        <li class="mb-1"><a href="#" class="d-flex"><span>Children</span> <span
-                                                    class="text-black ml-auto">(2,124)</span></a></li>
+                                        <% if (!categoryDatas.length) { %>
+                                            No categories found.
+                                            <% } else { %>
+                                                <% categoryDatas.forEach((category)=> { %>
+                                                    <li class="mb-1"><a href="/shop/<%= category._id %>/1"
+                                                            class="d-flex"><span>
+                                                                <%= category.name %>
+                                                            </span>
+                                                            <span class="text-black ml-auto">
+                                                                (<%= category.productsCount %>)
+                                                            </span>
+                                                        </a></li>
+                                                    <% }) %>
+                                                        <% } %>
                                     </ul>
                                 </div>
 
@@ -251,7 +263,6 @@
                                 }
                             });
                         });
-
                     });
                 </script>
 

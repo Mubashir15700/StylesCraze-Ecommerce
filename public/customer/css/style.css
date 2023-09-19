@@ -1119,3 +1119,11 @@ i.bi-list {
 #dropdown-menu li {
   margin-bottom: 10px;
 }
+
+/* Hide the default number input stepper arrows for inputs with placeholder "Phone" */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}

@@ -39,18 +39,29 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     deliveryAddress: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: {
+            _id: mongoose.Schema.Types.ObjectId,
+            user: mongoose.Schema.Types.ObjectId,
+            pincode: Number,
+            state: String,
+            city: String,
+            building: String,
+            area: String,
+            default: Boolean,
+            softDeleted: Boolean,
+            __v: Number
+        },
         ref: 'Address',
     },
     status: {
         type: String,
-        enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled'],
-        default: 'Pending',
+        enum: ['Processing', 'Shipped', 'Delivered', 'Canceled', 'Pending'],
+        default: 'Processing',
     },
 });
 
 // Add a pre-save hook to calculate the delivery date
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function (next) {
     const orderDate = this.orderDate;
     const deliveryDate = new Date(orderDate);
     deliveryDate.setDate(deliveryDate.getDate() + 7);

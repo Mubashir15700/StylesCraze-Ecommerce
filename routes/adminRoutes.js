@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
 import { 
     getLogin, getDashboard, getNotifications, getProfile, 
-    getOrders, getProducts, newProduct, addNewProduct, getProduct, 
+    getOrders, getProducts, getAddNewProduct, addNewProduct, getProduct, 
     editProduct, deleteImage, addImage, productAction, getCategories, 
     newCategory, addNewCategory, getCategory, editCategory, categoryAction, 
     getCustomers, customerAction, getSalesReport, getBanner 
@@ -22,7 +22,7 @@ router.get("/orders", checkAuth, getOrders);
 
 router.get("/products", checkAuth, getProducts);
 router.route("/new-product")
-.get(checkAuth, newProduct)
+.get(checkAuth, getAddNewProduct)
 .post(checkAuth, uploadProductImages, resizeProductImages, addNewProduct);
 
 router.route("/edit-product/:id")

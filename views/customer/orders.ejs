@@ -38,10 +38,10 @@
                                                 Quantity: <%= order.products.quantity %>,<br>
                                                 Status: <%= order.status %>,
                                                 Payment Method: <%= order.paymentMethod %><br>
-                                                Delivery Address: <%= order.deliveryAddress[0].state %>,
-                                                <%= order.deliveryAddress[0].city %>,
-                                                <%= order.deliveryAddress[0].area %>,
-                                                <%= order.deliveryAddress[0].pincode %>
+                                                Delivery Address: <%= order.deliveryAddress.state %>,
+                                                <%= order.deliveryAddress.city %>,
+                                                <%= order.deliveryAddress.area %>,
+                                                <%= order.deliveryAddress.pincode %>
                                             </p>
                                             <div class="d-flex">
                                                 <div>

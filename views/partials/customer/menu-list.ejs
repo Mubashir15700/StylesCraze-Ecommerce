@@ -2,6 +2,11 @@
 <li class="custom-li"><a href="/wishlist"><span class="icon icon-heart-o"></span></a></li>
 <li class="custom-li"><a href="/cart" class="site-cart">
         <span class="icon icon-shopping_cart"></span>
+        <% if (currentUser) { %>
+            <span class="count">
+                <%= currentUser.cart.length %>
+            </span>
+        <% } %>
     </a>
 </li>
 <li>
@@ -26,9 +31,14 @@
         <li><a href="/contact">Contact</a></li>
         <li><a href="/profile"><span class="icon icon-person"></span> Profile</a></li>
         <li><a href="/wishlist"><span class="icon icon-heart-o"></span> Wishlist</a></li>
-        <li><a href="/cart" class="site-cart"><span class="icon icon-shopping_cart">
+        <li class="mt-2"><a href="/cart" class="site-cart"><span class="icon icon-shopping_cart">
                     Cart
                 </span>
+                <% if (currentUser) { %>
+                    <span class="count">
+                        <%= currentUser.cart.length %>
+                    </span>
+                <% } %>
             </a>
         </li>
     </ul>

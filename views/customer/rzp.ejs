@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay with Razorpay</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js" data-key="<%= key_id %>"></script>
+</head>
+
+<body>
+    <h5>Payment Processing</h5>
+    <script>
+        // Initialize Razorpay checkout
+        var options = {
+            key: "<%= key_id %>",
+            amount: "<%= order.amount %>", // Amount in paise
+            currency: "INR",
+            name: "Shoppers",
+            description: "Order Payment",
+            order_id: "<%= order.id %>", // Order ID from the server
+            handler: function (response) {
+                console.log("response: ", response);
+                if (response.razorpay_payment_id) {
+                    placePaidOrder();
+                } else {
+                    console.log('Payment was canceled or unsuccessful');
+                    alert('Payment was canceled or unsuccessful');
+                    window.location.href = "/orders";
+                }
+            },
+            prefill: {
+                name: "<%= user.name %>",
+                email: "<%= user.email %>",
+                contact: "<%= user.mobile %>"
+            },
+            theme: {
+                color: "#ECFDFF"
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+
+        function placePaidOrder() {
+
+            const postData = {
+                razorpayOrderId: "<%= razorpayOrderId %>",
+            };
+
+            fetch('/place-paid-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("data: ", data);
+                window.location.href = "/orders";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+    </script>
+</body>
+
+</html>

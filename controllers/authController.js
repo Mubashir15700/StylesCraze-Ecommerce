@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
+import { sendToMail } from '../utils/sendMail.js';
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
 import UserOTPVerification from '../models/userOTPModel.js';
-import { sendToMail } from '../utils/sendMail.js';
 
 let salt;
 
@@ -107,10 +107,10 @@ export const registerCustomer = async (req, res, next) => {
     }
 };
 
-// to separate
 export const changePassword = async (req, res) => {
     let foundUser;
     if (req.body.isForgotPassword === "false") {
+        // change password
         try {
             const { currentPassword, newPassword, confirmPassword } = req.body;
 
@@ -136,14 +136,8 @@ export const changePassword = async (req, res) => {
                 }
             });
 
-            res.render("customer/profile", {
-                isLoggedIn: req.session.user ? true : false,
-                currentUser: foundUser,
-                error: ""
-            });
+            res.redirect("/profile");
         } catch (error) {
-            console.error(error);
-
             res.render("customer/auth/changePassword", {
                 isLoggedIn: req.session.user ? true : false,
                 currentUser: foundUser,
@@ -153,6 +147,7 @@ export const changePassword = async (req, res) => {
             });
         }
     } else {
+        // forgot password
         try {
             const { newPassword, confirmPassword } = req.body;
 
@@ -175,8 +170,6 @@ export const changePassword = async (req, res) => {
 
             res.redirect("/login");
         } catch (error) {
-            console.error(error);
-
             res.render("customer/auth/changePassword", {
                 isLoggedIn: req.session.user ? true : false,
                 currentUser: foundUser,

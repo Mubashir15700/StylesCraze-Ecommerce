@@ -16,7 +16,7 @@ export const isLoggedIn = (req, res, next) => {
     }
 };
 
-export const toBlock = async (req, res, next) => {
+export const checkToBlock = async (req, res, next) => {
     const currentUser = await User.findById(req.session.user);
     if (currentUser && currentUser.blocked === true) {
         req.session.user = null;

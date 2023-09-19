@@ -132,21 +132,26 @@
                                     <h4 class="card-title">Edit Product</h4>
 
                                     <form action="/admin/edit-product/<%= productData._id %>" method="post">
-                                        <div class="form-group">
-                                            <label for="name">Product</label>
-                                            <input type="text" class="form-control" name="name"
-                                                value="<%= productData.name %>" id="name" placeholder="Name" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="category">Category</label>
-                                            <select name="category" id="category" class="form-control" required>
-                                                <% categoryOptions.forEach(category=> { %>
-                                                    <option value="<%= category._id %>">
-                                                        <%= category.name %>
-                                                    </option>
-                                                    <% }) %>
-                                            </select>
+                                        <p class="text-danger mb-3">
+                                            <%= error %>
+                                        </p>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-group col-md-6">
+                                                <label for="name">Product</label>
+                                                <input type="text" class="form-control" name="name"
+                                                    value="<%= productData.name %>" id="name" placeholder="Name" required>
+                                            </div>
+    
+                                            <div class="form-group col-md-6">
+                                                <label for="category">Category</label>
+                                                <select name="category" id="category" class="form-control" required>
+                                                    <% categoryOptions.forEach(category=> { %>
+                                                        <option value="<%= category._id %>">
+                                                            <%= category.name %>
+                                                        </option>
+                                                        <% }) %>
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
@@ -156,18 +161,36 @@
                                                 placeholder="description" required>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="exampleInputName1">Price</label>
-                                            <input type="number" class="form-control" name="price"
-                                                value="<%= productData.price %>" id="exampleInputName1"
-                                                placeholder="price" required>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-group">
+                                                <label for="exampleInputName1">Price</label>
+                                                <input type="number" class="form-control" name="price"
+                                                    value="<%= productData.price %>" id="exampleInputName1"
+                                                    placeholder="price" required>
+                                            </div>
+    
+                                            <div class="form-group">
+                                                <label for="exampleInputName1">Stock</label>
+                                                <input type="number" class="form-control" name="stock"
+                                                    value="<%= productData.stock %>" id="exampleInputName1"
+                                                    placeholder="stock" required>
+                                            </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="exampleInputName1">Stock</label>
-                                            <input type="number" class="form-control" name="stock"
-                                                value="<%= productData.stock %>" id="exampleInputName1"
-                                                placeholder="stock" required>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-group col-md-6">
+                                                <label for="exampleInputName1">Size</label>
+                                                <input type="text" class="form-control" name="size"
+                                                    value="<%= productData.size %>"id="exampleInputName1" 
+                                                    placeholder="Size" required>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
+                                                <label for="exampleInputName1">Color</label>
+                                                <input type="text" class="form-control" name="color"
+                                                    value="<%= productData.color %>"id="exampleInputName1" 
+                                                    placeholder="color" required>
+                                            </div>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary mr-2">Edit</button>

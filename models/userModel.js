@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
         maxLength: 10,
     },
     profile: {
-        type: String
+        type: String,
+        default: ''
     },
     wishlist: [
         { type: mongoose.Types.ObjectId, ref: 'Product' }

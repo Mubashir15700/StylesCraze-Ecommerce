@@ -1,7 +1,22 @@
 
 const customError = (err, req, res, next) => {
     console.log(err.stack);
-    res.status(500).render('error', { error: err.message });
+    res.status(500).render('error/internalError', { error: err.message });
 };
+
+export const newProductErrorPage = function (req, res, error, categories) {
+    res.render('admin/products/newProduct', {
+        categoryOptions: categories,
+        error: error || "An error occurred",
+    });
+}
+
+export const editProductErrorPage = function (req, res, error, product, foundCategories) {
+    res.render('admin/products/editProduct', {
+        productData: product,
+        categoryOptions: foundCategories,
+        error: error || "An error occurred",
+    });
+}
 
 export default customError;
