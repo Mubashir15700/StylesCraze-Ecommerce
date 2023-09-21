@@ -29,6 +29,9 @@
                                                         Delivery Address
                                                     </th>
                                                     <th>
+                                                        Payment
+                                                    </th>
+                                                    <th>
                                                         Status
                                                     </th>
                                                 </tr>
@@ -68,6 +71,9 @@
                                                                 <%= order.deliveryAddress.area %>,
                                                                 Pincode: <%= order.deliveryAddress.pincode %><br>
                                                                 House No.: <%= order.deliveryAddress.building %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.paymentMethod %>
                                                             </td>
                                                             <td>
                                                                 <% order.products.forEach((product) => { %>

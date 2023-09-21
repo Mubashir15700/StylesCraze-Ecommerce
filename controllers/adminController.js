@@ -6,6 +6,7 @@ import User from '../models/userModel.js';
 import Category from '../models/categoryModel.js';
 import Product from '../models/productModel.js';
 import Order from '../models/orderModel.js';
+import Coupon from '../models/couponModel.js';
 import { newProductErrorPage, editProductErrorPage } from '../middlewares/errorMiddleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -78,9 +79,11 @@ export const addNewProduct = async (req, res, next) => {
         if (error.code === 11000) {
             newProductErrorPage(req, res, "Product with the name already exist.", foundCategories);
         } else if (error.message.includes("Product validation failed: name: Path `name`")) {
-            newProductErrorPage(req, res, "Product name length should be between 4 and 20 characters.", foundCategories);
+            newProductErrorPage(req, res, "Product name length should be between 2 and 20 characters.", foundCategories);
         } else if (error.message.includes("Product validation failed: name: Product name must not contain special characters")) {
             newProductErrorPage(req, res, "Product name must not contain special characters.", foundCategories);
+        } else if (error.message.includes("is longer than the maximum allowed length (200).")) {
+            newProductErrorPage(req, res, "Product description length should be between 4 and 200 characters.", foundCategories);
         } else if (
             error.message.includes("Product validation failed: price: Path `price`") ||
             error.message.includes("Product validation failed: stock: Path `stock`")) {
@@ -128,6 +131,8 @@ export const editProduct = async (req, res, next) => {
             editProductErrorPage(req, res, "Product name length should be between 4 and 20 characters.", foundProduct, foundCategories);
         } else if (error.message.includes("Validation failed: name: Product name must not contain special characters")) {
             editProductErrorPage(req, res, "Product name must not contain special characters.", foundProduct, foundCategories);
+        } else if (error.message.includes("is longer than the maximum allowed length (200).")) {
+            editProductErrorPage(req, res, "Product description length should be between 4 and 200 characters.", foundProduct, foundCategories);
         } else if (
             error.message.includes("Validation failed: price: Path `price`") ||
             error.message.includes("Validation failed: stock: Path `stock`")) {
@@ -263,9 +268,9 @@ export const editCategory = async (req, res, next) => {
         res.redirect("/admin/categories");
     } catch (error) {
         if (error.code === 11000) {
-            res.render('admin/categories/editCategory', { 
+            res.render('admin/categories/editCategory', {
                 categoryData: foundCategory,
-                error: "Category with the name already exist." 
+                error: "Category with the name already exist."
             });
         } else if (error.message.includes("is longer than the maximum allowed length (20)")) {
             res.render('admin/categories/editCategory', {
@@ -320,6 +325,75 @@ export const getOrders = async (req, res, next) => {
             { path: 'products.product' },
         ]);
         res.render('admin/orders', { orders });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCoupons = async (req, res, next) => {
+    try {
+        const foundCoupons = await Coupon.find();
+        res.render('admin/coupons/coupons', { foundCoupons });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getAddNewCoupon = (req, res) => {
+    res.render('admin/coupons/newCoupon', { error: "" });
+};
+
+export const addNewCoupon = async (req, res, next) => {
+    try {
+        const { description, discountType, discountAmount, minimumPurchaseAmount, usageLimit } = req.body;
+        if (!description || !discountType || !discountAmount || !minimumPurchaseAmount || !usageLimit) {
+            res.render('admin/coupons/newCoupon', { error: "All fields are required" });
+        } else {
+            if (description.length < 4 || description.length > 100) {
+                return res.render('admin/coupons/newCoupon', { error: "Description must be between 4 and 100 characters" });
+            } else {
+                const uniqueCode = await generateCouponCode();
+                const newCoupon = new Coupon({
+                    code: uniqueCode,
+                    discountType,
+                    description,
+                    discountAmount,
+                    minimumPurchaseAmount,
+                    usageLimit,
+                });
+
+                await newCoupon.save();
+                
+                res.redirect("/admin/coupons");
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+function generateCouponCode() {
+
+    const codeRegex = /^[A-Z0-9]{5,15}$/;
+    let code = '';
+    while (!codeRegex.test(code)) {
+        code = Math.random().toString(36).substring(7);
+    }
+    return Coupon.findOne({ code })
+        .then(existingCoupon => {
+            if (existingCoupon) {
+                return generateCouponCode();
+            }
+            return code;
+        });
+}
+
+export const couponAction = async (req, res, next) => {
+    try {
+        const state = req.body.state === "";
+        const couponId = req.params.id;
+        await Coupon.findByIdAndUpdate(couponId, { $set: { isActive: state } });
+        res.redirect('/admin/coupons');
     } catch (error) {
         next(error);
     }

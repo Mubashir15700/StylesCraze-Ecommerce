@@ -64,9 +64,6 @@
                                 </form>
                             </div>
                         </div>
-                        <a class="nav-link ml-2" href="/admin/profile">
-                            <img src="/admin/images/faces/face28.jpg" alt="profile" />
-                        </a>
                     </li>
                 </ul>
                 <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
@@ -110,6 +107,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/admin/coupons" aria-controls="ui-basic">
+                            <i class="icon-contract menu-icon"></i>
+                            <span class="menu-title">Coupons</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/admin/sales-report" aria-controls="ui-basic">
                             <i class="icon-contract menu-icon"></i>
                             <span class="menu-title">Sales Report</span>
@@ -145,7 +148,7 @@
                                             <div class="form-group col-md-6">
                                                 <label for="category">Category</label>
                                                 <select name="category" id="category" class="form-control" required>
-                                                    <% categoryOptions.forEach(category=> { %>
+                                                    <% categoryOptions.forEach(category => { %>
                                                         <option value="<%= category._id %>">
                                                             <%= category.name %>
                                                         </option>
@@ -194,7 +197,7 @@
                                         </div>
 
                                         <button type="submit" class="btn btn-primary mr-2">Edit</button>
-                                        <a href="#" class="btn btn-light" id="cancel-button">Cancel</a>
+                                        <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
                                     </form>
                                     <% if (productData.images.length) { %>
                                         <div class="card mt-3">

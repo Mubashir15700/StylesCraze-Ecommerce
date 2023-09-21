@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+    <body>
+        <div class="site-wrap">
+            <%- include('../partials/customer/header') -%>
+                <div class="bg-light py-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                                    class="text-black">Coupons</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="form-group">
+                        <div class="p-3 border m-3">
+                            <span class="d-block text-primary h3 text-uppercase">
+                                All New Coupons
+                            </span>
+                            <table class="table table-striped text-black">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Discount Type</th>
+                                        <th>Minimum Purchase Amount</th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (!allCoupons.length) { %>
+                                        <tr>
+                                            <td colspan="6">
+                                                No new coupons found.
+                                            </td>
+                                        </tr>
+                                    <% } else { %>
+                                        <% allCoupons.forEach((coupon) => { %>
+                                            <tr>
+                                                <td><%= coupon.description %></td>
+                                                <td><%= coupon.discountType %></td>
+                                                <td><%= coupon.minimumPurchaseAmount %></td>
+                                                <td><%= coupon.expirationDate.toLocaleDateString() %></td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-3 border m-3">
+                            <span class="d-block text-primary h3 text-uppercase">
+                                Coupons Earned
+                            </span>
+                            <table class="table table-striped text-black">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Discount Type</th>
+                                        <th>
+                                            Discount Amount<br>
+                                            /Percentage
+                                        </th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (!earnedCoupons.length) { %>
+                                        <tr>
+                                            <td colspan="6">
+                                                No earned coupons found.
+                                            </td>
+                                        </tr>
+                                    <% } else { %>
+                                        <% earnedCoupons.forEach((coupon) => { %>
+                                            <tr>
+                                                <td>
+                                                    <% if (coupon.isUsed) { %>
+                                                        Already used.
+                                                    <% } else if (!coupon.coupon.isActive) { %>
+                                                        Expired
+                                                    <% } else { %>
+                                                        <%= coupon.coupon.code %>
+                                                    <% } %>
+                                                </td>
+                                                <td><%= coupon.coupon.discountType %></td>
+                                                <td>
+                                                    <%= coupon.coupon.discountAmount %>
+                                                    <% if (coupon.coupon.discountType === 'percentage') { %>
+                                                        %
+                                                    <% } else { %>
+                                                        /-
+                                                    <% } %>
+                                                </td>
+                                                <td><%= coupon.coupon.expirationDate.toLocaleDateString() %></td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <%- include('../partials/customer/footer') -%>

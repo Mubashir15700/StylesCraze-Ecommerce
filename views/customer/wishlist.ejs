@@ -28,7 +28,7 @@
                                                 <% currentUser.wishlist.forEach((item)=> { %>
                                                     <div class="col-lg-12 p-4 border mb-3 d-flex">
                                                         <div class="col-md-6">
-                                                            <a href="">
+                                                            <a href="/single/<%= item._id %>">
                                                                 <img src="<%= item.images[0] %>" alt="Image"
                                                                     height="180px" width="180px" class="img-fluid">
                                                             </a>
@@ -37,9 +37,9 @@
                                                             <span
                                                                 class="d-block text-primary h6 text-uppercase">Product</span>
                                                             <p>
-                                                                <%= item.description %>,
-                                                                    <%= item.price %>,
-                                                                        <%= item.stock %>,
+                                                                <%= item.description %><br>
+                                                                Price: <%= item.price %>,
+                                                                Stock: <%= item.stock %>,
                                                             </p>
                                                             <div class="d-flex">
                                                                 <form action="/add-to-cart" method="post">

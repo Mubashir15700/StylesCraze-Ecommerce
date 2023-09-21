@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../../partials/admin/head') -%>
+
+    <body>
+        <div class="container-scroller">
+            <%- include('../../partials/admin/header') -%>
+                <div class="main-panel">
+                    <div class="content-wrapper my-custom-wrapper">
+                        <div class="col-lg-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h4 class="card-title">Coupons</h4>
+                                        <a href="/admin/new-coupon" class="btn btn-primary">New Coupon</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Code
+                                                    </th>
+                                                    <th>
+                                                        Discount Type
+                                                    </th>
+                                                    <th>
+                                                        Discount Amount<br>
+                                                        /Percentage
+                                                    </th>
+                                                    <th>
+                                                        Expiration Date
+                                                    </th>
+                                                    <th>
+                                                        Min. Purhcase Amount
+                                                    </th>
+                                                    <th>
+                                                        Usage Limit
+                                                    </th>
+                                                    <th>
+                                                        Used Count
+                                                    </th>
+                                                    <th>
+                                                        Action
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (!foundCoupons.length) { %>
+                                                    <tr>
+                                                        <td>
+                                                            No coupons found.
+                                                        </td>
+                                                    </tr>
+                                                <% } else { %>
+                                                    <% foundCoupons.forEach((coupon) => { %>
+                                                        <tr>
+                                                            <td class="py-1">
+                                                                XXX<%= coupon.code.slice(-2) %><br>
+                                                            </td>
+                                                            <td>
+                                                                <% if (coupon.discountType === 'percentage') { %>
+                                                                    Percentage
+                                                                <% } else { %>
+                                                                    Fixed Amount
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <%= coupon.discountAmount %>
+                                                                <% if (coupon.discountType === 'percentage') { %>
+                                                                    %
+                                                                <% } else { %>
+                                                                    /-
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <%= coupon.expirationDate.toLocaleDateString() %>
+                                                            </td>
+                                                            <td>
+                                                                <%= coupon.minimumPurchaseAmount %>
+                                                            </td>
+                                                            <td>
+                                                                <%= coupon.usageLimit %>
+                                                            </td>
+                                                            <td>
+                                                                <%= coupon.usedCount %>
+                                                            </td>
+                                                            <td>
+                                                                <form action="/admin/coupons/action/<%= coupon._id %>?_method=PATCH" method="post">
+                                                                    <input type="hidden" name="coupon" value="<%= coupon._id %>">
+                                                                    <% if (coupon.isActive) { %>
+                                                                        <input type="hidden" name="state" value="1">
+                                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                                            Deactivate
+                                                                        </button>
+                                                                    <% } else { %>
+                                                                        <input type="hidden" name="state" value="">
+                                                                        <button type="submit" class="btn btn-warning btn-sm">
+                                                                            Activate
+                                                                        </button>
+                                                                    <% } %>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%- include('../../partials/admin/footer') -%>

@@ -20,13 +20,14 @@
             description: "Order Payment",
             order_id: "<%= order.id %>", // Order ID from the server
             handler: function (response) {
-                console.log("response: ", response);
+                console.log(response);
                 if (response.razorpay_payment_id) {
-                    placePaidOrder();
-                } else {
-                    console.log('Payment was canceled or unsuccessful');
-                    alert('Payment was canceled or unsuccessful');
+                    // Clear the cart only when the payment is confirmed
                     window.location.href = "/orders";
+                } else {
+                    // Payment was canceled or unsuccessful
+                    // Display a message or handle it appropriately
+                    console.log('Payment was canceled or unsuccessful');
                 }
             },
             prefill: {
@@ -41,30 +42,6 @@
 
         var rzp = new Razorpay(options);
         rzp.open();
-
-        function placePaidOrder() {
-
-            const postData = {
-                razorpayOrderId: "<%= razorpayOrderId %>",
-            };
-
-            fetch('/place-paid-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("data: ", data);
-                window.location.href = "/orders";
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
     </script>
 </body>
 

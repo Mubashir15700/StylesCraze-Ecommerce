@@ -3,6 +3,15 @@
 
 <%- include('../partials/customer/head') -%>
 
+<%
+    const productsWithSizeSmall = productDatas.filter(product => product.size === "Small");
+    const productsWithSizeMedium = productDatas.filter(product => product.size === "Medium");
+    const productsWithSizeLarge = productDatas.filter(product => product.size === "Large");
+
+    const productsWithColorRed = productDatas.filter(product => product.size === "Red");
+    const productsWithColorGreen = productDatas.filter(product => product.size === "Green");
+    const productsWithColorBlue = productDatas.filter(product => product.size === "Blue");
+%>
     <body>
 
         <div class="site-wrap">
@@ -39,7 +48,7 @@
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                                                     <a class="dropdown-item" href="#">Men</a>
                                                     <a class="dropdown-item" href="#">Women</a>
-                                                    <a class="dropdown-item" href="#">Children</a>
+                                                    <a class="dropdown-item" href="#">Kids</a>
                                                 </div>
                                             </div>
                                             <div class="btn-group">
@@ -105,9 +114,14 @@
                                                                                         </a>
                                                                                         <% } %>
                                                                         </p>
+                                                                        <p class="text-primary font-weight-bold">
+                                                                            Stock: <%= product.stock %>
+                                                                        </p>
                                                                     </form>
                                                                     <% } else { %>
                                                                         <p class="text-primary font-weight-bold">
+                                                                            Size: <%= product.size %>,  
+                                                                            Stock: <%= product.stock %><br>
                                                                             $<%= product.price %>.00
                                                                         </p>
                                                                         <% } %>
@@ -185,17 +199,17 @@
                                         <label for="s_sm" class="d-flex">
                                             <input type="checkbox" id="s_sm" class="mr-2 mt-1"> <span
                                                 class="text-black">Small
-                                                (2,319)</span>
+                                                (<%= productsWithSizeSmall.length %>)</span>
                                         </label>
                                         <label for="s_md" class="d-flex">
                                             <input type="checkbox" id="s_md" class="mr-2 mt-1"> <span
                                                 class="text-black">Medium
-                                                (1,282)</span>
+                                                (<%= productsWithSizeMedium.length %>)</span>
                                         </label>
                                         <label for="s_lg" class="d-flex">
                                             <input type="checkbox" id="s_lg" class="mr-2 mt-1"> <span
                                                 class="text-black">Large
-                                                (1,392)</span>
+                                                (<%= productsWithSizeLarge.length %>)</span>
                                         </label>
                                     </div>
 
@@ -203,19 +217,15 @@
                                         <h3 class="mb-3 h6 text-uppercase text-black d-block">Color</h3>
                                         <a href="#" class="d-flex color-item align-items-center">
                                             <span class="bg-danger color d-inline-block rounded-circle mr-2"></span>
-                                            <span class="text-black">Red (2,429)</span>
+                                            <span class="text-black">Red (<%= productsWithColorRed.length %>)</span>
                                         </a>
                                         <a href="#" class="d-flex color-item align-items-center">
                                             <span class="bg-success color d-inline-block rounded-circle mr-2"></span>
-                                            <span class="text-black">Green (2,298)</span>
+                                            <span class="text-black">Green (<%= productsWithColorGreen.length %>)</span>
                                         </a>
                                         <a href="#" class="d-flex color-item align-items-center">
                                             <span class="bg-info color d-inline-block rounded-circle mr-2"></span> <span
-                                                class="text-black">Blue (1,075)</span>
-                                        </a>
-                                        <a href="#" class="d-flex color-item align-items-center">
-                                            <span class="bg-primary color d-inline-block rounded-circle mr-2"></span>
-                                            <span class="text-black">Purple (1,075)</span>
+                                                class="text-black">Blue (<%= productsWithColorBlue.length %>)</span>
                                         </a>
                                     </div>
 

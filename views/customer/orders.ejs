@@ -23,7 +23,7 @@
                                 <% orders.forEach((order)=> { %>
                                     <div class="col-lg-12 p-4 border mb-3 d-flex">
                                         <div class="col-md-6">
-                                            <a href="">
+                                            <a href="/single/<%= order.orderedProducts[0]._id %>">
                                                 <img src="<%= order.orderedProducts[0].images[0] %>" alt="Image"
                                                     height="180px" width="180px" class="img-fluid">
                                             </a>

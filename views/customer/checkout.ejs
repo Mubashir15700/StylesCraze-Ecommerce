@@ -28,7 +28,7 @@
                                                 <% cartProducts.forEach((cartItem)=> { %>
                                                     <div class="col-lg-12 p-4 border mb-3 d-flex">
                                                         <div class="col-md-4">
-                                                            <a href="">
+                                                            <a href="/single/<%= cartItem.product._id %>">
                                                                 <img src="<%= cartItem.product.images[0] %>" alt="Image"
                                                                     height="180px" width="180px" class="img-fluid">
                                                             </a>
@@ -43,31 +43,18 @@
                                                                         <strong class="text-black">$<%=
                                                                                 cartItem.product.price %>.00</strong>
                                                             </p>
+                                                            <p>
+                                                                Stock: <%= cartItem.product.stock %>
+                                                            </p>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <span class="text-black">
+                                                                Quantity: <%= cartItem.quantity %><br>
                                                                 Total Price: $<span id="totalPrice_<%= cartItem._id %>"
                                                                     class="text-black">
                                                                     <%=cartItem.product.price * cartItem.quantity %>.00
                                                                 </span>
                                                             </span>
-                                                            <div class="input-group mb-3" style="max-width: 120px;">
-                                                                <div class="input-group-prepend">
-                                                                    <button class="btn btn-outline-primary js-btn-minus"
-                                                                        type="button"
-                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
-                                                                </div>
-                                                                <input type="text" class="form-control text-center"
-                                                                    value="<%= cartItem.quantity %>"
-                                                                    id="quantityElement"
-                                                                    aria-label="Example text with button addon"
-                                                                    aria-describedby="button-addon1">
-                                                                <div class="input-group-append">
-                                                                    <button class="btn btn-outline-primary js-btn-plus"
-                                                                        type="button"
-                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
-                                                                </div>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                     <% }) %>
@@ -135,23 +122,17 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="method"
-                                            value="cod">
+                                            value="wlt">
                                         <label class="form-check-label" for="flexRadioDefault2">
-                                            Cash on Delivery
+                                            Wallet
                                         </label>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="text-black h4" for="coupon">Coupon</label>
-                                        <p>Enter your coupon code if you have one.</p>
-                                    </div>
-                                    <div class="col-md-8 mb-3 mb-md-0">
-                                        <input type="text" class="form-control py-3" id="coupon"
-                                            placeholder="Coupon Code">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-primary btn-sm">Apply Coupon</button>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="method"
+                                            value="cod">
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Cash on Delivery
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -187,6 +168,22 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <span>Discount</span>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <span class="text-black">
+                                                    <% if (discount === 0) { %>
+                                                        $<span class="text-black">
+                                                            00.00
+                                                        </span>
+                                                    <% } else { %>
+                                                        $<%= discount %>.00
+                                                    <% } %>
+                                                </span>
+                                            </div>
+                                        </div>
                                         <div class="row mb-5">
                                             <div class="col-md-6">
                                                 <span>Grand Total</span>
@@ -194,7 +191,11 @@
                                             <div class="col-md-6 pl-0">
                                                 <span class="h5 text-black">
                                                     $<span id="grandTotalPrice" class="text-black">
-                                                        <%= grandTotal + 5 %>.00
+                                                        <% if (discount === 0) { %>
+                                                            <%= grandTotal + 5 %>.00
+                                                        <% } else { %>
+                                                            <%= grandTotal - discount + 5 %>.00
+                                                        <% } %>
                                                     </span>
                                                 </span>
                                             </div>
@@ -210,6 +211,10 @@
                                                         <div>
                                                             <input type="hidden" name="addressId"
                                                                 value="<%= currentAddress._id %>">
+                                                            <input type="hidden" name="discount"
+                                                                value="<%= discount %>">
+                                                            <input type="hidden" name="currentCoupon"
+                                                                value="<%= currentCoupon %>">
                                                             <button type="submit"
                                                                 class="btn btn-primary btn-lg py-3 btn-block">
                                                                 Place Order
@@ -223,30 +228,26 @@
                             </div>
                         </div>
                     </form>
+                    <div class="row col-lg-12">
+                        <form action="/apply-coupon" method="post">
+                            <div>
+                                <div>
+                                    <label class="text-black h4" for="coupon">Coupon</label>
+                                    <p>Enter your coupon code if you have one.</p>
+                                </div>
+                                <div class="d-flex">
+                                    <input type="text" class="form-control py-3" name="coupon" id="coupon"
+                                        placeholder="Paste Coupon Code">
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary btn-sm">Apply Coupon</button>
+                                    </div>
+                                </div>
+                                <p class="text-danger"><%= couponError %></p>
+                                <a href="/coupons" class="btn btn-outline-primary btn-sm mt-4">View Available Coupons</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
         </div>
-
-        <script>
-            // update cart
-            function updateCartItem(cartItemId, incOrDec) {
-                const data = {
-                    type: incOrDec
-                };
-                $.ajax({
-                    url: '/update-cart/' + cartItemId,
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
-                        $('#totalPrice').text(response.grandTotal.toFixed(2));
-                        $('#grandTotalPrice').text((response.grandTotal + 5).toFixed(2));
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(status);
-                    }
-                });
-            }
-        </script>
 
         <%- include('../partials/customer/footer') -%>

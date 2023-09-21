@@ -7,8 +7,8 @@ import {
     getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts,
     getContact, getLogin, getRegister, getEnterEmail, getProfile, updateProfile, getNewAddress,
     addNewAddress,getEditAddress, editAddress, deleteAddress, getAddresses, 
-    changeDefaultAddress, getChangePassword, getOrders, getWishlist, updateWishlist, 
-    getCart, addToCart, removeFromCart, updateCart, getCheckout, placeOrder, placePaidOrder, cancelOrder, 
+    changeDefaultAddress, getChangePassword, getOrders, getWallet, getCoupons, getWishlist, updateWishlist, 
+    getCart, addToCart, removeFromCart, updateCart, getCheckout, applyCoupon, placeOrder, cancelOrder, 
 } from '../controllers/customerController.js';
 import { checkAuth, isLoggedIn, checkToBlock } from '../middlewares/customerMiddleware.js';
 import { uploadProfileImage, resizeProfileImage } from '../middlewares/imageUplaodMiddleware.js';
@@ -58,6 +58,9 @@ router.route("/change-password")
 .post(checkToBlock, changePassword);
 
 router.get("/orders", checkToBlock, checkAuth, getOrders);
+router.get("/wallet", checkToBlock, checkAuth, getWallet);
+router.get("/coupons", checkToBlock, checkAuth, getCoupons);
+
 router.get("/wishlist", checkToBlock, checkAuth, getWishlist);
 router.post("/update-wishlist", checkToBlock, checkAuth, updateWishlist);
 
@@ -70,9 +73,8 @@ router.route("/checkout")
 .get(checkToBlock, checkAuth, getCheckout)
 .post(checkToBlock, checkAuth, placeOrder);
 
-router.post("/cancel-order", checkToBlock, checkAuth, cancelOrder);
+router.post("/apply-coupon", checkToBlock, checkAuth, applyCoupon);
 
-// payment
-router.post("/place-paid-order", placePaidOrder);
+router.post("/cancel-order", checkToBlock, checkAuth, cancelOrder);
 
 export default router;

@@ -5,7 +5,8 @@ import {
     getOrders, getProducts, getAddNewProduct, addNewProduct, getProduct, 
     editProduct, deleteImage, addImage, productAction, getCategories, 
     newCategory, addNewCategory, getCategory, editCategory, categoryAction, 
-    getCustomers, customerAction, getSalesReport, getBanner 
+    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, 
+    couponAction, getSalesReport, getBanner 
 } from '../controllers/adminController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 import { 
@@ -46,6 +47,12 @@ router.patch("/categories/action/:id", checkAuth, categoryAction);
 
 router.get("/customers", checkAuth, getCustomers);
 router.patch("/customers/action/:id", checkAuth, customerAction);
+
+router.get("/coupons", checkAuth, getCoupons);
+router.route("/new-coupon")
+.get(checkAuth, getAddNewCoupon)
+.post(checkAuth, addNewCoupon);
+router.patch("/coupons/action/:id", checkAuth, couponAction);
 
 router.get("/sales-report", checkAuth, getSalesReport);
 router.get("/banner", checkAuth, getBanner);

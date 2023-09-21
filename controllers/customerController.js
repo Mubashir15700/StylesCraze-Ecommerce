@@ -9,6 +9,7 @@ import Category from "../models/categoryModel.js";
 import User from "../models/userModel.js";
 import Order from "../models/orderModel.js";
 import Address from "../models/addressModel.js";
+import Coupon from "../models/couponModel.js";
 import { razorpay } from "../utils/razorpayConfig.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -132,7 +133,7 @@ export const searchProducts = async (req, res, next) => {
             softDeleted: false,
             $or: [
                 { name: { $regex: req.body.product, $options: 'i' } },
-                { description: { $regex: req.body.product, $options: 'i' } },
+                { description: { $regex: `\\b${req.body.product}\\b`, $options: 'i' } },
             ]
         }).populate('category');
 
@@ -196,15 +197,7 @@ export const updateProfile = async (req, res, next) => {
             username, phone, email
         };
 
-        // [Error: EPERM: operation not permitted, unlink 'D:\BroCamp\Badging-2\week-10-15(First project)\Ecommerce\public'] 
-        if (typeof profile !== "undefined" && profile !== "") {
-            fs.unlink(path.join(__dirname, "../public", currentUser.profile), (err) => {
-                if (err) {
-                    console.error(err);
-                }
-            });
-            updatedObj.profile = "/profiles/" + profile;
-        }
+        updatedObj.profile = "/profiles/" + profile;
 
         await currentUser.updateOne(updatedObj);
         res.redirect("/profile");
@@ -392,7 +385,8 @@ export const getCart = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
             cartProducts,
-            grandTotal
+            grandTotal,
+            insufficientStockProduct: '',
         });
     } catch (error) {
         next(error);
@@ -451,6 +445,7 @@ export const updateCart = async (req, res, next) => {
         const cartItem = currentUser.cart.find(item => item._id.equals(new mongoose.Types.ObjectId(req.params.id)));
         if (cartItem) {
             const product = await Product.findById(cartItem.product);
+
             if (req.body.type === "increment") {
                 cartItem.quantity++;
             } else {
@@ -458,6 +453,12 @@ export const updateCart = async (req, res, next) => {
                     cartItem.quantity--;
                 }
             }
+
+            let insufficientStock = false;
+            if (product.stock < cartItem.quantity) {
+                insufficientStock = true
+            }
+
             await currentUser.populate('cart.product');
             const grandTotal = currentUser.cart.reduce((total, element) => {
                 return total + (element.quantity * element.product.price);
@@ -466,7 +467,8 @@ export const updateCart = async (req, res, next) => {
             return res.status(200).json({
                 message: "Success",
                 totalPrice: product.price * cartItem.quantity,
-                grandTotal
+                grandTotal,
+                insufficientStock,
             });
         } else {
             return res.status(404).json({ message: "Product not found in the user's cart." });
@@ -487,16 +489,122 @@ export const getCheckout = async (req, res, next) => {
             const grandTotal = cartProducts.reduce((total, element) => {
                 return total + (element.quantity * element.product.price);
             }, 0);
+
+            let insufficientStockProduct;
+            cartProducts.forEach((cartProduct) => {
+                if (cartProduct.product.stock < cartProduct.quantity) {
+                    insufficientStockProduct = cartProduct._id;
+                }
+            });
+
+            if (!insufficientStockProduct) {
+                res.render("customer/checkout", {
+                    isLoggedIn: isLoggedIn(req, res),
+                    currentUser,
+                    cartProducts,
+                    currentAddress: defaultAddress,
+                    discount: 0,
+                    grandTotal,
+                    currentCoupon: '',
+                    couponError: '',
+                });
+            } else {
+                res.render("customer/cart", {
+                    isLoggedIn: isLoggedIn(req, res),
+                    currentUser,
+                    cartProducts,
+                    grandTotal,
+                    insufficientStockProduct,
+                });
+            }
+        } else {
+            req.body.email = currentUser.email;
+            sendToMail(req, res, currentUser._id, false);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const applyCoupon = async (req, res, next) => {
+    try {
+        const currentUser = await User.findById(req.session.user).populate('earnedCoupons.coupon');
+        await currentUser.populate('cart.product');
+        await currentUser.populate('cart.product.category');
+        const cartProducts = currentUser.cart;
+        const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
+        const currentCoupon = await Coupon.findOne({ code: req.body.coupon });
+        const grandTotal = cartProducts.reduce((total, element) => {
+            return total + (element.quantity * element.product.price);
+        }, 0);
+        if (currentCoupon) {
+            const foundCoupon = currentUser.earnedCoupons.find(coupon => coupon.coupon._id.equals(currentCoupon._id));
+            if (foundCoupon) {
+                if (foundCoupon.coupon.isActive) {
+                    if (!foundCoupon.isUsed) {
+                        let discount;
+                        if (foundCoupon.coupon.discountType === 'fixedAmount') {
+                            discount = foundCoupon.coupon.discountAmount;
+                        } else {
+                            discount = (foundCoupon.coupon.discountAmount / 100) * grandTotal;
+                        }
+                        res.render("customer/checkout", {
+                            isLoggedIn: isLoggedIn(req, res),
+                            currentUser,
+                            cartProducts,
+                            currentAddress: defaultAddress,
+                            discount,
+                            grandTotal,
+                            currentCoupon: currentCoupon._id,
+                            couponError: "",
+                        });
+                    } else {
+                        res.render("customer/checkout", {
+                            isLoggedIn: isLoggedIn(req, res),
+                            currentUser,
+                            cartProducts,
+                            currentAddress: defaultAddress,
+                            discount: 0,
+                            grandTotal,
+                            currentCoupon: '',
+                            couponError: "Coupon already used.",
+                        });
+                    }
+                } else {
+                    res.render("customer/checkout", {
+                        isLoggedIn: isLoggedIn(req, res),
+                        currentUser,
+                        cartProducts,
+                        currentAddress: defaultAddress,
+                        discount: 0,
+                        grandTotal,
+                        currentCoupon: '',
+                        couponError: "Coupon is inactive.",
+                    });
+                }
+            } else {
+                res.render("customer/checkout", {
+                    isLoggedIn: isLoggedIn(req, res),
+                    currentUser,
+                    cartProducts,
+                    currentAddress: defaultAddress,
+                    discount: 0,
+                    grandTotal,
+                    currentCoupon: '',
+                    couponError: "Invalid coupon code.",
+                });
+            }
+        } else {
             res.render("customer/checkout", {
                 isLoggedIn: isLoggedIn(req, res),
                 currentUser,
                 cartProducts,
                 currentAddress: defaultAddress,
-                grandTotal
+                discount: 0,
+                grandTotal,
+                currentCoupon: '',
+                couponError: "Invalid coupon code.",
             });
-        } else {
-            req.body.email = currentUser.email;
-            sendToMail(req, res, currentUser._id, false);
         }
     } catch (error) {
         next(error);
@@ -521,75 +629,98 @@ export const placeOrder = async (req, res, next) => {
             const newOrder = new Order({
                 user: req.session.user,
                 products: orderedProducts,
-                totalAmount: grandTotal + 5,
+                totalAmount: grandTotal - req.body.discount + 5,
                 paymentMethod: req.body.method,
                 deliveryAddress,
             });
             await newOrder.save();
 
+            // stock update
+            currentUser.cart.forEach(async (item) => {
+                const foundProduct = await Product.findById(item.product._id);
+                foundProduct.stock -= item.quantity;
+                await foundProduct.save();
+            });
+            currentUser.cart = [];
+
+            const currentEarnedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
+            if (currentEarnedCoupon) {
+                currentEarnedCoupon.isUsed = true;
+                await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
+            }
+
+            await currentUser.save();
+
+            res.redirect("/orders");
+        } else if (req.body.method === 'rzp') {
+            const currentUser = await getCurrentUser(req, res);
+            const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
+            await currentUser.populate('cart.product');
+            const grandTotal = currentUser.cart.reduce((total, element) => {
+                return total + (element.quantity * element.product.price);
+            }, 0);
+            const orderedProducts = currentUser.cart.map((item) => {
+                return {
+                    product: item.product._id,
+                    quantity: item.quantity,
+                }
+            });
+            // Create a Razorpay order
+            const razorpayOrder = await razorpay.orders.create({
+                amount: (grandTotal - req.body.discount + 5) * 100, // Total amount in paise
+                currency: 'INR', // Currency code (change as needed)
+                receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`, // Provide a unique receipt ID
+            });
+            // Save the order details to your database
+            const newOrder = new Order({
+                user: req.session.user,
+                products: orderedProducts,
+                totalAmount: grandTotal - req.body.discount + 5,
+                paymentMethod: 'rzp', // Indicate the payment method
+                deliveryAddress,
+                razorpayOrderId: razorpayOrder.id, // Save the Razorpay order ID
+            });
+            await newOrder.save();
+
+            // stock update
             currentUser.cart.forEach(async (item) => {
                 const foundProduct = await Product.findById(item.product._id);
                 foundProduct.stock -= item.quantity;
                 await foundProduct.save();
             });
 
+            const currentEarnedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
+            if (currentEarnedCoupon) {
+                currentEarnedCoupon.isUsed = true;
+                await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
+            }
+
             currentUser.cart = [];
+
+            // coupons
+            const foundCoupon = await Coupon.findOne({ 
+                isActive: true, minimumPurchaseAmount: { $lte: grandTotal } 
+            }).sort({ minimumPurchaseAmount: -1 });
+            if (foundCoupon) {
+                const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
+                if (!couponExists) {
+                    currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
+                }
+            }
+
             await currentUser.save();
 
-            res.redirect("/orders");
-        } else if (req.body.method === 'rzp') {
-            const currentUser = await getCurrentUser(req, res);
-            await currentUser.populate('cart.product');
-            const grandTotal = currentUser.cart.reduce((total, element) => {
-                return total + (element.quantity * element.product.price);
-            }, 0);
-
-            const razorpayOrder = await razorpay.orders.create({
-                amount: (grandTotal + 5) * 100,
-                currency: 'INR',
-                receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`,
-            });
+            // Redirect the user to the Razorpay checkout page
             return res.render('customer/rzp', {
                 order: razorpayOrder,
                 key_id: process.env.RAZORPAY_ID_KEY,
-                user: currentUser,
-                razorpayOrderId: razorpayOrder.id
+                user: currentUser
             });
         }
     } catch (error) {
         next(error);
     }
 };
-
-export const placePaidOrder = async (req, res) => {
-    const currentUser = await getCurrentUser(req, res);
-    await currentUser.populate('cart.product');
-    const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
-
-    const orderedProducts = currentUser.cart.map((item) => {
-        return {
-            product: item.product._id,
-            quantity: item.quantity,
-        }
-    });
-    const grandTotal = currentUser.cart.reduce((total, element) => {
-        return total + (element.quantity * element.product.price);
-    }, 0);
-
-    const newOrder = new Order({
-        user: req.session.user,
-        products: orderedProducts,
-        totalAmount: grandTotal + 5,
-        paymentMethod: 'razorpay',
-        deliveryAddress,
-        razorpayOrderId: req.body.razorpayOrderId,
-    });
-    await newOrder.save();
-
-    res.redirect("/orders");
-    currentUser.cart = [];
-    await currentUser.save();
-}
 
 export const getOrders = async (req, res, next) => {
     try {
@@ -617,6 +748,40 @@ export const getOrders = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getWallet = async (req, res, next) => {
+    try {
+        const currentUser = await getCurrentUser(req, res);
+        res.render("customer/wallet", {
+            isLoggedIn: isLoggedIn(req, res),
+            currentUser
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getCoupons = async (req, res, next) => {
+    try {
+        const currentUser = await User.findById(req.session.user).populate('earnedCoupons.coupon');
+        const allCoupons = await Coupon.find({ isActive: true });
+        const earnedCoupons = currentUser.earnedCoupons;
+
+        // Convert the list of earned coupon IDs to an array
+        const earnedCouponIds = earnedCoupons.map((coupon) => coupon.coupon._id.toString());
+        // Filter out earned coupons from the active coupons list
+        const remainingCoupons = allCoupons.filter((coupon) => !earnedCouponIds.includes(coupon._id.toString()));
+
+        res.render("customer/coupons", {
+            isLoggedIn: isLoggedIn(req, res),
+            currentUser,
+            allCoupons: remainingCoupons,
+            earnedCoupons,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const cancelOrder = async (req, res, next) => {
     try {
