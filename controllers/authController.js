@@ -87,6 +87,10 @@ export const registerCustomer = async (req, res, next) => {
                         username: username,
                         email: email,
                         phone: phone,
+                        wallet: {
+                            balance: 0,
+                            transactions: [],
+                        },
                         password: hashPassword,
                     });
                     await newUser.save();

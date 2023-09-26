@@ -21,6 +21,11 @@ const orderSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false,
             },
+            returnRequested: {
+                type: String,
+                enum: ['Nil', 'Pending', 'Approved', 'Rejected', 'Completed'],
+                default: 'Nil',
+            },
         },
     ],
     totalAmount: {
@@ -55,7 +60,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Processing', 'Shipped', 'Delivered', 'Canceled', 'Pending'],
+        enum: ['Processing', 'Shipped', 'Delivered', 'Pending'],
         default: 'Processing',
     },
     razorpayOrderId: {
@@ -72,6 +77,7 @@ orderSchema.pre('save', function (next) {
     const deliveryDate = new Date(orderDate);
     deliveryDate.setDate(deliveryDate.getDate() + 7);
     this.deliveryDate = deliveryDate;
+
     next();
 });
 

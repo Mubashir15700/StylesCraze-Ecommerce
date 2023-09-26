@@ -40,8 +40,8 @@
                                                             <p>
                                                                 <%= cartItem.product.description %><br>
                                                                     Category: <%= cartItem.product.category.name %><br>
-                                                                        <strong class="text-black">$<%=
-                                                                                cartItem.product.price %>.00</strong>
+                                                                        <strong class="text-black">₹<%=
+                                                                                cartItem.product.price.toFixed(2) %></strong>
                                                             </p>
                                                             <p>Stock: <%= cartItem.product.stock %>
                                                             </p>
@@ -52,24 +52,24 @@
                                                         </div>
                                                         <div class="col-md-4">
                                                             <span class="text-black">
-                                                                Total Price: $<span id="totalPrice_<%= cartItem._id %>"
+                                                                Total Price: ₹<span id="totalPrice_<%= cartItem._id %>"
                                                                     class="text-black">
-                                                                    <%=cartItem.product.price * cartItem.quantity %>.00
+                                                                    <%= (cartItem.product.price * cartItem.quantity).toFixed(2) %>
                                                                 </span>
                                                             </span>
                                                             <div class="input-group mb-3" style="max-width: 120px;">
                                                                 <div class="input-group-prepend">
-                                                                    <button class="btn btn-outline-primary js-btn-minus"
+                                                                    <button class="btn btn-outline-primary"
                                                                         type="button"
                                                                         onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
                                                                 </div>
                                                                 <input type="text" class="form-control text-center"
                                                                     value="<%= cartItem.quantity %>"
-                                                                    id="quantityElement"
+                                                                    id="quantityElement_<%= cartItem._id %>"
                                                                     aria-label="Example text with button addon"
-                                                                    aria-describedby="button-addon1">
+                                                                    aria-describedby="button-addon1" readonly>
                                                                 <div class="input-group-append">
-                                                                    <button class="btn btn-outline-primary js-btn-plus"
+                                                                    <button class="btn btn-outline-primary"
                                                                         type="button"
                                                                         onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
                                                                 </div>
@@ -111,8 +111,8 @@
                                                         </div>
                                                         <div class="col-md-6 pl-0">
                                                             <span class="h5 text-black">
-                                                                $<span id="grandTotalPrice" class="text-black">
-                                                                    <%= grandTotal %>.00
+                                                                ₹<span id="grandTotalPrice" class="text-black">
+                                                                    <%= grandTotal.toFixed(2) %>
                                                                 </span>
                                                             </span>
                                                         </div>
@@ -155,7 +155,7 @@
         </div>
 
         <script>
-            // remove fromm cart
+            // remove from cart
             function removeCartItem(cartItemId) {
                 $.ajax({
                     url: '/remove-from-cart/' + cartItemId,
@@ -183,6 +183,7 @@
                     success: function (response) {
                         $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
                         $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
+                        $('#quantityElement_' + cartItemId).val(response.quantity);
                         const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
                         if (response.insufficientStock) {
                             stockErrorElement.style.display = 'block';

@@ -11,7 +11,12 @@
                         <div class="col-lg-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Orders</h4>
+                                    <div class="d-flex justify-content-between">
+                                        <h4 class="card-title">Orders</h4>
+                                        <a href="/admin/return-requests" class="btn border btn-outline-primary">
+                                            View Return Requests
+                                        </a>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-striped">
                                             <thead>
@@ -78,9 +83,17 @@
                                                             <td>
                                                                 <% order.products.forEach((product) => { %>
                                                                     <% if(product.isCancelled) { %>
-                                                                        <p class="text-danger">Cancelled</p>
+                                                                        <p class="text-danger">Order Cancelled</p>
+                                                                    <% } else if(product.returnRequested === 'Pending') { %>
+                                                                        <p class="text-muted">Return requested</p>
+                                                                    <% } else if(product.returnRequested === 'Approved') { %>
+                                                                        <p class="text-muted">Return Approved</p>
+                                                                    <% } else if(product.returnRequested === 'Rejected') { %>
+                                                                        <p class="text-muted">Return Rejected</p>        
+                                                                    <% } else if(product.returnRequested === 'Completed') { %>
+                                                                        <p class="text-muted">Return Completed</p>        
                                                                     <% } else { %>
-                                                                    <p class="text-primary"><%= order.status %></p>
+                                                                        <p class="text-primary"><%= order.status %></p>
                                                                     <% } %>
                                                                 <% }) %>
                                                             </td>

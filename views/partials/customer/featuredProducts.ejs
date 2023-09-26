@@ -28,14 +28,24 @@
                         <% if (isLoggedIn) { %>
                           <form action="/wishlist" method="post" id="wishlistForm_<%= product._id %>">
                             <p class="text-primary font-weight-bold">
-                              $<%= product.price %>.00
+                              ₹<%= product.price.toFixed(2) %>
                             </p>
                           </form>
                           <% } else { %>
                             <p class="text-primary font-weight-bold">
-                              $<%= product.price %>.00
+                              ₹<%= product.price.toFixed(2) %>
                             </p>
                           <% } %>
+                          <% if (!product.stock) { %>
+                            <p class="text-danger">
+                                Currently Unavailable
+                            </p>
+                            <% } else { %>
+                                <p
+                                    class="text-primary font-weight-bold">
+                                    Stock: <%= product.stock %>
+                                </p>
+                            <% } %>
                       </div>
                     </div>
                   </div>

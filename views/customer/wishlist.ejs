@@ -38,7 +38,7 @@
                                                                 class="d-block text-primary h6 text-uppercase">Product</span>
                                                             <p>
                                                                 <%= item.description %><br>
-                                                                Price: <%= item.price %>,
+                                                                Price: ₹<%= item.price.toFixed(2) %>,
                                                                 Stock: <%= item.stock %>,
                                                             </p>
                                                             <div class="d-flex">

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/admin/head') -%>
+
+    <body>
+        <div class="container-scroller">
+            <%- include('../partials/admin/header') -%>
+                <div class="main-panel">
+                    <div class="content-wrapper my-custom-wrapper">
+                        <div class="col-lg-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h4 class="card-title">Return Requests</h4>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        User
+                                                    </th>
+                                                    <th>
+                                                        Details
+                                                    </th>
+                                                    <th>
+                                                        Return To
+                                                    </th>
+                                                    <th>
+                                                        Reason and Condition
+                                                    </th>
+                                                    <th>
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (!returnRequests.length) { %>
+                                                    <tr>
+                                                        <td colspan="5">No orders found.</td>
+                                                    </tr>
+                                                <% } else { %>
+                                                    <% returnRequests.forEach((request) => { %>
+                                                        <tr>
+                                                            <td>
+                                                               <%= request.user.username %><br>
+                                                               <p class="text-dark"><%= request.user.email %></p><br>
+                                                               <%= request.user.phone %>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <div class="border-bottom mb-3">
+                                                                        <span class="text-primary h6 text-uppercase">
+                                                                            <%= request.product.name %> 
+                                                                        </span><br>
+                                                                        Price: <%= request.product.price %> <br>
+                                                                        Quantity: <%= request.quantity %> <br>
+                                                                    </div>
+                                                                    Requested Date: <%= request.createdAt.toLocaleDateString() %>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <%= request.order.deliveryAddress.state %>,
+                                                                <%= request.order.deliveryAddress.city %><br>
+                                                                <%= request.order.deliveryAddress.area %>,
+                                                                Pincode: <%= request.order.deliveryAddress.pincode %><br>
+                                                                House No.: <%= request.order.deliveryAddress.building %>
+                                                            </td>
+                                                            <td>
+                                                                <%= request.reason %><br>
+                                                                <%= request.condition %>
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <% if (request.status === "Approved") { %>
+                                                                        <p class="text-success">Approved</p>
+                                                                    <% } else if (request.status === "Rejected") { %>
+                                                                        <p class="text-danger">Rejected</p>
+                                                                    <% } else { %>
+                                                                        <form action="/admin/return-requests" method="post">
+                                                                            <input type="hidden" name="action" value="approve">
+                                                                            <input type="hidden" name="request" value="<%= request._id %>">
+                                                                            <input type="hidden" name="order" value="<%= request.order._id %>">
+                                                                            <input type="hidden" name="product" value="<%= request.product._id %>">
+                                                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                                                Approve
+                                                                            </button>
+                                                                        </form>
+                                                                        <form action="/admin/return-requests" method="post" class="ml-1">
+                                                                            <input type="hidden" name="action" value="reject">
+                                                                            <input type="hidden" name="request" value="<%= request._id %>">
+                                                                            <input type="hidden" name="order" value="<%= request.order._id %>">
+                                                                            <input type="hidden" name="product" value="<%= request.product._id %>">
+                                                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                                                Reject
+                                                                            </button>
+                                                                        </form>
+                                                                    <% } %>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%- include('../partials/admin/footer') -%>

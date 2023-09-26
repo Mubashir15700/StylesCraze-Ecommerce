@@ -43,30 +43,18 @@ const couponSchema = new mongoose.Schema({
     }
 });
 
-// Add a pre-save hook to calculate the expiration date
-couponSchema.pre('save', function (next) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 7);
-    this.expirationDate = expirationDate;
-    next();
-});
-
 couponSchema.pre('save', function (next) {
     const currentDate = new Date();
-    const expirationDate = this.expirationDate;
+    const expirationDate = new Date(currentDate);
+    expirationDate.setDate(expirationDate.getDate() + 7);
+    this.expirationDate = expirationDate;
 
-    // Check if the coupon has reached its usage limit
-    if (this.usedCount >= this.usageLimit) {
-        this.isActive = false;
-    } else if (expirationDate && expirationDate <= currentDate) {
+    // Check if the coupon has reached its usage limit or has expired
+    if (this.usedCount >= this.usageLimit || (expirationDate <= currentDate)) {
         this.isActive = false;
     } else {
         this.isActive = true;
     }
-
-    const newExpirationDate = new Date();
-    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
-    this.expirationDate = newExpirationDate;
 
     next();
 });

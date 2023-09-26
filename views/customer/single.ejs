@@ -66,7 +66,7 @@
                                     perferendis. Quos repellat dignissimos minus, eveniet nam voluptatibus molestias
                                     omnis
                                     reiciendis perspiciatis illum hic magni iste, velit aperiam quis.</p>
-                                <p><strong class="text-primary h4">$<%= productData.price %>.00</strong></p>
+                                <p><strong class="text-primary h4">₹<%= productData.price.toFixed(2) %></strong></p>
                             </div>
                             <div class="col-md-3">
                                 <div class="d-flex mb-5 col-md-6 p-0">
@@ -75,7 +75,7 @@
                                             type="button">&minus;</button>
                                     </div>
                                     <input type="text" class="form-control text-center" value="1" name="quantity"
-                                        aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                        aria-label="Example text with button addon" aria-describedby="button-addon1" readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-primary js-btn-plus"
                                             type="button">&plus;</button>
@@ -84,13 +84,17 @@
                                 <div>
                                     <div class="input-group">
                                         <div>
-                                            <form action="/add-to-cart" method="post">
-                                                <input type="hidden" name="product" value="<%= productData._id %>">
-                                                <input type="hidden" name="hiddenQuantity" value="1">
-                                                <button type="submit" class="buy-now btn btn-sm btn-primary">
-                                                    Add To Cart
-                                                </button>
-                                            </form>
+                                            <% if (!productData.stock) { %>
+                                                <p class="text-danger">Currently Unavailable</p>
+                                            <% } else { %>
+                                                <form action="/add-to-cart" method="post">
+                                                    <input type="hidden" name="product" value="<%= productData._id %>">
+                                                    <input type="hidden" name="hiddenQuantity" value="1">
+                                                    <button type="submit" class="buy-now btn btn-sm btn-primary">
+                                                        Add To Cart
+                                                    </button>
+                                                </form>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>

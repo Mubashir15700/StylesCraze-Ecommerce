@@ -1,14 +1,22 @@
 import { Router } from 'express';
+
 import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
-import { 
-    getLogin, getDashboard, getNotifications, getProfile, 
-    getOrders, getProducts, getAddNewProduct, addNewProduct, getProduct, 
-    editProduct, deleteImage, addImage, productAction, getCategories, 
-    newCategory, addNewCategory, getCategory, editCategory, categoryAction, 
-    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, 
-    couponAction, getSalesReport, getBanner 
-} from '../controllers/adminController.js';
+// auth middleware
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
+// admin controller
+import { 
+    getLogin, getDashboard, getNotifications, getProfile, getOrders, getReturnRequests, returnRequestAction,
+    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, getSalesReport, getBanner 
+} from '../controllers/admin/adminController.js';
+// category controller
+import { 
+    getCategories, addNewCategory, newCategory, getCategory, editCategory, categoryAction, 
+} from '../controllers/admin/categoryController.js';
+// product controller
+import { 
+    getProducts, getAddNewProduct, addNewProduct, getProduct, editProduct, addImage, deleteImage, productAction, 
+} from '../controllers/admin/productsController.js';
+// image middleware
 import { 
     uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages 
 } from '../middlewares/imageUplaodMiddleware.js';
@@ -19,7 +27,12 @@ router.get("/", checkAuth, getDashboard);
 router.route("/login").get(isLoggedIn, getLogin).post(loginAdmin);
 router.get("/notifications", checkAuth, getNotifications);
 router.get("/profile", checkAuth, getProfile);
+
 router.get("/orders", checkAuth, getOrders);
+
+router.route("/return-requests")
+.get(checkAuth, getReturnRequests)
+.post(checkAuth, returnRequestAction);
 
 router.get("/products", checkAuth, getProducts);
 router.route("/new-product")

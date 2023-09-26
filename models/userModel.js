@@ -1,5 +1,37 @@
 import mongoose from "mongoose";
 
+const transactionSchema = new mongoose.Schema({
+    amount: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        enum: ['Credit', 'Debit'],
+        required: true,
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now,
+    },
+    transactionId: {
+        type: String,
+        required: true,
+    }
+});
+
+const walletSchema = new mongoose.Schema({
+    balance: {
+        type: Number,
+        default: 0,
+    },
+    transactions: [transactionSchema],
+});
+
 const userSchema = new mongoose.Schema({
     username: {
         required: true,
@@ -52,6 +84,7 @@ const userSchema = new mongoose.Schema({
             },
         }
     ],
+    wallet: walletSchema,
     password: {
         required: true,
         type: String,

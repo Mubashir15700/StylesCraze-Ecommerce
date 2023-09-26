@@ -22,7 +22,7 @@
                                 My Wallet
                             </span>
                             <p class="mb-0 text-black">
-                                Account Balance: $500.00
+                                ₹<%= currentUser.wallet.balance.toFixed(2) %>
                             </p>
                             <span class="d-block text-primary h6 mt-4 text-uppercase">Transaction History</span>
                             <table class="table table-striped text-black">
@@ -30,25 +30,41 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Amount</th>
-                                        <th>Status</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
                                         <th>Transaction ID</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Sample Transaction Entry (Replace with dynamic data) -->
-                                    <tr>
-                                        <td>2023-09-15 10:30 AM</td>
-                                        <td>$100.00</td>
-                                        <td>Completed</td>
-                                        <td>TX123456789</td>
-                                    </tr>
-                                    <!-- Add more transaction entries here -->
+                                    <% if (!currentUser.wallet.transactions.length) { %>
+                                        <tr>
+                                            <td colspan="5">
+                                                No data found.
+                                            </td>
+                                        </tr>
+                                        <% } else { %>
+                                            <% currentUser.wallet.transactions.forEach((transaction) => { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= transaction.timestamp.toLocaleDateString() %>
+                                                    </td>
+                                                    <td>
+                                                        ₹<%= transaction.amount %>
+                                                    </td>
+                                                    <td>
+                                                        <%= transaction.description %>
+                                                    </td>
+                                                    <td>
+                                                        <%= transaction.type %>
+                                                    </td>
+                                                    <td>
+                                                        <%= transaction.transactionId %>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        <% } %>
                                 </tbody>
                             </table>
-                            <!-- <p class="mt-3">
-                                <a href="" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <button type="submit" href="" class="btn btn-sm btn-primary">Delete</button>
-                            </p> -->
                         </div>
                     </div>
                 </div>

@@ -6,86 +6,117 @@
     <body>
         <div class="site-wrap">
             <%- include('../partials/customer/header') -%>
-                <div class="bg-light py-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                                    class="text-black">Orders</strong></div>
+            <div class="bg-light py-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                            class="text-black">Orders</strong>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="site-section">
-                    <div class="container">
-                        <% if (!orders.length) { %>
-                            No orders found.
-                            <% } else { %>
-                                <% orders.forEach((order)=> { %>
-                                    <div class="col-lg-12 p-4 border mb-3 d-flex">
-                                        <div class="col-md-6">
-                                            <a href="/single/<%= order.orderedProducts[0]._id %>">
-                                                <img src="<%= order.orderedProducts[0].images[0] %>" alt="Image"
-                                                    height="180px" width="180px" class="img-fluid">
-                                            </a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <span class="d-block text-primary h6 text-uppercase">
-                                                <%= order.orderedProducts[0].name %>
-                                            </span>
-                                            <p>
-                                                <%= order.orderedProducts[0].description %>,<br>
-                                                Price: <%= order.orderedProducts[0].price %>,
-                                                Quantity: <%= order.products.quantity %>,<br>
-                                                Status: <%= order.status %>,
-                                                Payment Method: <%= order.paymentMethod %><br>
-                                                Delivery Address: <%= order.deliveryAddress.state %>,
-                                                <%= order.deliveryAddress.city %>,
-                                                <%= order.deliveryAddress.area %>,
-                                                <%= order.deliveryAddress.pincode %>
-                                            </p>
-                                            <div class="d-flex">
-                                                <div>
-                                                    <p class="text-black">
-                                                        Order Confirmed, <%= order.orderDate.toLocaleDateString() %>
-                                                    </p>
-                                                    <p class="text-black">
-                                                        Delivery, <%= order.deliveryDate.toLocaleDateString() %>
-                                                    </p>
-                                                </div>
-                                                <% if (order.products.isCancelled) { %>
-                                                    <p class="text-danger ml-3">
-                                                        Cancelled
-                                                    </p>
-                                                <% } else { %>
-                                                    <% if (order.orderDate.toLocaleDateString() <
-                                                    order.deliveryDate.toLocaleDateString()) { %>
-                                                    <p class="ml-3">
-                                                    <form action="/cancel-order" method="post">
-                                                        <input type="hidden" name="orderId" value="<%= order._id %>">
-                                                        <input type="hidden" name="productId" value="<%= order.orderedProducts[0]._id %>">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary mb-3">Cancel</button>
-                                                    </form>
-                                                    </p>
-                                                    <% } %>
-                                                <% } %>
-                                            </div>
-                                        </div>
+            <div class="site-section">
+                <div class="container">
+                <% if (!orders.length) { %>
+                    No orders found.
+                <% } else { %>
+                    <% orders.forEach((order)=> { %>
+                        <div class="col-lg-12 p-4 border mb-3 d-flex">
+                            <div class="col-md-6">
+                                <a href="/single/<%= order.orderedProducts[0]._id %>">
+                                    <img src="<%= order.orderedProducts[0].images[0] %>" alt="Image"
+                                        height="180px" width="180px" class="img-fluid">
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="d-block text-primary h6 text-uppercase">
+                                    <%= order.orderedProducts[0].name %>
+                                </span>
+                                <p>
+                                    <%= order.orderedProducts[0].description %>,<br>
+                                    Price: ₹<%= order.orderedProducts[0].price.toFixed(2) %>,
+                                    Quantity: <%= order.products.quantity %>,<br>
+                                    Payment Method: <%= order.paymentMethod %><br>
+                                    Delivery Address: <%= order.deliveryAddress.state %>,
+                                    <%= order.deliveryAddress.city %>,
+                                    <%= order.deliveryAddress.area %>,
+                                    <%= order.deliveryAddress.pincode %>
+                                </p>
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="text-black">
+                                            Order Confirmed, <%= order.orderDate.toLocaleDateString() %>
+                                        </p>
+                                        <p class="text-black">
+                                            Delivery, <%= order.deliveryDate.toLocaleDateString() %><br>
+                                            <% if (!order.products.isCancelled) { %>
+                                                <strong>Status: <%= order.status %></strong>
+                                            <% } %>
+                                        </p>
                                     </div>
-                                    <% }) %>
+                                    <% if (order.products.isCancelled) { %>
+                                        <p class="text-danger ml-3">
+                                            Order Cancelled
+                                        </p>
+                                    <% } else if (order.products.isReturned) { %>
+                                        <p class="text-muted ml-3">
+                                            Returned
+                                        </p>
+                                    <% } else { %>
+                                        <% if (order.status === 'Processing') { %>
+                                            <p class="ml-3">
+                                                <form action="/cancel-order" method="post">
+                                                    <input type="hidden" name="orderId" value="<%= order._id %>">
+                                                    <input type="hidden" name="productId" value="<%= order.orderedProducts[0]._id %>">
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-primary mb-3">
+                                                        Cancel
+                                                    </button>
+                                                </form>
+                                            </p>
+                                            <% } else if (order.status === 'Delivered') { %>
+                                                <% const currentDate = new Date(); %>
+                                                <% const deliveryDate = new Date(order.deliveryDate); %>
+                                                <% const sevenDaysAfterDelivery = new Date(deliveryDate); %>
+                                                <% sevenDaysAfterDelivery.setDate(sevenDaysAfterDelivery.getDate() + 7); %>
+                                                <% if (order.products.returnRequested === "Pending") { %>
+                                                    <p class="ml-4">Return Request: <span class="text-info">Pending</span></p>
+                                                <% } else if (order.products.returnRequested === "Rejected") { %>
+                                                    <p class="ml-4">Return Request: <span class="text-danger">Rejected</span></p>
+                                                <% } else if (order.products.returnRequested === "Approved") { %>
+                                                    <p class="ml-4">Return Request: <span class="text-success">Approved</span></p>
+                                                <% } else if (order.products.returnRequested === "Completed") { %>
+                                                        <span class="text-dark ml-4">Returned</span></p>
+                                                <% } else if (currentDate <= sevenDaysAfterDelivery) { %>
+                                                    <p class="ml-3">
+                                                        <a 
+                                                        href="/return-product?order=<%= order._id %>&product=<%= order.orderedProducts[0]._id %>&category=<%= order.orderedProducts[0].category %>" 
+                                                        class="btn btn-sm btn-outline-primary mb-3">
+                                                            Return
+                                                        </a>
+                                                    </p>
+                                                <% } %>
+                                            <% } %>
                                         <% } %>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <p><a href="/shop"
-                                                                    class="btn btn-outline-primary btn-sm btn-block">Continue
-                                                                    Shopping</a></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><a href="/shop"
+                                        class="btn btn-outline-primary btn-sm btn-block">Continue Shopping
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <%- include('../partials/customer/footer') -%>
+        <%- include('../partials/customer/footer') -%>

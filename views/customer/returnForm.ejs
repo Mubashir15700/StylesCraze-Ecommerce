@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+<body>
+
+    <div class="site-wrap">
+        <%- include('../partials/customer/header') -%>
+        <div class="bg-light py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> 
+                        <strong class="text-black">
+                            Return-Product
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="site-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="h3 mb-3 text-black">Product Return Form</h2>
+                    </div>
+                    <div class="col-md-12">
+
+                        <form action="/return-product" method="post">
+                            <div class="p-3 p-lg-5 border">
+                                <input type="hidden" name="order" value="<%= order %>">
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label for="c_fname" class="text-black">Username<span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="c_fname" name="username" value="<%= currentUser.username %>" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="c_lname" class="text-black">Email<span
+                                                class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="c_lname" name="email" value="<%= currentUser.email %>" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label for="c_fname" class="text-black">Product<span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="c_fname" name="product" value="<%= product.name %>" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="c_lname" class="text-black">Category<span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="c_lname" name="category" value="<%= category.name %>" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <label for="exampleInputName1" class="text-black">Reason
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                            <select name="reason" class="form-control" required>
+                                                <option value="Defective Item">
+                                                    Defective Item
+                                                </option>
+                                                <option value="Size Issue">
+                                                    Size Issue
+                                                </option>
+                                                <option value="Quality Concerns">
+                                                    Quality Concerns
+                                                </option>
+                                                <option value="Change Of Mind">
+                                                    Change Of Mind
+                                                </option>
+                                                <option value="Others">
+                                                    Others
+                                                </option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <label for="exampleInputName1" class="text-black">Condition Of The Product
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                            <select name="condition" class="form-control" required>
+                                                <option value="Unused">
+                                                    Unused and Unopened
+                                                </option>
+                                                <option value="In Resalable Condition">
+                                                    In Resalable Condition
+                                                </option>
+                                                <option value="No Sign Of Wear and Tear">
+                                                    No Sign Of Wear and Tear
+                                                </option>
+                                                <option value="Properly Packaged">
+                                                    Properly Packaged
+                                                </option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 address border p-3 mb-3">
+                                    <input type="hidden" name="address" value="<%= currentAddress._id %>">
+                                    <div class="d-flex justify-content-between">
+                                        <h3>Choose Return Address</h3>
+                                        <% if (currentAddress) { %>
+                                            <a href="/change-address" class="btn btn-primary">Change</a>
+                                        <% } else { %>
+                                            <a href="/new-address" class="btn btn-outline-primary">
+                                                Add New Address
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                    <% if (currentAddress) { %>
+                                        <p>
+                                            <%= currentAddress.state %>, 
+                                            <%= currentAddress.city %>
+                                            <%= currentAddress.area %>, 
+                                            <%= currentAddress.building %>,
+                                            <%= currentAddress.pincode %>
+                                        </p>
+                                    <% } else { %>
+                                        <p>No address found.</p>
+                                    <% } %>
+                                </div>
+                                <div class="form-group row col-md-12">
+                                    <div class="">
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                            submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/customer/footer') -%>

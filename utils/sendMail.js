@@ -53,7 +53,7 @@ export const sendToMail = (req, res, userId, isForgotPassword) => {
                 userId: userId,
                 otp: hashedOTP,
                 createdAt: Date.now(),
-                expiresAt: Date.now() + 60000 * 60
+                expiresAt: Date.now() + 60000 * 5
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
