@@ -6,7 +6,7 @@ import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 // admin controller
 import { 
     getLogin, getDashboard, getNotifications, getProfile, getOrders, getReturnRequests, returnRequestAction,
-    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, getSalesReport, getBanner 
+    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, getSalesReport 
 } from '../controllers/admin/adminController.js';
 // category controller
 import { 
@@ -16,9 +16,14 @@ import {
 import { 
     getProducts, getAddNewProduct, addNewProduct, getProduct, editProduct, addImage, deleteImage, productAction, 
 } from '../controllers/admin/productsController.js';
+// banner controller
+import { 
+    getBanners, getAddNewBanner, addNewBanner, getBanner, editBanner, addBannerImage, deleteBannerImage, bannerAction, 
+} from '../controllers/admin/bannerController.js';
 // image middleware
 import { 
-    uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages 
+    uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages, 
+    uploadBannerImages, resizeBannerImages 
 } from '../middlewares/imageUplaodMiddleware.js';
 
 const router = Router();
@@ -34,15 +39,14 @@ router.route("/return-requests")
 .get(checkAuth, getReturnRequests)
 .post(checkAuth, returnRequestAction);
 
+// product
 router.get("/products", checkAuth, getProducts);
 router.route("/new-product")
 .get(checkAuth, getAddNewProduct)
 .post(checkAuth, uploadProductImages, resizeProductImages, addNewProduct);
-
 router.route("/edit-product/:id")
 .get(checkAuth, getProduct)
 .post(checkAuth, editProduct);
-
 router.delete("/products/img-delete/:id", checkAuth, deleteImage);
 router.patch("/products/img-add/:id", checkAuth, uploadProductImages, resizeProductImages, addImage);
 router.patch("/products/action/:id", checkAuth, productAction);
@@ -67,8 +71,22 @@ router.route("/new-coupon")
 .post(checkAuth, addNewCoupon);
 router.patch("/coupons/action/:id", checkAuth, couponAction);
 
-router.get("/sales-report", checkAuth, getSalesReport);
-router.get("/banner", checkAuth, getBanner);
+router.route("/sales-report")
+.get(checkAuth, getSalesReport)
+.post(checkAuth, getSalesReport);
+
+// banner
+router.get("/banners", checkAuth, getBanners);
+router.route("/new-banner")
+.get(checkAuth, getAddNewBanner)
+.post(checkAuth, uploadBannerImages, resizeBannerImages, addNewBanner);
+router.route("/edit-banner/:id")
+.get(checkAuth, getBanner)
+.post(checkAuth, editBanner);
+router.delete("/banners/img-delete/:id", checkAuth, deleteBannerImage);
+router.patch("/banners/img-add/:id", checkAuth, uploadBannerImages, resizeBannerImages, addBannerImage);
+router.patch("/banners/action/:id", checkAuth, bannerAction);
+
 router.post("/logout", logoutAdmin);
 
 export default router;

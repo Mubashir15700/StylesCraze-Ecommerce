@@ -115,73 +115,23 @@
                             <div class="col-12 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title">Add new product</h4>
+                                        <h4 class="card-title">Add New Banner</h4>
 
-                                        <form class="forms-sample" action="/admin/new-product" method="post"
+                                        <form class="forms-sample" action="/admin/new-banner" method="post"
                                             enctype="multipart/form-data">
                                             <p class="text-danger mb-3">
                                                 <%= error %>
                                             </p>
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="name">Product</label>
-                                                    <input type="text" class="form-control" name="name" id="name"
-                                                        placeholder="Name" required>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="cat">Category</label>
-                                                    <select name="category" id="category" class="form-control" required>
-                                                        <% categoryOptions.forEach(category=> { %>
-                                                            <option value="<%= category._id %>">
-                                                                <%= category.name %>
-                                                            </option>
-                                                            <% }) %>
-                                                    </select>
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="name">Title</label>
+                                                <input type="text" class="form-control" name="title" id="title"
+                                                    placeholder="Title" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="exampleInputName1">Description</label>
                                                 <input type="text" class="form-control" name="description"
                                                     id="exampleInputName1" placeholder="description" required>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Product price</label>
-                                                    <input type="number" class="form-control" name="price"
-                                                        id="exampleInputName1" placeholder="₹00.00" required>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Stock</label>
-                                                    <input type="number" class="form-control" name="stock"
-                                                        id="exampleInputName1" placeholder="stock" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Size</label>
-                                                    <select name="size" id="size" class="form-control" required>
-                                                        <option value="Small">
-                                                            Small
-                                                        </option>
-                                                        <option value="Medium">
-                                                            Medium
-                                                        </option>
-                                                        <option value="Large">
-                                                            Large
-                                                        </option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Color</label>
-                                                    <input type="text" class="form-control" name="color"
-                                                        id="exampleInputName1" placeholder="color" required>
-                                                </div>
                                             </div>
 
                                             <div class="form-group">
@@ -226,7 +176,8 @@
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-primary mr-2">Create</button>
-                                            <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
+                                            <a href="#" class="btn btn-outline-primary btn-light"
+                                                id="cancel-button">Cancel</a>
                                         </form>
                                     </div>
                                 </div>
@@ -255,7 +206,9 @@
             const previewArea = document.getElementById('preview-group')
 
             previewInput.addEventListener('change', function (e) {
-                const previewImages = document.querySelectorAll('.preview');
+                console.log(e);
+                const previewImages = document.querySelectorAll('.preview')
+                console.log(previewImages);
                 if (e.target.files.length) {
                     if (e.target.files.length > 3) {
                         e.target.value = ''; // Reset the file input
@@ -263,12 +216,13 @@
                         alert("You can only select up to 3 images.");
                     } else {
                         for (let i = 0; i < e.target.files.length; i++) {
+                            console.log(e.target.files.length, previewImages[i]);
                             previewImages[i].src = URL.createObjectURL(e.target.files[i])
                         }
                         previewArea.style.display = 'block'
                     }
                 }
-            })
+            });
 
         </script>
 

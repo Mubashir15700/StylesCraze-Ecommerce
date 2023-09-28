@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../../partials/admin/head') -%>
+
+    <body>
+        <div class="container-scroller">
+            <%- include('../../partials/admin/header') -%>
+                <div class="main-panel">
+                    <div class="content-wrapper my-custom-wrapper">
+                        <div class="col-lg-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h4 class="card-title">Banner</h4>
+                                        <a href="/admin/new-banner" class="btn btn-primary">New Banner</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Images
+                                                    </th>
+                                                    <th>
+                                                        Title
+                                                    </th>
+                                                    <th>
+                                                        Description
+                                                    </th>
+                                                    <th>
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (!foundBanners.length) { %>
+                                                    <tr>
+                                                        <td colspan="4">
+                                                            No banners found.
+                                                        </td>
+                                                    </tr>
+                                                <% } else { %>
+                                                    <% foundBanners.forEach((banner) => { %>
+                                                        <tr>
+                                                            <td class="py-1">
+                                                                <% banner.images.forEach(img=> { %>
+                                                                    <div class="row">
+                                                                        <div class="col-4">
+                                                                            <img src="<%= img %>" alt=""
+                                                                                onclick="openModal('<%= img %>')">
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }) %>
+                                                            </td>
+                                                            <!-- for display and zoom image -->
+                                                            <div id="imageModal" class="modal">
+                                                                <button id="closeButton" class="close-button">
+                                                                    <i class="bi bi-x-lg"></i>
+                                                                </button>
+                                                                <div class="image-zoom">
+                                                                    <img src="" id="modalImage" alt="Image">
+                                                                </div>
+                                                            </div>
+                                                            <td>
+                                                                <%= banner.title %>
+                                                            </td>
+                                                            <td>
+                                                                <%= banner.description %>
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex">
+                                                                    <a href="/admin/edit-banner/<%= banner._id %>"
+                                                                        class="btn btn-info btn-sm mr-1">
+                                                                        Edit
+                                                                    </a>
+                                                                    <form action="/admin/banners/action/<%= banner._id %>?_method=PATCH" method="post">
+                                                                        <% if(!banner.isActive) { %>
+                                                                            <input type="hidden" name="state"
+                                                                                value="1">
+                                                                            <button type="submit"
+                                                                                class="btn btn-warning btn-sm">
+                                                                                Activate
+                                                                            </button>
+                                                                            <% } else { %>
+                                                                                <input type="hidden" name="state"
+                                                                                    value="">
+                                                                                <button type="submit"
+                                                                                    class="btn btn-danger btn-sm">
+                                                                                    Deactivate
+                                                                                </button>
+                                                                                <% } %>
+                                                                    </form>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%- include('../../partials/admin/footer') -%>

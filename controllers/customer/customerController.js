@@ -6,6 +6,7 @@ import Order from "../../models/orderModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Return from "../../models/returnProductsModel.js";
+import Banner from "../../models/bannerModel.js";
 import { razorpay } from "../../utils/razorpayConfig.js";
 import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
 
@@ -13,11 +14,13 @@ export const getHome = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({ softDeleted: false }).populate('category').limit(6);
         const foundCategories = await Category.find({ removed: false });
+        const currentBanner = await Banner.findOne({ isActive: true });
         res.render("customer/home", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             productDatas: foundProducts,
-            categoryDatas: foundCategories
+            categoryDatas: foundCategories,
+            currentBanner,
         });
     } catch (error) {
         next(error)
@@ -114,7 +117,7 @@ export const searchProducts = async (req, res, next) => {
         }).populate('category');
 
         const foundCategories = await Category.find({ removed: false });
-
+ 
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
             productDatas: foundProducts,
