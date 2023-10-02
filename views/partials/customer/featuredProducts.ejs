@@ -36,16 +36,6 @@
                               ₹<%= product.price.toFixed(2) %>
                             </p>
                           <% } %>
-                          <% if (!product.stock) { %>
-                            <p class="text-danger">
-                                Currently Unavailable
-                            </p>
-                            <% } else { %>
-                                <p
-                                    class="text-primary font-weight-bold">
-                                    Stock: <%= product.stock %>
-                                </p>
-                            <% } %>
                       </div>
                     </div>
                   </div>

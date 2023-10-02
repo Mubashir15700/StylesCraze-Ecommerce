@@ -1,7 +1,12 @@
 <li class="custom-li"><a href="/profile"><span class="icon icon-person"></span></a></li>
-<li class="custom-li"><a href="/wishlist">
+<li class="custom-li"><a href="/wishlist" class="site-cart">
     <% if (currentUser && currentUser.wishlist.length) { %>
         <span class="icon icon-heart"></span>
+        <% if (currentUser) { %>
+            <span class="count">
+                <%= currentUser.wishlist.length %>
+            </span>
+        <% } %>
     <% } else { %>
         <span class="icon icon-heart-o"></span>
     <% } %>
@@ -36,9 +41,14 @@
         <li><a href="/shop">Shop</a></li>
         <li><a href="/contact">Contact</a></li>
         <li><a href="/profile"><span class="icon icon-person"></span> Profile</a></li>
-        <li><a href="/wishlist">
+        <li><a href="/wishlist"  class="site-cart">
             <% if (currentUser && currentUser.wishlist.length) { %>
                 <span class="icon icon-heart"></span>
+                <% if (currentUser) { %>
+                    <span class="count">
+                        <%= currentUser.wishlist.length %>
+                    </span>
+                <% } %>
             <% } else { %>
                 <span class="icon icon-heart-o"></span>
             <% } %> 

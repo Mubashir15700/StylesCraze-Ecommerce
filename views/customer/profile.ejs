@@ -24,43 +24,56 @@
                                 <h2 class="h3 mb-3 text-black">Your Profile</h2>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <form action="/profile?_method=PATCH" method="post" enctype="multipart/form-data">
-                                    <div class="p-3 p-lg-5 border">
-                                        <div class="form-group" id="preview-group">
-                                            <% if (currentUser.profile) { %>
-                                                <img src="<%= currentUser.profile %>"
-                                                style="border-radius: 10px;" height="100px" width="100px"
-                                                id="preview-img" alt="profileImage">
-                                            <% } else { %>
-                                                <img src="<%= currentUser.profile %>" class="preview" id="preview-img"
-                                                style="border-radius: 10px; display: none;" height="100px" width="100px"
-                                                id="preview-img" alt="profileImage">     
-                                            <% } %>
-                                        </div>
+                                <div class="p-3 p-lg-5 border">
+                                    <div class="form-group" id="preview-group">
+                                        <% if (currentUser.profile.includes('undefined') || currentUser.profile==='' ) {
+                                            %>
+                                            <div id="personIcon" style="display: block;">
+                                                <i class="bi bi-person-circle" style="font-size: 50px;"></i>
+                                            </div>
+                                            <% } else if (currentUser.profile) { %>
+                                                <form action="/profile/remove-image" method="post" id="removeImg-form">
+                                                    <img src="<%= currentUser.profile %>" style="border-radius: 10px; display: inline;"
+                                                        height="100px" width="100px" id="previewForm-img"
+                                                        alt="profileImage">
+                                                    <button type="button" class="btn btn-danger mt-0" style="display: inline;"
+                                                        id="removeBtn" onclick="removeProfileImage()">X</button>
+                                                </form>
+                                                <% } %>
+                                                    <img src="<%= currentUser.profile %>" class="preview"
+                                                        id="preview-img" style="border-radius: 10px; display: none;"
+                                                        height="100px" width="100px" id="preview-img"
+                                                        alt="profileImage">
+                                    </div>
+                                    <form action="/profile?_method=PATCH" method="post" id="profile-form"
+                                        enctype="multipart/form-data">
                                         <div class="form-group row">
-                                            <div class="form-group">
+                                            <div class="form-group col-md-12">
                                                 <label for="profileImage">Profile Image</label>
                                                 <input type="file" name="profile" id="preview-input" accept="image/*">
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="username" class="text-black">Username <span
                                                         class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="username" name="username"
-                                                    value="<%= currentUser.username %>">
+                                                <input type="text" class="form-control" id="exampleInputUsername1"
+                                                    name="username" value="<%= currentUser.username %>">
+                                                <p class="text-danger" id="username-error-display"></p>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="phone" class="text-black">Phone <span
                                                         class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" id="phone" name="phone"
-                                                    value="<%= currentUser.phone %>">
+                                                <input type="number" class="form-control" id="exampleInputPhone1"
+                                                    name="phone" value="<%= currentUser.phone %>">
+                                                <p class="text-danger" id="phone-error-display"></p>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <label for="email" class="text-black">Email <span
                                                         class="text-danger">*</span></label>
-                                                <input type="email" class="form-control" id="email" name="email"
-                                                    value="<%= currentUser.email %>">
+                                                <input type="email" class="form-control" id="exampleInputEmail1"
+                                                    name="email" value="<%= currentUser.email %>">
+                                                <p class="text-danger" id="email-error-display"></p>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -68,7 +81,7 @@
                                                 <a href="/change-password">Change Password</a>
                                             </div>
                                         </div>
-                                        <p class="text-danger">
+                                        <p class="text-danger" id="common-error-display">
                                             <%= error %>
                                         </p>
                                         <div class="form-group row">
@@ -78,13 +91,13 @@
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group row d-flex justify-content-center">
                                     <div class="col-md-4 mt-1 mb-1">
-                                        <a href="/orders" class="btn btn-outline-primary btn-lg btn-block">
+                                        <a href="/orders" class="btn btn-primary btn-lg btn-block">
                                             Orders
                                         </a>
                                     </div>
@@ -151,6 +164,12 @@
                 </div>
 
                 <script>
+                    
+                    const imageForm = document.getElementById('removeImg-form');
+                    function removeProfileImage() {
+                        imageForm.submit();
+                    }
+
                     const previewArea = document.getElementById('preview-group');
                     const previewInput = document.getElementById('preview-input');
                     const previewImg = document.getElementById('preview-img');
@@ -161,8 +180,47 @@
                             const imgSrc = URL.createObjectURL(e.target.files[0]);
                             previewImg.src = imgSrc;
                             previewArea.style.display = 'block';
+                            if (document.getElementById("personIcon")) {
+                                document.getElementById("personIcon").style.display = 'none';
+                            }
+                            document.getElementById("previewForm-img").style.display = 'none';
+                            document.getElementById("removeBtn").style.display = 'none';
                         }
                     }
+
+                    const form = document.getElementById('profile-form');
+                    const usernameInput = document.getElementById('exampleInputUsername1');
+                    const emailInput = document.getElementById('exampleInputEmail1');
+                    const phoneInput = document.getElementById('exampleInputPhone1');
+
+                    form.addEventListener('submit', (event) => {
+                        let hasErrors = false;
+
+                        // Clear previous error messages
+                        document.getElementById("common-error-display").innerHTML = "";
+                        document.getElementById("username-error-display").innerHTML = "";
+                        document.getElementById("phone-error-display").innerHTML = "";
+                        document.getElementById("email-error-display").innerHTML = "";
+
+                        if (!usernameInput.value || !emailInput.value || !phoneInput.value) {
+                            hasErrors = true;
+                            document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
+                        } else {
+                            if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
+                                hasErrors = true;
+                                document.getElementById("email-error-display").innerHTML = "Please enter a valid email.";
+                            }
+                            if (phoneInput.value.length !== 10) {
+                                hasErrors = true;
+                                document.getElementById("phone-error-display").innerHTML = "Please enter a valid phone number";
+                            }
+                        }
+
+                        if (hasErrors) {
+                            event.preventDefault();
+                        }
+                    });
+
                 </script>
 
                 <%- include('../partials/customer/footer') -%>

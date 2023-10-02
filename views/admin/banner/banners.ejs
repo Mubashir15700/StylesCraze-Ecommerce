@@ -47,11 +47,11 @@
                                                                 <% banner.images.forEach(img=> { %>
                                                                     <div class="row">
                                                                         <div class="col-4">
-                                                                            <img src="<%= img %>" alt=""
+                                                                            <img class="bannerImg" src="<%= img %>" alt=""
                                                                                 onclick="openModal('<%= img %>')">
                                                                         </div>
                                                                     </div>
-                                                                    <% }) %>
+                                                                <% }) %>
                                                             </td>
                                                             <!-- for display and zoom image -->
                                                             <div id="imageModal" class="modal">

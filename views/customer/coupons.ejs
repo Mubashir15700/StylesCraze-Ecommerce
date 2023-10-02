@@ -10,99 +10,58 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                                    class="text-black">Coupons</strong></div>
+                                    class="text-black">Coupons
+                                </strong>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="container">
-                    <div class="form-group">
-                        <div class="p-3 border m-3">
-                            <span class="d-block text-primary h3 text-uppercase">
+                    <div class="coupon-container">
+                        <div class="col-lg-6 pt-5 pb-3">
+                            <span class="text-primary h5 text-uppercase">
                                 All New Coupons
                             </span>
-                            <table class="table table-striped text-black">
-                                <thead>
-                                    <tr>
-                                        <th>Description</th>
-                                        <th>Discount Type</th>
-                                        <th>Minimum Purchase Amount</th>
-                                        <th>Expiration Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (!allCoupons.length) { %>
-                                        <tr>
-                                            <td colspan="6">
-                                                No new coupons found.
-                                            </td>
-                                        </tr>
-                                    <% } else { %>
-                                        <% allCoupons.forEach((coupon) => { %>
-                                            <tr>
-                                                <td><%= coupon.description %></td>
-                                                <td><%= coupon.discountType %></td>
-                                                <td><%= coupon.minimumPurchaseAmount %></td>
-                                                <td><%= coupon.expirationDate.toLocaleDateString() %></td>
-                                            </tr>
-                                        <% }) %>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                            <% if (!allCoupons.length) { %>
+                                <div class="p-4 border mb-3">
+                                    No new coupons found.
+                                </div>
+                            <% } else { %>
+                                <% allCoupons.forEach((coupon)=> { %>
+                                    <div class="p-4 border mb-3">
+                                        <p class="mb-0 text-black">
+                                            <%= coupon.description %>,<br>
+                                            Discount Type: <%= coupon.discountType %>,
+                                            Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %>,<br>
+                                            Expires At: <%= coupon.expirationDate %>
+                                        </p>
+                                    </div>
+                                <% }) %>
+                            <% } %>
                         </div>
-                        <div class="p-3 border m-3">
-                            <span class="d-block text-primary h3 text-uppercase">
+                        <div class="col-lg-6 pt-5 pb-3">
+                            <span class="text-primary h5 text-uppercase">
                                 Coupons Earned
                             </span>
-                            <table class="table table-striped text-black">
-                                <thead>
-                                    <tr>
-                                        <th>Code</th>
-                                        <th>Discount Type</th>
-                                        <th>
-                                            Discount Amount<br>
-                                            /Percentage
-                                        </th>
-                                        <th>Expiration Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (!earnedCoupons.length) { %>
-                                        <tr>
-                                            <td colspan="6">
-                                                You haven't earned any coupons yet.
-                                            </td>
-                                        </tr>
-                                    <% } else { %>
-                                        <% earnedCoupons.forEach((coupon) => { %>
-                                            <tr>
-                                                <td>
-                                                    <% if (coupon.isUsed) { %>
-                                                        Already used.
-                                                    <% } else if (!coupon.coupon.isActive) { %>
-                                                        Expired
-                                                    <% } else { %>
-                                                        <%= coupon.coupon.code %>
-                                                    <% } %>
-                                                </td>
-                                                <td><%= coupon.coupon.discountType %></td>
-                                                <td>
-                                                    <%= coupon.coupon.discountAmount %>
-                                                    <% if (coupon.coupon.discountType === 'percentage') { %>
-                                                        %
-                                                    <% } else { %>
-                                                        /-
-                                                    <% } %>
-                                                </td>
-                                                <td><%= coupon.coupon.expirationDate.toLocaleDateString() %></td>
-                                            </tr>
-                                        <% }) %>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                            <% if (!earnedCoupons.length) { %>
+                                <div class="p-4 border mb-3">
+                                    You haven't earned any coupons yet.
+                                </div>
+                            <% } else { %>
+                                <% earnedCoupons.forEach((coupon)=> { %>
+                                    <div class="p-4 border mb-3">
+                                        <p class="mb-0 text-black">
+                                            Code: <%= coupon.coupon.code %>,<br>
+                                            <%= coupon.coupon.description %>,
+                                            Discount Type: <%= coupon.coupon.discountType %>,
+                                            Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
+                                        </p>
+                                    </div>
+                                <% }) %>
+                            <% } %>
                         </div>
                     </div>
                 </div>
-
 
                 <%- include('../partials/customer/footer') -%>

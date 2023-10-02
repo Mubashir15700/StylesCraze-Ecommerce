@@ -3,7 +3,7 @@ import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Order from "../../models/orderModel.js";
-import Return from "../../models/returnProductsModel.js";
+import { sendToMail } from '../../utils/sendMail.js';
 import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
 
 export const getProfile = async (req, res, next) => {
@@ -13,7 +13,8 @@ export const getProfile = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             error: "",
-            addresses
+            addresses,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -23,14 +24,48 @@ export const getProfile = async (req, res, next) => {
 export const updateProfile = async (req, res, next) => {
     const { profile, username, phone, email } = req.body;
     try {
-        const currentUser = await User.findById(req.session.user);
-        let updatedObj = {
-            username, phone, email
+        if (!username || !phone || !email) {
+            const addresses = await Address.find({ user: req.session.user });
+            return res.render("customer/profile", {
+                isLoggedIn: isLoggedIn(req, res),
+                currentUser: await getCurrentUser(req, res),
+                error: "Username, mobile and email are required.",
+                addresses,
+                activePage: 'Profile',
+            });
+        } else {
+            const currentUser = await User.findById(req.session.user);
+
+            let updatedObj = {
+                username, phone, email
+            };
+
+            if (profile && profile.length) {
+                updatedObj.profile = "/profiles/" + profile;
+            }
+
+            await currentUser.updateOne(updatedObj);
+
+            if (currentUser.email !== email) {
+                currentUser.verified = false;
+                await currentUser.save();
+                sendToMail(req, res, req.session.user, false);
+            } else {
+                res.redirect("/profile");
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const removeProfileImage = async (req, res, next) => {
+    try {
+        let removeProfile = {
+            profile: '',
         };
-
-        updatedObj.profile = "/profiles/" + profile;
-
-        await currentUser.updateOne(updatedObj);
+        const currentUser = await User.findById(req.session.user);
+        await currentUser.updateOne(removeProfile);
         res.redirect("/profile");
     } catch (error) {
         next(error);
@@ -42,7 +77,8 @@ export const getNewAddress = async (req, res, next) => {
         res.render("customer/address/newAddress", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            error: ""
+            error: "",
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -78,7 +114,8 @@ export const getEditAddress = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             currentAddress,
-            error: ""
+            error: "",
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -94,7 +131,8 @@ export const editAddress = async (req, res, next) => {
                 isLoggedIn: isLoggedIn(req, res),
                 currentUser: await getCurrentUser(req, res),
                 currentAddress,
-                error: "All fields are required."
+                error: "All fields are required.",
+                activePage: 'Profile',
             });
         } else {
             await Address.updateOne(
@@ -134,6 +172,7 @@ export const getAddresses = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             addresses,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -159,8 +198,8 @@ export const getChangePassword = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             error: "",
-            isForgotPassword: false,
-            email: currentUser.email
+            email: currentUser.email,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -169,10 +208,12 @@ export const getChangePassword = async (req, res, next) => {
 
 export const getWallet = async (req, res, next) => {
     try {
-        const currentUser = await User.findById(req.session.user);
+        // fix sorting
+        const currentUser = await User.findById(req.session.user).sort({ 'wallet.transactions.timestamp': -1 });
         res.render("customer/wallet", {
             isLoggedIn: isLoggedIn(req, res),
-            currentUser
+            currentUser,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -195,6 +236,7 @@ export const getCoupons = async (req, res, next) => {
             currentUser,
             allCoupons: remainingCoupons,
             earnedCoupons,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);
@@ -224,7 +266,8 @@ export const getOrders = async (req, res, next) => {
         res.render("customer/orders", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
-            orders
+            orders,
+            activePage: 'Profile',
         });
     } catch (error) {
         next(error);

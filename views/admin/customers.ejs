@@ -45,8 +45,12 @@
                                             <% customerDatas.forEach((customer) => { %>
                                                 <tr>
                                                     <td class="py-1">
-                                                        <img src="<%= customer.profile %>" alt="profile"
-                                                        onclick="openModal('<%= customer.profile %>')" />
+                                                        <% if (customer.profile.includes('undefined') || customer.profile === '') { %>
+                                                            <i class="bi bi-person-circle"  style="font-size: 24px;"></i>
+                                                        <% } else { %>
+                                                            <img src="<%= customer.profile %>" alt="profile"
+                                                            onclick="openModal('<%= customer.profile %>')" />
+                                                        <% } %>
                                                     </td>
                                                     <!-- for display and zoom image -->
                                                     <div id="imageModal" class="modal">

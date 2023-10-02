@@ -42,17 +42,23 @@
                                                                 Stock: <%= item.stock %>,
                                                             </p>
                                                             <div class="d-flex">
-                                                                <form action="/add-to-cart" method="post">
-                                                                    <input type="hidden" name="product"
-                                                                        value="<%= item._id %>">
-                                                                    <input type="hidden" name="from"
-                                                                        value="wishlist">
-                                                                    <input type="hidden" name="hiddenQuantity" value="1">
-                                                                    <button type="submit"
-                                                                        class="buy-now btn btn-sm btn-outline-primary mr-3">
-                                                                        Add To Cart
-                                                                    </button>
-                                                                </form>
+                                                                <% if (item.stock > 0) { %>
+                                                                    <form action="/add-to-cart" method="post">
+                                                                        <input type="hidden" name="product"
+                                                                            value="<%= item._id %>">
+                                                                        <input type="hidden" name="from"
+                                                                            value="wishlist">
+                                                                        <input type="hidden" name="hiddenQuantity" value="1">
+                                                                        <button type="submit"
+                                                                            class="buy-now btn btn-sm btn-outline-primary mr-3">
+                                                                            Add To Cart
+                                                                        </button>
+                                                                    </form>
+                                                                <% } else { %>
+                                                                    <p class="text-danger mr-2">
+                                                                        Currently Unavailable
+                                                                    </p>
+                                                                <% } %>
                                                                 <form action="/update-wishlist" method="post">
                                                                     <input type="hidden" name="productId"
                                                                         value="<%= item._id %>">

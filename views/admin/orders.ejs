@@ -34,9 +34,6 @@
                                                         Delivery Address
                                                     </th>
                                                     <th>
-                                                        Payment
-                                                    </th>
-                                                    <th>
                                                         Status
                                                     </th>
                                                 </tr>
@@ -61,10 +58,15 @@
                                                                         <span class="text-primary h6 text-uppercase">
                                                                             <%= product.product.name %> 
                                                                         </span><br>
-                                                                        Price: <%= product.product.price %> <br>
-                                                                        Quantity: <%= product.quantity %> <br>
+                                                                        Price: <%= product.product.price %>,
+                                                                        Quantity: <%= product.quantity %>
                                                                     </div>
                                                                 <% }) %>
+                                                                <span>
+                                                                    <strong>
+                                                                        Payment Method: <%= order.paymentMethod %>
+                                                                    </strong>
+                                                                </span>
                                                             </td>
                                                             <td>
                                                                 Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
@@ -76,9 +78,6 @@
                                                                 <%= order.deliveryAddress.area %>,
                                                                 Pincode: <%= order.deliveryAddress.pincode %><br>
                                                                 House No.: <%= order.deliveryAddress.building %>
-                                                            </td>
-                                                            <td>
-                                                                <%= order.paymentMethod %>
                                                             </td>
                                                             <td>
                                                                 <% order.products.forEach((product) => { %>

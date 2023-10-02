@@ -1106,6 +1106,13 @@ i.bi-list {
   }
 }
 
+/* coupons */
+@media (min-width: 767px) {
+  .coupon-container {
+    display: flex;
+  }
+}
+
 #dropdown-menu {
   display: none;
   position: absolute;

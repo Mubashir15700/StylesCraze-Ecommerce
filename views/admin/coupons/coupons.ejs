@@ -26,8 +26,8 @@
                                                         Discount Type
                                                     </th>
                                                     <th>
-                                                        Discount Amount<br>
-                                                        /Percentage
+                                                        Discount Amount/<br>
+                                                        Percentage
                                                     </th>
                                                     <th>
                                                         Expiration Date
@@ -36,9 +36,7 @@
                                                         Min. Purhcase Amount
                                                     </th>
                                                     <th>
-                                                        Usage Limit
-                                                    </th>
-                                                    <th>
+                                                        Usage Limit/<br>
                                                         Used Count
                                                     </th>
                                                     <th>
@@ -57,7 +55,7 @@
                                                     <% foundCoupons.forEach((coupon) => { %>
                                                         <tr>
                                                             <td class="py-1">
-                                                                XXX<%= coupon.code.slice(-2) %><br>
+                                                                <%= coupon.code %><br>
                                                             </td>
                                                             <td>
                                                                 <% if (coupon.discountType === 'percentage') { %>
@@ -81,9 +79,7 @@
                                                                 <%= coupon.minimumPurchaseAmount %>
                                                             </td>
                                                             <td>
-                                                                <%= coupon.usageLimit %>
-                                                            </td>
-                                                            <td>
+                                                                <%= coupon.usageLimit %>/
                                                                 <%= coupon.usedCount %>
                                                             </td>
                                                             <td>

@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import {
-    loginCustomer, registerCustomer, Verification, resendOTP, changePassword, sendOTP, logoutCustomer,
+    loginCustomer, registerCustomer, Verification, resendOTP, getNewPassword, newPassword, changePassword, sendOTP, logoutCustomer,
 } from '../controllers/authController.js';
 // auth middleware
 import { checkAuth, isLoggedIn, checkToBlock } from '../middlewares/customerMiddleware.js';
 // customer controller
 import {
-    getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts, 
-    getContact, getLogin, getRegister, getEnterEmail, getWishlist, updateWishlist, applyCoupon, placeOrder, 
+    getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts,
+    getContact, getLogin, getRegister, getEnterEmail, getWishlist, updateWishlist, applyCoupon, placeOrder,
     cancelOrder, getReturnProductForm, requestReturnProduct
 } from '../controllers/customer/customerController.js';
 // profile controller
 import {
-    getProfile, updateProfile, getNewAddress, addNewAddress, getEditAddress, editAddress,
+    getProfile, updateProfile, removeProfileImage, getNewAddress, addNewAddress, getEditAddress, editAddress,
     deleteAddress, getAddresses, changeDefaultAddress, getChangePassword, getOrders, getWallet, getCoupons,
 } from '../controllers/customer/profileController.js'
 // cart controller
@@ -43,9 +43,14 @@ router.route("/forgot-password")
 router.post("/resend-otp", checkToBlock, resendOTP);
 router.post("/verification", checkToBlock, Verification);
 
+router.route("/new-password/:id")
+    .get(checkToBlock, getNewPassword)
+    .post(checkToBlock, newPassword);
+
 router.route("/profile")
     .get(checkToBlock, checkAuth, getProfile)
     .patch(checkToBlock, checkAuth, uploadProfileImage, resizeProfileImage, updateProfile);
+router.route("/profile/remove-image").post(checkToBlock, checkAuth, removeProfileImage);
 
 router.route("/new-address")
     .get(checkToBlock, checkAuth, getNewAddress)
@@ -86,7 +91,7 @@ router.post("/apply-coupon", checkToBlock, checkAuth, applyCoupon);
 router.post("/cancel-order", checkToBlock, checkAuth, cancelOrder);
 
 router.route("/return-product")
-.get(checkToBlock, checkAuth, getReturnProductForm)
-.post(checkToBlock, checkAuth, requestReturnProduct);
+    .get(checkToBlock, checkAuth, getReturnProductForm)
+    .post(checkToBlock, checkAuth, requestReturnProduct);
 
 export default router;

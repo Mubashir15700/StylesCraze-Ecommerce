@@ -8,8 +8,23 @@ const userOTPVerificationSchema = new mongoose.Schema({
     otp: {
         type: String,
     },
-    createdAt: Date,
-    expiresAt: Date
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    expiresAt: {
+        type: Date,
+    },
+});
+
+// Add a pre-save hook to calculate the delivery date
+userOTPVerificationSchema.pre('save', function (next) {
+    const createdAt = this.createdAt;
+    const expiresAt = new Date(createdAt);
+    expiresAt.setSeconds(expiresAt.getSeconds() + 30);
+    this.expiresAt = expiresAt;
+
+    next();
 });
 
 const UserOTPVerification = mongoose.model("UserOTPVerification", userOTPVerificationSchema);

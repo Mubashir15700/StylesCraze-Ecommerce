@@ -21,6 +21,7 @@ export const getHome = async (req, res, next) => {
             productDatas: foundProducts,
             categoryDatas: foundCategories,
             currentBanner,
+            activePage: 'Home',
         });
     } catch (error) {
         next(error)
@@ -32,6 +33,7 @@ export const getAbout = async (req, res, next) => {
         res.render("customer/about", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
+            activePage: 'About',
         });
     } catch {
         next(error);
@@ -49,6 +51,7 @@ export const getShop = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
+            activePage: 'Shop',
         });
     } catch (error) {
         next(error);
@@ -87,6 +90,7 @@ export const getCategoryProducts = async (req, res, next) => {
             categoryDatas: foundCategories,
             totalPages: totalPages,
             categoryBased: true,
+            activePage: 'Shop',
         });
     } catch (error) {
         next(error);
@@ -100,6 +104,7 @@ export const getSingleProduct = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             productData: foundProduct,
             currentUser: await getCurrentUser(req, res),
+            activePage: 'Shop',
         });
     } catch (error) {
         next(error);
@@ -117,7 +122,7 @@ export const searchProducts = async (req, res, next) => {
         }).populate('category');
 
         const foundCategories = await Category.find({ removed: false });
- 
+
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
             productDatas: foundProducts,
@@ -125,6 +130,7 @@ export const searchProducts = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
+            activePage: 'Shop',
         });
     } catch (error) {
         next(error);
@@ -136,7 +142,21 @@ export const filterProducts = async (req, res, next) => {
         const data = req.body;
         const sizes = [];
         const colors = [];
+        const searchText = data.search;
+        const filterPrice = parseInt(data.filterPrice);
 
+        let minPrice;
+        let maxPrice
+        if (filterPrice === 299) {
+            minPrice = 0;
+            maxPrice = 299;
+        } else if (filterPrice === 900) {
+            minPrice = 900;
+            maxPrice = Number.POSITIVE_INFINITY;
+        } else {
+            minPrice = filterPrice;
+            maxPrice = filterPrice + 199;
+        }
         for (const key in data) {
             if (key.startsWith('size')) {
                 sizes.push(data[key]);
@@ -150,6 +170,14 @@ export const filterProducts = async (req, res, next) => {
             $or: [
                 { 'size': { $in: sizes } },
                 { 'color': { $in: colors } }
+            ],
+            $or: [
+                { name: { $regex: searchText, $options: 'i' } },
+                { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } },
+            ],
+            $and: [
+                { price: { $gte: minPrice } },
+                { price: { $lte: maxPrice } }
             ]
         }).populate('category');
 
@@ -161,8 +189,8 @@ export const filterProducts = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
+            activePage: 'Shop',
         });
-
     } catch (error) {
         next(error);
     }
@@ -173,6 +201,7 @@ export const getContact = async (req, res, next) => {
         res.render("customer/contact", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
+            activePage: 'Contact',
         });
     } catch (error) {
         next(error);
@@ -223,6 +252,7 @@ export const getWishlist = async (req, res, next) => {
         res.render("customer/wishlist", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
+            activePage: 'Wishlist',
         });
     } catch (error) {
         next(error);
@@ -336,34 +366,16 @@ export const placeOrder = async (req, res, next) => {
             }
         });
 
-        // stock update
-        currentUser.cart.forEach(async (item) => {
-            const foundProduct = await Product.findById(item.product._id);
-            foundProduct.stock -= item.quantity;
-            await foundProduct.save();
+        let newOrder = new Order({
+            user: req.session.user,
+            products: orderedProducts,
+            totalAmount: grandTotal - req.body.discount + 5,
+            paymentMethod: req.body.method,
+            deliveryAddress,
         });
 
-        const currentEarnedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
-        if (currentEarnedCoupon) {
-            currentEarnedCoupon.isUsed = true;
-            await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
-        }
-
         if (req.body.method === 'cod') {
-            const newOrder = new Order({
-                user: req.session.user,
-                products: orderedProducts,
-                totalAmount: grandTotal - req.body.discount + 5,
-                paymentMethod: req.body.method,
-                deliveryAddress,
-            });
             await newOrder.save();
-
-            currentUser.cart = [];
-
-            await currentUser.save();
-
-            res.redirect("/orders");
         } else if (req.body.method === 'rzp') {
             // Create a Razorpay order
             const razorpayOrder = await razorpay.orders.create({
@@ -371,41 +383,20 @@ export const placeOrder = async (req, res, next) => {
                 currency: 'INR', // Currency code (change as needed)
                 receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`, // Provide a unique receipt ID
             });
+
             // Save the order details to your database
-            const newOrder = new Order({
-                user: req.session.user,
-                products: orderedProducts,
-                totalAmount: grandTotal - req.body.discount + 5,
-                paymentMethod: 'rzp', // Indicate the payment method
-                deliveryAddress,
-                razorpayOrderId: razorpayOrder.id, // Save the Razorpay order ID
-            });
+            newOrder.razorpayOrderId = razorpayOrder.id; // Save the Razorpay order ID
             await newOrder.save();
 
-            currentUser.cart = [];
-
-            // coupons
-            const foundCoupon = await Coupon.findOne({
-                isActive: true, minimumPurchaseAmount: { $lte: grandTotal }
-            }).sort({ minimumPurchaseAmount: -1 });
-            if (foundCoupon) {
-                const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
-                if (!couponExists) {
-                    currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
-                }
-            }
-
-            await currentUser.save();
-
             // Redirect the user to the Razorpay checkout page
-            return res.render('customer/rzp', {
+            res.render('customer/rzp', {
                 order: razorpayOrder,
                 key_id: process.env.RAZORPAY_ID_KEY,
                 user: currentUser
             });
         } else {
             if (currentUser.wallet.balance < grandTotal + 5) {
-                res.render("customer/checkout", {
+                return res.render("customer/checkout", {
                     isLoggedIn: isLoggedIn(req, res),
                     currentUser,
                     cartProducts: currentUser.cart,
@@ -417,31 +408,47 @@ export const placeOrder = async (req, res, next) => {
                     error: "Insufficient wallet balance.",
                 });
             } else {
-                const newOrder = new Order({
-                    user: req.session.user,
-                    products: orderedProducts,
-                    totalAmount: grandTotal - req.body.discount + 5,
-                    paymentMethod: req.body.method,
-                    deliveryAddress,
-                });
                 await newOrder.save();
-
                 currentUser.wallet.balance -= (grandTotal + 5);
                 const transactionData = {
                     amount: grandTotal + 5,
                     description: 'Order placed.',
                     type: 'Debit',
-                    transactionId: 'trans.Id',
                 };
                 currentUser.wallet.transactions.push(transactionData);
-
-                currentUser.cart = [];
-
-                await currentUser.save();
-
-                res.redirect("/orders");
             }
         }
+
+        // stock update
+        currentUser.cart.forEach(async (item) => {
+            const foundProduct = await Product.findById(item.product._id);
+            foundProduct.stock -= item.quantity;
+            await foundProduct.save();
+        });
+
+        currentUser.cart = [];
+        await currentUser.save();
+
+        // coupons
+        const foundCoupon = await Coupon.findOne({
+            isActive: true, minimumPurchaseAmount: { $lte: grandTotal }
+        }).sort({ minimumPurchaseAmount: -1 });
+
+        if (foundCoupon) {
+            const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
+            if (!couponExists) {
+                currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
+                await currentUser.save();
+            }
+        }
+
+        const currentUsedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
+        if (currentUsedCoupon) {
+            currentUsedCoupon.isUsed = true;
+            await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
+        }
+
+        res.redirect("/orders");
     } catch (error) {
         next(error);
     }
@@ -453,17 +460,14 @@ export const cancelOrder = async (req, res, next) => {
         const foundProduct = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
         if (foundOrder.paymentMethod !== 'cod') {
             const currentUser = await User.findById(req.session.user);
-            // console.log(currentUser.wallet);
-            // console.log(foundProduct.product.price, foundProduct.quantity);
 
-            const refundAmount = foundProduct.product.price * foundProduct.quantity;
+            const refundAmount = (foundProduct.product.price * foundProduct.quantity) + 5;
             currentUser.wallet.balance += refundAmount;
 
             const transactionData = {
                 amount: refundAmount,
                 description: 'Order cancelled.',
                 type: 'Credit',
-                transactionId: 'trans.Id',
             };
             currentUser.wallet.transactions.push(transactionData);
 
@@ -507,6 +511,7 @@ export const getReturnProductForm = async (req, res) => {
             order: req.query.order,
             category,
             product,
+            activePage: 'Orders',
         });
     } catch (error) {
         next(error);

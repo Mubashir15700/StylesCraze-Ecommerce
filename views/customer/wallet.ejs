@@ -17,55 +17,31 @@
 
                 <div class="container">
                     <div class="form-group">
-                        <div class="p-3 border m-3">
-                            <span class="d-block text-primary h3 text-uppercase">
-                                My Wallet
+                        <div class="p-4 border m-5">
+                            <span class="d-block text-primary h5 text-uppercase">My Wallet</span>
+                            <span class="d-block h6 text-uppercase">
+                                Balance: <strong>₹<%= currentUser.wallet.balance.toFixed(2) %></strong>
                             </span>
-                            <p class="mb-0 text-black">
-                                ₹<%= currentUser.wallet.balance.toFixed(2) %>
-                            </p>
-                            <span class="d-block text-primary h6 mt-4 text-uppercase">Transaction History</span>
-                            <table class="table table-striped text-black">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Amount</th>
-                                        <th>Description</th>
-                                        <th>Type</th>
-                                        <th>Transaction ID</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% if (!currentUser.wallet.transactions.length) { %>
-                                        <tr>
-                                            <td colspan="5">
-                                                No data found.
-                                            </td>
-                                        </tr>
-                                        <% } else { %>
-                                            <% currentUser.wallet.transactions.forEach((transaction) => { %>
-                                                <tr>
-                                                    <td>
-                                                        <%= transaction.timestamp.toLocaleDateString() %>
-                                                    </td>
-                                                    <td>
-                                                        ₹<%= transaction.amount %>
-                                                    </td>
-                                                    <td>
-                                                        <%= transaction.description %>
-                                                    </td>
-                                                    <td>
-                                                        <%= transaction.type %>
-                                                    </td>
-                                                    <td>
-                                                        <%= transaction.transactionId %>
-                                                    </td>
-                                                </tr>
-                                            <% }) %>
-                                        <% } %>
-                                </tbody>
-                            </table>
+                            <span class="d-block text-primary mt-4 text-uppercase">Transaction History</span>
+                            <% if (!currentUser.wallet.transactions.length) { %>
+                                <p class="mb-0">No data found.</p>
+                                <% } else { %>
+                                    <% currentUser.wallet.transactions.forEach((transaction)=> { %>
+                                        <div class="d-flex">
+                                            <p class="mb-0">
+                                                <span class="text-dark"><%= transaction.timestamp %>,</span>
+                                                <span><%= transaction.description %></span>
+                                            </p>
+                                            <% if (transaction.type === 'Credit') { %>
+                                                <span class="text-success ml-3">₹<%= transaction.amount %></span>
+                                            <% } else { %>
+                                                <span class="text-dark ml-3">₹<%= transaction.amount %></span>
+                                            <% } %>
+                                        </div>
+                                    <% }) %>
+                                <% } %>
                         </div>
+
                     </div>
                 </div>
 

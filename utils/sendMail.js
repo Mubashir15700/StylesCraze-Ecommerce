@@ -48,18 +48,17 @@ export const sendToMail = (req, res, userId, isForgotPassword) => {
 
     const sendMail = async (transporter, options) => {
         try {
+            await UserOTPVerification.deleteMany({ userId });
             const hashedOTP = await bcrypt.hash(OTP, salt);
             const newUserOTPVerification = new UserOTPVerification({
                 userId: userId,
                 otp: hashedOTP,
-                createdAt: Date.now(),
-                expiresAt: Date.now() + 60000 * 5
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
             res.render('customer/auth/verification', { userId, 
                 email: req.body.email, error: "", 
-                isForgotPassword 
+                isForgotPassword,
             });
         } catch (error) {
             res.status(500).json({

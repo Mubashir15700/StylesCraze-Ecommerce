@@ -15,7 +15,7 @@
                                     <form action="/admin/sales-report?filtered=true" method="post">
                                         <input type="date" name="from">
                                         <input type="date" name="upto">
-                                        <button class="btn btn-secondary btn-sm" type="submit">Apply</button>
+                                        <button class="btn btn-outline-primary btn-sm" type="submit">Apply</button>
                                     </form>
                                     <div class="table-responsive">
                                         <% let productsCount = 0 %>
@@ -35,9 +35,6 @@
                                                     <th>
                                                         Delivery Address
                                                     </th>
-                                                    <th>
-                                                        Payment Method
-                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -49,25 +46,28 @@
                                                     </tr>
                                                 <% } else { %>
                                                     <% salesReport.forEach((report) => { %>
-                                                        <% totalRevenue += report.totalAmount %>
                                                         <tr>
                                                             <td>
-                                                                <%= report.user.username %><br>
-                                                                <p class="text-dark"><%= report.user.email %></p><br>
-                                                                <%= report.user.phone %>
+                                                                <%= report.userInfo.username %><br>
+                                                                <p class="text-dark"><%= report.userInfo.email %></p><br>
+                                                                <%= report.userInfo.phone %>
                                                              </td>
                                                              <td>
                                                                 <div>
-                                                                <% report.products.forEach((product) => { %>
                                                                     <% productsCount += 1 %>
                                                                     <div class="border-bottom mb-3">
                                                                         <span class="text-primary h6 text-uppercase">
-                                                                            <%= product.product.name %> 
+                                                                            <%= report.products.productInfo.name %> 
                                                                         </span><br>
-                                                                        Price: <%= product.product.price %> <br>
-                                                                        Quantity: <%= product.quantity %> <br>
+                                                                        Price: <%= report.products.productInfo.price %>,
+                                                                        Quantity: <%= report.products.quantity %>
+                                                                        <% totalRevenue += (report.products.productInfo.price * report.products.quantity) %>
                                                                     </div>
-                                                                <% }) %>
+                                                                <span>
+                                                                    <strong>
+                                                                        Payment Method: <%= report.paymentMethod %>
+                                                                    </strong>
+                                                                </span>
                                                             </td>
                                                             <td>
                                                                 Order Confirmed, <%= report.orderDate.toLocaleDateString() %><br>
@@ -80,18 +80,20 @@
                                                                 Pincode: <%= report.deliveryAddress.pincode %><br>
                                                                 House No.: <%= report.deliveryAddress.building %>
                                                             </td>
-                                                            <td>
-                                                                <%= report.paymentMethod %>
-                                                            </td>
                                                         </tr>
                                                     <% }) %>
                                                 <% } %>
                                             </tbody>
                                         </table>
-                                        <div class="col-lg-12 border-top">
-                                            Total orders done: <%= salesReport.length %><br>
-                                            Total products sold: <%= productsCount %><br>
-                                            Total Revenue: ₹<%= totalRevenue.toFixed(2) %>
+                                        <div class="d-flex border-top">
+                                            <div class="col-lg-9 pt-3">
+                                                Total orders done: <%= salesReport.length %><br>
+                                                Total products sold: <%= productsCount %><br>
+                                                <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
+                                            </div>
+                                            <div class="col-lg-3 p-4">
+                                                <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">Download</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

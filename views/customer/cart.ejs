@@ -41,7 +41,8 @@
                                                                 <%= cartItem.product.description %><br>
                                                                     Category: <%= cartItem.product.category.name %><br>
                                                                         <strong class="text-black">₹<%=
-                                                                                cartItem.product.price.toFixed(2) %></strong>
+                                                                                cartItem.product.price.toFixed(2) %>
+                                                                                </strong>
                                                             </p>
                                                             <p>Stock: <%= cartItem.product.stock %>
                                                             </p>
@@ -54,7 +55,8 @@
                                                             <span class="text-black">
                                                                 Total Price: ₹<span id="totalPrice_<%= cartItem._id %>"
                                                                     class="text-black">
-                                                                    <%= (cartItem.product.price * cartItem.quantity).toFixed(2) %>
+                                                                    <%= (cartItem.product.price *
+                                                                        cartItem.quantity).toFixed(2) %>
                                                                 </span>
                                                             </span>
                                                             <div class="input-group mb-3" style="max-width: 120px;">
@@ -120,16 +122,17 @@
                                                     <div class="row mb-5">
                                                         <% if (insufficientStockProduct) { %>
                                                             <p class="col-md-12 text-danger">
-                                                                Insufficient stocks. Please check your cart item's quantities
+                                                                Insufficient stocks. Please check your cart item's
+                                                                quantities
                                                             </p>
-                                                        <% } %>
-                                                        <div class="col-md-12">
-                                                            <a href="/checkout"
-                                                                class="btn btn-primary btn-lg py-3 btn-block"
-                                                                id="proceedBtn">
-                                                                Proceed To Checkout
-                                                            </a>
-                                                        </div>
+                                                            <% } %>
+                                                                <div class="col-md-12">
+                                                                    <a href="/checkout"
+                                                                        class="btn btn-primary btn-lg py-3 btn-block"
+                                                                        id="proceedBtn">
+                                                                        Proceed To Checkout
+                                                                    </a>
+                                                                </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -181,16 +184,21 @@
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     success: function (response) {
-                        $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
-                        $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
-                        $('#quantityElement_' + cartItemId).val(response.quantity);
-                        const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
-                        if (response.insufficientStock) {
+                        if (response.message === "Insufficient stock.") {
+                            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
                             stockErrorElement.style.display = 'block';
-                            proceedBtn.classList.add('disabled-link');
                         } else {
-                            stockErrorElement.style.display = 'none';
-                            proceedBtn.classList.remove('disabled-link');
+                            $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
+                            $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
+                            $('#quantityElement_' + cartItemId).val(response.quantity);
+                            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
+                            if (response.insufficientStock) {
+                                stockErrorElement.style.display = 'block';
+                                proceedBtn.classList.add('disabled-link');
+                            } else {
+                                stockErrorElement.style.display = 'none';
+                                proceedBtn.classList.remove('disabled-link');
+                            }
                         }
                     },
                     error: function (xhr, status, error) {
