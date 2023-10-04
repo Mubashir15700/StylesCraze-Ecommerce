@@ -1,42 +1,61 @@
 <header class="site-navbar" role="banner">
-    <div class="site-navbar-top">
-        <div class="container">
-            <div class="row align-items-center">
+  <div class="site-navbar-top">
+    <div class="container">
+      <div class="row align-items-center">
 
-                <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-                    <form action="/search-product" method="post" class="site-block-top-search">
-                        <span class="icon icon-search2"></span>
-                        <input type="text" class="form-control border-0" name="product" placeholder="Search">
-                    </form>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
-                    <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
-                </div>
-
-                <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-                    <div class="site-top-icons">
-                        <ul>
-                            <%- include('menu-list') -%>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
+        <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+          <form action="/search-product" method="post" class="site-block-top-search">
+            <span class="icon icon-search2"></span>
+            <input type="text" class="form-control border-0" name="product" placeholder="Search">
+          </form>
         </div>
-    </div>
-    <nav class="site-navigation text-right text-md-center" role="navigation">
-        <div class="container">
-            <ul class="site-menu js-clone-nav d-none d-md-block">
-                <li class="active">
-                    <a href="/">Home</a>
-                </li>
-                <li>
-                    <a href="/about">About</a>
-                </li>
-                <li><a href="/shop">Shop</a></li>
-                <li><a href="/contact">Contact</a></li>
+
+        <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+          <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
+        </div>
+
+        <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+          <div class="site-top-icons">
+            <ul>
+              <%- include('menu-list') -%>
             </ul>
+          </div>
         </div>
-    </nav>
+
+      </div>
+    </div>
+  </div>
+  <nav class="site-navigation text-right text-md-center" role="navigation">
+    <div class="container">
+      <ul class="site-menu js-clone-nav d-none d-md-block">
+        <li class="" id="headerHome">
+          <a href="/">Home</a>
+        </li>
+        <li class="" id="headerAbout">
+          <a href="/about">About</a>
+        </li>
+        <li class="" id="headerShop">
+          <a href="/shop">Shop</a>
+        </li>
+        <li class="" id="headerContact">
+          <a href="/contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const currentPage = '<%= activePage %>';
+    if (currentPage === "Home") {
+      document.getElementById("headerHome").classList.add("active");
+    } else if (currentPage === "About") {
+      document.getElementById("headerAbout").classList.add("active");
+    } else if (currentPage === "Shop") {
+      document.getElementById("headerShop").classList.add("active");
+    } else if (currentPage === "Contact") {
+      document.getElementById("headerContact").classList.add("active");
+    }
+  });
+</script>

@@ -3,272 +3,154 @@
 
 <%- include('../../partials/admin/head') -%>
 
-    <body>
-        <div class="container-scroller">
-            <!-- partial:partials/_navbar.html -->
-            <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-                <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                    <a><img src="/shoppers.svg" class="mr-2" alt="logo" /></a>
-                </div>
-                <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-                    <ul class="navbar-nav mr-lg-2">
-                        <li class="nav-item nav-search d-none d-lg-block">
-                            <div class="input-group">
-                                <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                                    <span class="input-group-text" id="search">
-                                        <i class="icon-search"></i>
-                                    </span>
-                                </div>
-                                <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now"
-                                    aria-label="search" aria-describedby="search">
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav navbar-nav-right">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link count-indicator" id="notificationDropdown" href="/admin/notifications">
-                                <i class="icon-bell mx-0"></i>
-                                <span class="count"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item nav-profile dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                                <i class="bi bi-caret-down-fill"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                                <a class="dropdown-item">
-                                    <i class="ti-settings text-primary"></i>
-                                    Settings
-                                </a>
-                                <div class="ml-4">
-                                    <form action="/admin/logout" method="post">
-                                        <button class="btn btn-light" type="submit"><i class="bi bi-power"></i>logout</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
-                        data-toggle="offcanvas">
-                        <span class="icon-menu"></span>
-                    </button>
-                </div>
-            </nav>
-            <!-- partial -->
-            <div class="container-fluid page-body-wrapper">
-                <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/" aria-controls="ui-basic">
-                                <i class="icon-grid menu-icon"></i>
-                                <span class="menu-title">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/orders" aria-controls="ui-basic">
-                                <i class="icon-layout menu-icon"></i>
-                                <span class="menu-title">Orders</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/products" aria-controls="ui-basic">
-                                <i class="icon-columns menu-icon"></i>
-                                <span class="menu-title">Products</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/categories" aria-controls="ui-basic">
-                                <i class="icon-bar-graph menu-icon"></i>
-                                <span class="menu-title">Categories</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/customers" aria-controls="ui-basic">
-                                <i class="icon-grid-2 menu-icon"></i>
-                                <span class="menu-title">Customers</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/coupons" aria-controls="ui-basic">
-                                <i class="icon-contract menu-icon"></i>
-                                <span class="menu-title">Coupons</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/sales-report" aria-controls="ui-basic">
-                                <i class="icon-contract menu-icon"></i>
-                                <span class="menu-title">Sales Report</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/banner" aria-controls="ui-basic">
-                                <i class="icon-contract menu-icon"></i>
-                                <span class="menu-title">Banner</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="main-panel">
-                    <div class="content-wrapper my-custom-wrapper">
-                        <div class="row">
-                            <div class="col-12 grid-margin stretch-card">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Add new product</h4>
+<body>
+  <div class="container-scroller">
+    <%- include('../../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="row">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Add new product</h4>
 
-                                        <form class="forms-sample" action="/admin/new-product" method="post"
-                                            enctype="multipart/form-data">
-                                            <p class="text-danger mb-3">
-                                                <%= error %>
-                                            </p>
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="name">Product</label>
-                                                    <input type="text" class="form-control" name="name" id="name"
-                                                        placeholder="Name" required>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="cat">Category</label>
-                                                    <select name="category" id="category" class="form-control" required>
-                                                        <% categoryOptions.forEach(category=> { %>
-                                                            <option value="<%= category._id %>">
-                                                                <%= category.name %>
-                                                            </option>
-                                                            <% }) %>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="exampleInputName1">Description</label>
-                                                <input type="text" class="form-control" name="description"
-                                                    id="exampleInputName1" placeholder="description" required>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Product price</label>
-                                                    <input type="number" class="form-control" name="price"
-                                                        id="exampleInputName1" placeholder="₹00.00" required>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Stock</label>
-                                                    <input type="number" class="form-control" name="stock"
-                                                        id="exampleInputName1" placeholder="stock" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between">
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Size</label>
-                                                    <select name="size" id="size" class="form-control" required>
-                                                        <option value="Small">
-                                                            Small
-                                                        </option>
-                                                        <option value="Medium">
-                                                            Medium
-                                                        </option>
-                                                        <option value="Large">
-                                                            Large
-                                                        </option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label for="exampleInputName1">Color</label>
-                                                    <input type="text" class="form-control" name="color"
-                                                        id="exampleInputName1" placeholder="color" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>Images</label>
-                                                <div class="input-group col-xs-12">
-                                                    <input type="file" accept="image/*" multiple name="images"
-                                                        class="form-control file-upload-info previewInput"
-                                                        placeholder="Upload Image" id="preview-input" required />
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group" id="preview-group" style="display: none;">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        Preview Images
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row">
-                                                            <div class="col-4">
-                                                                <div class="img-preview-p">
-                                                                    <img src="" alt="" class="preview" id="preview-img"
-                                                                        data-img-index="1"
-                                                                        style="max-width: 100%; object-fit: cover; display: block;" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <div class="img-preview-p">
-                                                                    <img src="" alt="" class="preview"
-                                                                        data-img-index="2"
-                                                                        style="max-width: 100%; object-fit: cover; display: block;" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <div class="img-preview-p">
-                                                                    <img src="" alt="" class="preview" id="preview-img"
-                                                                        data-img-index="3"
-                                                                        style="max-width: 100%; object-fit: cover; display: block;" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mr-2">Create</button>
-                                            <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <form class="forms-sample" action="/admin/new-product" method="post" enctype="multipart/form-data">
+                  <p class="text-danger mb-3">
+                    <%= error %>
+                  </p>
+                  <div class="d-flex justify-content-between">
+                    <div class="form-group col-md-6">
+                      <label for="name">Product</label>
+                      <input type="text" class="form-control" name="name" id="name" placeholder="Name" required>
                     </div>
-                </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="cat">Category</label>
+                      <select name="category" id="category" class="form-control" required>
+                        <% categoryOptions.forEach(category=> { %>
+                        <option value="<%= category._id %>">
+                          <%= category.name %>
+                        </option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="exampleInputName1">Description</label>
+                    <input type="text" class="form-control" name="description" id="exampleInputName1" placeholder="description" required>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Product price</label>
+                      <input type="number" class="form-control" name="price" id="exampleInputName1" placeholder="₹00.00" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Stock</label>
+                      <input type="number" class="form-control" name="stock" id="exampleInputName1" placeholder="stock" required>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between">
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Size</label>
+                      <select name="size" id="size" class="form-control" required>
+                        <option value="Small">
+                          Small
+                        </option>
+                        <option value="Medium">
+                          Medium
+                        </option>
+                        <option value="Large">
+                          Large
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Color</label>
+                      <input type="text" class="form-control" name="color" id="exampleInputName1" placeholder="color" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Images</label>
+                    <div class="input-group col-xs-12">
+                      <input type="file" accept="image/*" multiple name="images" class="form-control file-upload-info previewInput" placeholder="Upload Image" id="preview-input" required />
+                    </div>
+                  </div>
+
+                  <div class="form-group" id="preview-group" style="display: none;">
+                    <div class="card">
+                      <div class="card-header">
+                        Preview Images
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" id="preview-img" data-img-index="1" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" data-img-index="2" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" id="preview-img" data-img-index="3" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary mr-2">Create</button>
+                  <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
+                </form>
+              </div>
             </div>
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
 
-        <script>
-            function hideErrorMessage() {
-                var errorMessageElement = document.getElementById('error-message');
-                if (errorMessageElement) {
-                    setTimeout(() => {
-                        errorMessageElement.style.display = 'none';
-                    }, 4000);
+  <script>
+    function hideErrorMessage() {
+      var errorMessageElement = document.getElementById('error-message');
+      if (errorMessageElement) {
+        setTimeout(() => {
+          errorMessageElement.style.display = 'none';
+        }, 4000);
 
-                }
-            }
-            hideErrorMessage();
+      }
+    }
+    hideErrorMessage();
 
-            const previewInput = document.querySelector('.previewInput')
-            const previewArea = document.getElementById('preview-group')
+    const previewInput = document.querySelector('.previewInput')
+    const previewArea = document.getElementById('preview-group')
 
-            previewInput.addEventListener('change', function (e) {
-                const previewImages = document.querySelectorAll('.preview');
-                if (e.target.files.length) {
-                    if (e.target.files.length > 3) {
-                        e.target.value = ''; // Reset the file input
-                        previewImages.forEach(image => image.src = ''); // Clear preview images
-                        alert("You can only select up to 3 images.");
-                    } else {
-                        for (let i = 0; i < e.target.files.length; i++) {
-                            previewImages[i].src = URL.createObjectURL(e.target.files[i])
-                        }
-                        previewArea.style.display = 'block'
-                    }
-                }
-            })
+    previewInput.addEventListener('change', function(e) {
+      const previewImages = document.querySelectorAll('.preview');
+      if (e.target.files.length) {
+        if (e.target.files.length > 3) {
+          e.target.value = ''; // Reset the file input
+          previewImages.forEach(image => image.src = ''); // Clear preview images
+          alert("You can only select up to 3 images.");
+        } else {
+          for (let i = 0; i < e.target.files.length; i++) {
+            previewImages[i].src = URL.createObjectURL(e.target.files[i])
+          }
+          previewArea.style.display = 'block'
+        }
+      }
+    })
+  </script>
 
-        </script>
-
-        <%- include('../../partials/admin/footer') -%>
+  <%- include('../../partials/admin/footer') -%>

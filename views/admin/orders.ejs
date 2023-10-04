@@ -3,107 +3,107 @@
 
 <%- include('../partials/admin/head') -%>
 
-    <body>
-        <div class="container-scroller">
-            <%- include('../partials/admin/header') -%>
-                <div class="main-panel">
-                    <div class="content-wrapper my-custom-wrapper">
-                        <div class="col-lg-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <h4 class="card-title">Orders</h4>
-                                        <a href="/admin/return-requests" class="btn border btn-outline-primary">
-                                            View Return Requests
-                                        </a>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        User
-                                                    </th>
-                                                    <th>
-                                                        Details
-                                                    </th>
-                                                    <th>
-                                                        Order Date
-                                                    </th>
-                                                    <th>
-                                                        Delivery Address
-                                                    </th>
-                                                    <th>
-                                                        Status
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (!orders.length) { %>
-                                                    <tr>
-                                                        <td colspan="5">No orders found.</td>
-                                                    </tr>
-                                                <% } else { %>
-                                                    <% orders.forEach((order) => { %>
-                                                        <tr>
-                                                            <td>
-                                                               <%= order.user.username %><br>
-                                                               <p class="text-dark"><%= order.user.email %></p><br>
-                                                               <%= order.user.phone %>
-                                                            </td>
-                                                            <td>
-                                                                <div>
-                                                                <% order.products.forEach((product) => { %>
-                                                                    <div class="border-bottom mb-3">
-                                                                        <span class="text-primary h6 text-uppercase">
-                                                                            <%= product.product.name %> 
-                                                                        </span><br>
-                                                                        Price: <%= product.product.price %>,
-                                                                        Quantity: <%= product.quantity %>
-                                                                    </div>
-                                                                <% }) %>
-                                                                <span>
-                                                                    <strong>
-                                                                        Payment Method: <%= order.paymentMethod %>
-                                                                    </strong>
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
-                                                                Delivery, <%= order.deliveryDate.toLocaleDateString() %>
-                                                            </td>
-                                                            <td>
-                                                                <%= order.deliveryAddress.state %>,
-                                                                <%= order.deliveryAddress.city %><br>
-                                                                <%= order.deliveryAddress.area %>,
-                                                                Pincode: <%= order.deliveryAddress.pincode %><br>
-                                                                House No.: <%= order.deliveryAddress.building %>
-                                                            </td>
-                                                            <td>
-                                                                <% order.products.forEach((product) => { %>
-                                                                    <% if(product.isCancelled) { %>
-                                                                        <p class="text-danger">Order Cancelled</p>
-                                                                    <% } else if(product.returnRequested === 'Pending') { %>
-                                                                        <p class="text-muted">Return requested</p>
-                                                                    <% } else if(product.returnRequested === 'Approved') { %>
-                                                                        <p class="text-muted">Return Approved</p>
-                                                                    <% } else if(product.returnRequested === 'Rejected') { %>
-                                                                        <p class="text-muted">Return Rejected</p>        
-                                                                    <% } else if(product.returnRequested === 'Completed') { %>
-                                                                        <p class="text-muted">Return Completed</p>        
-                                                                    <% } else { %>
-                                                                        <p class="text-primary"><%= order.status %></p>
-                                                                    <% } %>
-                                                                <% }) %>
-                                                            </td>
-                                                        </tr>
-                                                    <% }) %>
-                                                <% } %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%- include('../partials/admin/footer') -%>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <h4 class="card-title">Orders</h4>
+                <a href="/admin/return-requests" class="btn border btn-outline-primary">
+                  View Return Requests
+                </a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        User
+                      </th>
+                      <th>
+                        Details
+                      </th>
+                      <th>
+                        Order Date
+                      </th>
+                      <th>
+                        Delivery Address
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!orders.length) { %>
+                    <tr>
+                      <td colspan="5">No orders found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% orders.forEach((order) => { %>
+                    <tr>
+                      <td>
+                        <%= order.user.username %><br>
+                        <p class="text-dark"><%= order.user.email %></p><br>
+                        <%= order.user.phone %>
+                      </td>
+                      <td>
+                        <div>
+                          <% order.products.forEach((product) => { %>
+                          <div class="border-bottom mb-3">
+                            <span class="text-primary h6 text-uppercase">
+                              <%= product.product.name %>
+                            </span><br>
+                            Price: <%= product.product.price %>,
+                            Quantity: <%= product.quantity %>
+                          </div>
+                          <% }) %>
+                          <span>
+                            <strong>
+                              Payment Method: <%= order.paymentMethod %>
+                            </strong>
+                          </span>
+                      </td>
+                      <td>
+                        Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
+                        Delivery, <%= order.deliveryDate.toLocaleDateString() %>
+                      </td>
+                      <td>
+                        <%= order.deliveryAddress.state %>,
+                        <%= order.deliveryAddress.city %><br>
+                        <%= order.deliveryAddress.area %>,
+                        Pincode: <%= order.deliveryAddress.pincode %><br>
+                        House No.: <%= order.deliveryAddress.building %>
+                      </td>
+                      <td>
+                        <% order.products.forEach((product) => { %>
+                        <% if(product.isCancelled) { %>
+                        <p class="text-danger">Order Cancelled</p>
+                        <% } else if(product.returnRequested === 'Pending') { %>
+                        <p class="text-muted">Return requested</p>
+                        <% } else if(product.returnRequested === 'Approved') { %>
+                        <p class="text-muted">Return Approved</p>
+                        <% } else if(product.returnRequested === 'Rejected') { %>
+                        <p class="text-muted">Return Rejected</p>
+                        <% } else if(product.returnRequested === 'Completed') { %>
+                        <p class="text-muted">Return Completed</p>
+                        <% } else { %>
+                        <p class="text-primary"><%= order.status %></p>
+                        <% } %>
+                        <% }) %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../partials/admin/footer') -%>

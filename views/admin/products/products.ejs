@@ -3,125 +3,123 @@
 
 <%- include('../../partials/admin/head') -%>
 
-    <body>
-        <div class="container-scroller">
-            <%- include('../../partials/admin/header') -%>
-                <div class="main-panel">
-                    <div class="content-wrapper my-custom-wrapper">
-                        <div class="col-lg-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <h4 class="card-title">Products</h4>
-                                        <a href="/admin/new-product" class="btn btn-primary">New Product</a>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        Product
-                                                    </th>
-                                                    <th>
-                                                        Name
-                                                    </th>
-                                                    <th>
-                                                        category
-                                                    </th>
-                                                    <th>
-                                                        Price
-                                                    </th>
-                                                    <th>
-                                                        Stock
-                                                    </th>
-                                                    <th>
-                                                        Size
-                                                    </th>
-                                                    <th>
-                                                        Color
-                                                    </th>
-                                                    <th>
-                                                        Actions
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (!productDatas.length) { %>
-                                                    <tr>
-                                                        <td colspan="6">No products found.</td>
-                                                    </tr>
-                                                    <% } else { %>
-                                                        <% productDatas.forEach((product)=> { %>
-                                                            <tr>
-                                                                <td>
-                                                                    <% product.images.forEach(img=> { %>
-                                                                        <div class="row">
-                                                                            <div class="col-4">
-                                                                                <img src="<%= img %>" alt=""
-                                                                                    onclick="openModal('<%= img %>')">
-                                                                            </div>
-                                                                        </div>
-                                                                        <% }) %>
-                                                                </td>
-                                                                <!-- for display and zoom image -->
-                                                                <div id="imageModal" class="modal">
-                                                                    <button id="closeButton" class="close-button">
-                                                                        <i class="bi bi-x-lg"></i>
-                                                                    </button>
-                                                                    <div class="image-zoom">
-                                                                        <img src="" id="modalImage" alt="Image">
-                                                                    </div>
-                                                                </div>
-                                                                <td>
-                                                                    <%= product.name %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= product.category.name %>
-                                                                </td>
-                                                                <td>
-                                                                    ₹<%= product.price %>.00
-                                                                </td>
-                                                                <td>
-                                                                    <%= product.stock %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= product.size %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= product.color %>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="d-flex">
-                                                                        <a href="/admin/edit-product/<%= product._id %>"
-                                                                            class="btn btn-info btn-sm mr-1">
-                                                                            Edit
-                                                                        </a>
-                                                                        <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post">
-                                                                            <input type="hidden" name="category" value="<%= product.category.name %>">
-                                                                            <% if (product.softDeleted) { %>
-                                                                                <input type="hidden" name="state" value="">
-                                                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                                                    Activate
-                                                                                </button>
-                                                                            <% } else { %>
-                                                                                <input type="hidden" name="state" value="1">
-                                                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                                                    Deactivate
-                                                                                </button>
-                                                                            <% } %>
-                                                                        </form>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        <% }) %>
-                                                    <% } %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-                            </div>
+<body>
+  <div class="container-scroller">
+    <%- include('../../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <h4 class="card-title">Products</h4>
+                <a href="/admin/new-product" class="btn btn-primary">New Product</a>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        Product
+                      </th>
+                      <th>
+                        Name
+                      </th>
+                      <th>
+                        category
+                      </th>
+                      <th>
+                        Price
+                      </th>
+                      <th>
+                        Stock
+                      </th>
+                      <th>
+                        Size
+                      </th>
+                      <th>
+                        Color
+                      </th>
+                      <th>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!productDatas.length) { %>
+                    <tr>
+                      <td colspan="6">No products found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% productDatas.forEach((product)=> { %>
+                    <tr>
+                      <td>
+                        <% product.images.forEach(img=> { %>
+                        <div class="row">
+                          <div class="col-4">
+                            <img src="<%= img %>" alt="" onclick="openModal('<%= img %>')">
+                          </div>
                         </div>
-                    </div>
+                        <% }) %>
+                      </td>
+                      <!-- for display and zoom image -->
+                      <div id="imageModal" class="modal">
+                        <button id="closeButton" class="close-button">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                        <div class="image-zoom">
+                          <img src="" id="modalImage" alt="Image">
+                        </div>
+                      </div>
+                      <td>
+                        <%= product.name %>
+                      </td>
+                      <td>
+                        <%= product.category.name %>
+                      </td>
+                      <td>
+                        ₹<%= product.price %>.00
+                      </td>
+                      <td>
+                        <%= product.stock %>
+                      </td>
+                      <td>
+                        <%= product.size %>
+                      </td>
+                      <td>
+                        <%= product.color %>
+                      </td>
+                      <td>
+                        <div class="d-flex">
+                          <a href="/admin/edit-product/<%= product._id %>" class="btn btn-info btn-sm mr-1">
+                            Edit
+                          </a>
+                          <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post" id="action-form">
+                            <input type="hidden" name="category" value="<%= product.category.name %>">
+                            <% if (product.softDeleted) { %>
+                            <input type="hidden" name="state" value="">
+                            <button type="submit" class="btn btn-warning btn-sm action-btn">
+                              Activate
+                            </button>
+                            <% } else { %>
+                            <input type="hidden" name="state" value="1">
+                            <button type="submit" class="btn btn-danger btn-sm action-btn">
+                              Deactivate
+                            </button>
+                            <% } %>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
 
-                    <%- include('../../partials/admin/footer') -%>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%- include('../../partials/admin/footer') -%>

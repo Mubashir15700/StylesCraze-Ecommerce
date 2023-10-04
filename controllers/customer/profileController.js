@@ -3,7 +3,7 @@ import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Order from "../../models/orderModel.js";
-import { sendToMail } from '../../utils/sendMail.js';
+import { sendToMail } from '../utils/sendMail.js';
 import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
 
 export const getProfile = async (req, res, next) => {
@@ -87,20 +87,29 @@ export const getNewAddress = async (req, res, next) => {
 
 export const addNewAddress = async (req, res, next) => {
     try {
-        const { pincode, state, city, building, area } = req.body;
-        if (pincode, state, city, building, area) {
-            const otherAddress = await Address.find({ user: req.session.user });
-            const newAddress = new Address({
-                user: req.session.user,
-                pincode,
-                state,
-                city,
-                building,
-                area,
-                default: (otherAddress.length === 0) ? true : false,
+        const otherAddress = await Address.find({ user: req.session.user });
+        if (otherAddress.length < 3) {
+            const { pincode, state, city, building, area } = req.body;
+            if (pincode, state, city, building, area) {
+                const newAddress = new Address({
+                    user: req.session.user,
+                    pincode,
+                    state,
+                    city,
+                    building,
+                    area,
+                    default: (otherAddress.length === 0) ? true : false,
+                });
+                await newAddress.save();
+                res.redirect("/profile");
+            }
+        } else {
+            res.render("customer/address/newAddress", {
+                isLoggedIn: isLoggedIn(req, res),
+                currentUser: await getCurrentUser(req, res),
+                error: "Already added 3 addresses.",
+                activePage: 'Profile',
             });
-            await newAddress.save();
-            res.redirect("/profile");
         }
     } catch (error) {
         next(error);

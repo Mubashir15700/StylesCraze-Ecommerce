@@ -21,13 +21,11 @@
               </div>
               <form action="/login" method="post" class="pt-3" id="login-form">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" id="exampleInputUsername1"
-                    placeholder="Username" name="username">
+                  <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" name="username">
                   <p class="text-danger" id="username-error-display"></p>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1"
-                    placeholder="Password" name="password">
+                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" name="password">
                   <p class="text-danger" id="password-error-display"></p>
                 </div>
                 <div>
@@ -64,7 +62,7 @@
       if (!usernameInput.value || !passwordInput.value) {
         hasErrors = true;
         document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
-      } 
+      }
 
       if (hasErrors) {
         event.preventDefault();

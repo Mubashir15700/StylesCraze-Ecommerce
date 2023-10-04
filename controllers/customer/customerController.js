@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Product from "../../models/productModel.js";
 import Category from "../../models/categoryModel.js";
 import User from "../../models/userModel.js";
@@ -7,7 +6,7 @@ import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Return from "../../models/returnProductsModel.js";
 import Banner from "../../models/bannerModel.js";
-import { razorpay } from "../../utils/razorpayConfig.js";
+import { razorpay } from "../utils/razorpayConfig.js";
 import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
 
 export const getHome = async (req, res, next) => {
@@ -270,80 +269,43 @@ export const applyCoupon = async (req, res, next) => {
         const grandTotal = cartProducts.reduce((total, element) => {
             return total + (element.quantity * element.product.price);
         }, 0);
+        let couponError = "";
+        let discount = 0;
         if (currentCoupon) {
             const foundCoupon = currentUser.earnedCoupons.find(coupon => coupon.coupon._id.equals(currentCoupon._id));
             if (foundCoupon) {
                 if (foundCoupon.coupon.isActive) {
                     if (!foundCoupon.isUsed) {
-                        let discount;
                         if (foundCoupon.coupon.discountType === 'fixedAmount') {
                             discount = foundCoupon.coupon.discountAmount;
                         } else {
                             discount = (foundCoupon.coupon.discountAmount / 100) * grandTotal;
                         }
-                        res.render("customer/checkout", {
-                            isLoggedIn: isLoggedIn(req, res),
-                            currentUser,
-                            cartProducts,
-                            currentAddress: defaultAddress,
-                            discount,
-                            grandTotal,
-                            currentCoupon: currentCoupon._id,
-                            couponError: "",
-                            error: "",
-                        });
                     } else {
-                        res.render("customer/checkout", {
-                            isLoggedIn: isLoggedIn(req, res),
-                            currentUser,
-                            cartProducts,
-                            currentAddress: defaultAddress,
-                            discount: 0,
-                            grandTotal,
-                            currentCoupon: '',
-                            couponError: "Coupon already used.",
-                            error: "",
-                        });
+                        couponError = foundCoupon.isUsed ? "Coupon already used." : "Coupon is inactive.";
                     }
                 } else {
-                    res.render("customer/checkout", {
-                        isLoggedIn: isLoggedIn(req, res),
-                        currentUser,
-                        cartProducts,
-                        currentAddress: defaultAddress,
-                        discount: 0,
-                        grandTotal,
-                        currentCoupon: '',
-                        couponError: "Coupon is inactive.",
-                        error: "",
-                    });
+                    couponError = foundCoupon.isUsed ? "Coupon already used." : "Coupon is inactive.";
                 }
             } else {
-                res.render("customer/checkout", {
-                    isLoggedIn: isLoggedIn(req, res),
-                    currentUser,
-                    cartProducts,
-                    currentAddress: defaultAddress,
-                    discount: 0,
-                    grandTotal,
-                    currentCoupon: '',
-                    couponError: "Invalid coupon code.",
-                    error: "",
-                });
+                couponError = "Invalid coupon code.";
             }
         } else {
-            res.render("customer/checkout", {
-                isLoggedIn: isLoggedIn(req, res),
-                currentUser,
-                cartProducts,
-                currentAddress: defaultAddress,
-                discount: 0,
-                grandTotal,
-                currentCoupon: '',
-                couponError: "Invalid coupon code.",
-                error: "",
-            });
+            couponError = "Invalid coupon code.";
         }
+
+        res.render("customer/checkout", {
+            isLoggedIn: isLoggedIn(req, res),
+            currentUser,
+            cartProducts,
+            currentAddress: defaultAddress,
+            discount,
+            grandTotal,
+            currentCoupon: couponError ? '' : currentCoupon._id,
+            couponError,
+            error: "",
+            activePage: 'Cart'
+        });
     } catch (error) {
         next(error);
     }
@@ -385,11 +347,10 @@ export const placeOrder = async (req, res, next) => {
             });
 
             // Save the order details to your database
-            newOrder.razorpayOrderId = razorpayOrder.id; // Save the Razorpay order ID
-            await newOrder.save();
+            newOrder.razorpayOrderId = razorpayOrder.id;
 
             // Redirect the user to the Razorpay checkout page
-            res.render('customer/rzp', {
+            return res.render('customer/rzp', {
                 order: razorpayOrder,
                 key_id: process.env.RAZORPAY_ID_KEY,
                 user: currentUser
@@ -427,7 +388,6 @@ export const placeOrder = async (req, res, next) => {
         });
 
         currentUser.cart = [];
-        await currentUser.save();
 
         // coupons
         const foundCoupon = await Coupon.findOne({
@@ -438,7 +398,6 @@ export const placeOrder = async (req, res, next) => {
             const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
             if (!couponExists) {
                 currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
-                await currentUser.save();
             }
         }
 
@@ -448,7 +407,74 @@ export const placeOrder = async (req, res, next) => {
             await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
         }
 
+        await currentUser.save();
         res.redirect("/orders");
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const saveRzpOrder = async (req, res, next) => {
+    try {
+        const { transactionId, orderId, signature } = req.body;
+        const amount = parseInt(req.body.amount / 100);
+        const currentUser = await getCurrentUser(req, res);
+        await currentUser.populate('cart.product');
+        const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
+        if (transactionId && orderId && signature) {
+            // stock update
+            currentUser.cart.forEach(async (item) => {
+                const foundProduct = await Product.findById(item.product._id);
+                foundProduct.stock -= item.quantity;
+                await foundProduct.save();
+            });
+
+            const grandTotal = currentUser.cart.reduce((total, element) => {
+                return total + (element.quantity * element.product.price);
+            }, 0);
+
+            const orderedProducts = currentUser.cart.map((item) => {
+                return {
+                    product: item.product._id,
+                    quantity: item.quantity,
+                }
+            });
+
+            let newOrder = new Order({
+                user: req.session.user,
+                products: orderedProducts,
+                totalAmount: amount,
+                paymentMethod: 'rzp',
+                deliveryAddress,
+            });
+            await newOrder.save();
+
+            currentUser.cart = [];
+
+            // coupons
+            const foundCoupon = await Coupon.findOne({
+                isActive: true, minimumPurchaseAmount: { $lte: grandTotal }
+            }).sort({ minimumPurchaseAmount: -1 });
+
+            if (foundCoupon) {
+                const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
+                if (!couponExists) {
+                    currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
+                }
+            }
+
+            const currentUsedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
+            if (currentUsedCoupon) {
+                currentUsedCoupon.isUsed = true;
+                await Coupon.findByIdAndUpdate(req.body.currentCoupon, { $inc: { usedCount: 1 } });
+            }
+
+            await currentUser.save();
+
+            return res.status(200).json({
+                message: "order placed successfully",
+            });
+        }
     } catch (error) {
         next(error);
     }
@@ -474,26 +500,38 @@ export const cancelOrder = async (req, res, next) => {
             foundProduct.isCancelled = true;
 
             // Update the stock of the canceled product
-            const foundProductTest = await Product.findById(req.body.productId);
-            const currentStock = foundProductTest.stock;
-            foundProductTest.stock = currentStock + foundProduct.quantity;
+            const foundCurrentProduct = await Product.findById(req.body.productId);
+            foundCurrentProduct.stock += foundProduct.quantity;
 
             // Save changes to the user's wallet, canceled product, and order
             await currentUser.save();
-            await foundProductTest.save();
-            await foundOrder.save();
-
-            res.redirect("/orders");
+            await foundCurrentProduct.save();
         } else {
             foundProduct.isCancelled = true;
-            const foundOrderTest = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
-            const foundProductTest = await Product.findById(req.body.productId);
-            const currentStock = foundProductTest.stock;
-            foundProductTest.stock = currentStock + foundOrderTest.quantity;
-            await foundProductTest.save();
-            await foundOrder.save();
-            res.redirect("/orders");
+            const foundCurrentOrder = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
+            const foundCurrentProduct = await Product.findById(req.body.productId);
+            foundCurrentProduct.stock += foundCurrentOrder.quantity;
+            await foundCurrentProduct.save();
         }
+
+        // Function to check if all products in the order are cancelled
+        function areAllProductsCancelled(order) {
+            for (const product of order.products) {
+                if (!product.isCancelled) {
+                    return false; // If any product is not cancelled, return false
+                }
+            }
+            return true; // All products are cancelled
+        }
+
+        // Check if all products in the order are cancelled
+        if (areAllProductsCancelled(foundOrder)) {
+            // Update the order status to "Cancelled"
+            foundOrder.status = "Cancelled";
+        }
+
+        await foundOrder.save();
+        res.redirect("/orders");
     } catch (error) {
         next(error);
     }
@@ -511,6 +549,7 @@ export const getReturnProductForm = async (req, res) => {
             order: req.query.order,
             category,
             product,
+            quantity: req.query.quantity,
             activePage: 'Orders',
         });
     } catch (error) {
@@ -526,6 +565,7 @@ export const requestReturnProduct = async (req, res, next) => {
             user: req.session.user,
             order: foundOrder._id,
             product: foundProduct._id,
+            quantity: parseInt(req.body.quantity),
             reason: req.body.reason,
             condition: req.body.condition,
             address: req.body.address

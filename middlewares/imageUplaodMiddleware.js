@@ -97,7 +97,6 @@ export const resizeBannerImages = async (req, res, next) => {
         req.files.images.map(async (file) => {
             const filename = `banner-${v4()}.jpeg`;
             await sharp(file.buffer)
-                // .resize(500, 500)
                 .toFormat('jpeg')
                 .jpeg({ quality: 90 })
                 .toFile(path.join(__dirname, '../public', 'banners', filename));

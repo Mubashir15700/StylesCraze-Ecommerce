@@ -3,209 +3,213 @@
 
 <%- include('../partials/customer/head') -%>
 
-    <body>
+<body>
 
-        <div class="site-wrap">
-            <%- include('../partials/customer/header') -%>
-                <div class="bg-light py-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                                    class="text-black">Cart</strong></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container">
-                    <div class="site-section">
-                        <% if (!cartProducts.length) { %>
-                            Your cart is empty.
-                            <% } else { %>
-                                <div class="row">
-                                    <form class="col-md-12" action="" method="">
-                                        <div class="site-blocks-table">
-                                            <div class="container">
-                                                <% cartProducts.forEach((cartItem)=> { %>
-                                                    <div class="col-lg-12 p-4 border mb-3 d-flex">
-                                                        <div class="col-md-4">
-                                                            <a href="/single/<%= cartItem.product._id %>">
-                                                                <img src="<%= cartItem.product.images[0] %>" alt="Image"
-                                                                    height="180px" width="180px" class="img-fluid">
-                                                            </a>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <span class="d-block text-primary h6 text-uppercase">
-                                                                <%= cartItem.product.name %>
-                                                            </span>
-                                                            <p>
-                                                                <%= cartItem.product.description %><br>
-                                                                    Category: <%= cartItem.product.category.name %><br>
-                                                                        <strong class="text-black">₹<%=
-                                                                                cartItem.product.price.toFixed(2) %>
-                                                                                </strong>
-                                                            </p>
-                                                            <p>Stock: <%= cartItem.product.stock %>
-                                                            </p>
-                                                            <p class="text-danger" id="stock_<%= cartItem._id %>"
-                                                                style="display: none;">
-                                                                Insufficient stock
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <span class="text-black">
-                                                                Total Price: ₹<span id="totalPrice_<%= cartItem._id %>"
-                                                                    class="text-black">
-                                                                    <%= (cartItem.product.price *
-                                                                        cartItem.quantity).toFixed(2) %>
-                                                                </span>
-                                                            </span>
-                                                            <div class="input-group mb-3" style="max-width: 120px;">
-                                                                <div class="input-group-prepend">
-                                                                    <button class="btn btn-outline-primary"
-                                                                        type="button"
-                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
-                                                                </div>
-                                                                <input type="text" class="form-control text-center"
-                                                                    value="<%= cartItem.quantity %>"
-                                                                    id="quantityElement_<%= cartItem._id %>"
-                                                                    aria-label="Example text with button addon"
-                                                                    aria-describedby="button-addon1" readonly>
-                                                                <div class="input-group-append">
-                                                                    <button class="btn btn-outline-primary"
-                                                                        type="button"
-                                                                        onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
-                                                                </div>
-                                                            </div>
-                                                            <form action="/remove-from-cart/<%= cartItem._id %>"
-                                                                method="post" id="<%= cartItem._id %>">
-                                                                <button type="button" class="btn btn-sm btn-primary"
-                                                                    onclick="removeCartItem('<%= cartItem._id %>')">
-                                                                    Remove
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    <% }) %>
-                                            </div>
-                                        </div>
-                                </div>
-                                </form>
-                                <div class="row mt-5">
-                                    <div class="col-md-6 mb-3">
-                                        <p>
-                                            <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
-                                                Continue Shopping
-                                            </a>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6 pl-5">
-                                        <% if (cartProducts.length) { %>
-                                            <div class="row justify-content-end">
-                                                <div class="col-md-7">
-                                                    <div class="row">
-                                                        <div class="col-md-12 text-right border-bottom mb-5">
-                                                            <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-5">
-                                                        <div class="col-md-6">
-                                                            <span>Total Price</span>
-                                                        </div>
-                                                        <div class="col-md-6 pl-0">
-                                                            <span class="h5 text-black">
-                                                                ₹<span id="grandTotalPrice" class="text-black">
-                                                                    <%= grandTotal.toFixed(2) %>
-                                                                </span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-5">
-                                                        <% if (insufficientStockProduct) { %>
-                                                            <p class="col-md-12 text-danger">
-                                                                Insufficient stocks. Please check your cart item's
-                                                                quantities
-                                                            </p>
-                                                            <% } %>
-                                                                <div class="col-md-12">
-                                                                    <a href="/checkout"
-                                                                        class="btn btn-primary btn-lg py-3 btn-block"
-                                                                        id="proceedBtn">
-                                                                        Proceed To Checkout
-                                                                    </a>
-                                                                </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <% } else { %>
-                                                <div class="row mb-5">
-                                                    <div class="col-md-6">
-                                                        <p>
-                                                            <a href="/shop"
-                                                                class="btn btn-outline-primary btn-sm btn-block">
-                                                                Go To Shop
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                    </div>
-                                </div>
-                    </div>
-                    <% } %>
-
-                </div>
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Cart</strong></div>
         </div>
+      </div>
+    </div>
 
-        <script>
-            // remove from cart
-            function removeCartItem(cartItemId) {
-                $.ajax({
-                    url: '/remove-from-cart/' + cartItemId,
-                    type: 'POST',
-                    success: function (response) {
-                        // Handle success, e.g., update the cart UI
-                        location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle errors
-                    }
-                });
+    <div class="container">
+      <div class="site-section">
+        <% if (!cartProducts.length) { %>
+        Your cart is empty.
+        <% } else { %>
+        <% cartProducts.forEach((cartItem)=> { %>
+        <div class="d-flex flex-column flex-md-row border p-3 mb-3">
+          <div class="col-md-3 col-12 d-flex justify-content-center mb-5">
+            <a href="/single/<%= cartItem.product._id %>">
+              <img src="<%= cartItem.product.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
+            </a>
+          </div>
+          <div class="d-flex col-md-8 col-12 flex-column flex-md-row">
+            <div class="col-md-8">
+              <span class="d-block text-primary h6 text-uppercase">
+                <%= cartItem.product.name %>
+              </span>
+              <p>
+                Category: <%= cartItem.product.category.name %><br>
+                <strong class="text-black">₹<%= cartItem.product.price.toFixed(2) %>
+                </strong>
+              </p>
+              <p>Stock: <%= cartItem.product.stock %>
+              </p>
+              <p class="text-danger" id="stock_<%= cartItem._id %>" style="display: none;">
+                Insufficient stock
+              </p>
+            </div>
+            <div class="col-md-4">
+              <span class="text-black">
+                Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
+                  <%= (cartItem.product.price * cartItem.quantity).toFixed(2) %>
+                </span>
+              </span>
+              <div class="input-group mb-3" style="max-width: 120px;">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-primary" type="button" onclick="updateCartItem('<%= cartItem._id %>', 'decrement')">&minus;</button>
+                </div>
+                <input type="text" class="form-control text-center" value="<%= cartItem.quantity %>" id="quantityElement_<%= cartItem._id %>" aria-label="Example text with button addon" aria-describedby="button-addon1" readonly>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-primary" type="button" onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
+                </div>
+              </div>
+              <form action="/remove-from-cart/<%= cartItem._id %>" method="post" id="<%= cartItem._id %>">
+                <button type="button" class="btn btn-sm btn-primary" onclick="openRemoveFromCartModal('<%= cartItem._id %>')">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+        <div class="row mt-5">
+          <div class="col-md-6 mb-3">
+            <p>
+              <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                Continue Shopping
+              </a>
+            </p>
+          </div>
+          <div class="col-md-6 pl-5">
+            <% if (cartProducts.length) { %>
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span>Total Price</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="h5 text-black">
+                      ₹<span id="grandTotalPrice" class="text-black">
+                        <%= grandTotal.toFixed(2) %>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <% if (insufficientStockProduct) { %>
+                  <p class="col-md-12 text-danger">
+                    Insufficient stocks. Please check your cart item's
+                    quantities
+                  </p>
+                  <% } %>
+                  <div class="col-md-12">
+                    <a href="/checkout" class="btn btn-primary btn-lg py-3 btn-block" id="proceedBtn">
+                      Proceed To Checkout
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <% } else { %>
+            <div class="row mb-5">
+              <div class="col-md-6">
+                <p>
+                  <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                    Go To Shop
+                  </a>
+                </p>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+    </div>
+  </div>
+
+  <!-- Remove from Cart Modal -->
+  <div class="modal fade" id="removeFromCartModal" tabindex="-1" role="dialog" aria-labelledby="removeFromCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="removeFromCartModalLabel">Remove from Cart</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to remove this item from your cart?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmRemoveCartItem">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // remove from cart
+    let cartItemIdToRemove; // Variable to store the cart item ID
+
+    // Function to open the modal and set the cart item ID
+    function openRemoveFromCartModal(cartItemId) {
+      cartItemIdToRemove = cartItemId; // Store the cart item ID
+      $('#removeFromCartModal').modal('show'); // Open the modal
+    }
+
+    // Function to confirm removal and trigger removal process
+    $('#confirmRemoveCartItem').on('click', function() {
+      // Perform the removal action using the cartItemIdToRemove variable
+      $.ajax({
+        url: '/remove-from-cart/' + cartItemIdToRemove,
+        type: 'POST',
+        success: function(response) {
+          // Handle success, e.g., update the cart UI
+          location.reload();
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+        }
+      });
+      $('#removeFromCartModal').modal('hide'); // Close the modal
+    });
+
+    // update cart
+    function updateCartItem(cartItemId, incOrDec) {
+      const data = {
+        type: incOrDec
+      };
+      $.ajax({
+        url: '/update-cart/' + cartItemId,
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response) {
+          if (response.message === "Insufficient stock.") {
+            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
+            stockErrorElement.style.display = 'block';
+          } else {
+            $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
+            $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
+            $('#quantityElement_' + cartItemId).val(response.quantity);
+            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
+            if (response.insufficientStock) {
+              stockErrorElement.style.display = 'block';
+              proceedBtn.classList.add('disabled-link');
+            } else {
+              stockErrorElement.style.display = 'none';
+              proceedBtn.classList.remove('disabled-link');
             }
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log(status);
+        }
+      });
+    }
+  </script>
 
-            // update cart
-            function updateCartItem(cartItemId, incOrDec) {
-                const data = {
-                    type: incOrDec
-                };
-                $.ajax({
-                    url: '/update-cart/' + cartItemId,
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        if (response.message === "Insufficient stock.") {
-                            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
-                            stockErrorElement.style.display = 'block';
-                        } else {
-                            $('#totalPrice_' + cartItemId).text(response.totalPrice.toFixed(2));
-                            $('#grandTotalPrice').text(response.grandTotal.toFixed(2));
-                            $('#quantityElement_' + cartItemId).val(response.quantity);
-                            const stockErrorElement = document.getElementById(`stock_${cartItemId}`);
-                            if (response.insufficientStock) {
-                                stockErrorElement.style.display = 'block';
-                                proceedBtn.classList.add('disabled-link');
-                            } else {
-                                stockErrorElement.style.display = 'none';
-                                proceedBtn.classList.remove('disabled-link');
-                            }
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(status);
-                    }
-                });
-            }
-        </script>
-
-        <%- include('../partials/customer/footer') -%>
+  <%- include('../partials/customer/footer') -%>

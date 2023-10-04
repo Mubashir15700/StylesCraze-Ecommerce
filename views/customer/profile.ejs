@@ -3,224 +3,242 @@
 
 <%- include('../partials/customer/head') -%>
 
-    <body>
+<body>
 
-        <div class="site-wrap">
-            <%- include('../partials/customer/header') -%>
-                <div class="bg-light py-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                                    class="text-black">Profile</strong>
-                            </div>
-                        </div>
-                    </div>
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Profile</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h2 class="h3 mb-3 text-black">Your Profile</h2>
+          </div>
+          <div class="col-md-6 mb-4">
+            <div class="p-3 p-lg-5 border">
+              <div class="form-group" id="preview-group">
+                <% if (currentUser.profile.includes('undefined') || currentUser.profile==='' ) { %>
+                <div id="personIcon" style="display: block;">
+                  <i class="bi bi-person-circle" style="font-size: 50px;"></i>
                 </div>
-
-                <div class="site-section">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h2 class="h3 mb-3 text-black">Your Profile</h2>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="p-3 p-lg-5 border">
-                                    <div class="form-group" id="preview-group">
-                                        <% if (currentUser.profile.includes('undefined') || currentUser.profile==='' ) {
-                                            %>
-                                            <div id="personIcon" style="display: block;">
-                                                <i class="bi bi-person-circle" style="font-size: 50px;"></i>
-                                            </div>
-                                            <% } else if (currentUser.profile) { %>
-                                                <form action="/profile/remove-image" method="post" id="removeImg-form">
-                                                    <img src="<%= currentUser.profile %>" style="border-radius: 10px; display: inline;"
-                                                        height="100px" width="100px" id="previewForm-img"
-                                                        alt="profileImage">
-                                                    <button type="button" class="btn btn-danger mt-0" style="display: inline;"
-                                                        id="removeBtn" onclick="removeProfileImage()">X</button>
-                                                </form>
-                                                <% } %>
-                                                    <img src="<%= currentUser.profile %>" class="preview"
-                                                        id="preview-img" style="border-radius: 10px; display: none;"
-                                                        height="100px" width="100px" id="preview-img"
-                                                        alt="profileImage">
-                                    </div>
-                                    <form action="/profile?_method=PATCH" method="post" id="profile-form"
-                                        enctype="multipart/form-data">
-                                        <div class="form-group row">
-                                            <div class="form-group col-md-12">
-                                                <label for="profileImage">Profile Image</label>
-                                                <input type="file" name="profile" id="preview-input" accept="image/*">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="username" class="text-black">Username <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" id="exampleInputUsername1"
-                                                    name="username" value="<%= currentUser.username %>">
-                                                <p class="text-danger" id="username-error-display"></p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="phone" class="text-black">Phone <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" id="exampleInputPhone1"
-                                                    name="phone" value="<%= currentUser.phone %>">
-                                                <p class="text-danger" id="phone-error-display"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <label for="email" class="text-black">Email <span
-                                                        class="text-danger">*</span></label>
-                                                <input type="email" class="form-control" id="exampleInputEmail1"
-                                                    name="email" value="<%= currentUser.email %>">
-                                                <p class="text-danger" id="email-error-display"></p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <a href="/change-password">Change Password</a>
-                                            </div>
-                                        </div>
-                                        <p class="text-danger" id="common-error-display">
-                                            <%= error %>
-                                        </p>
-                                        <div class="form-group row">
-                                            <div class="col-lg-12">
-                                                <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                                    Update Profile
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group row d-flex justify-content-center">
-                                    <div class="col-md-4 mt-1 mb-1">
-                                        <a href="/orders" class="btn btn-primary btn-lg btn-block">
-                                            Orders
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mt-1 mb-1">
-                                        <a href="/wallet" class="btn btn-outline-primary btn-lg btn-block">
-                                            Wallet
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4 mt-1 mb-1">
-                                        <a href="/Coupons" class="btn btn-outline-primary btn-lg btn-block">
-                                            Coupons
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <% if (addresses.length) { %>
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <label for="address" class="text-black">
-                                                    <%= addresses.length %> Saved Address
-                                                </label>
-                                                <% addresses.forEach((address)=> { %>
-                                                    <div class="col-lg-12 p-4 border mb-3">
-                                                        <span class="d-block text-primary h6 text-uppercase">
-                                                            <%= address.state %>
-                                                        </span>
-                                                        <p class="mb-0">
-                                                            <%= address.building %>,
-                                                                <%= address.area %>,
-                                                                    <%= address.city %>,
-                                                                        <%= address.state %>,
-                                                                            <%= address.pincode %>
-                                                        </p>
-                                                        <p class="mt-3">
-                                                        <form action="/delete-address/<%= address._id %>" method="post">
-                                                            <a href="/edit-address/<%= address._id %>"
-                                                                class="btn btn-sm btn-outline-primary">Edit</a>
-                                                            <button type="submit" href=""
-                                                                class="btn btn-sm btn-primary">Delete</button>
-                                                        </form>
-                                                        </p>
-                                                    </div>
-                                                    <% }) %>
-                                            </div>
-                                        </div>
-                                        <% } %>
-                                            <% if (addresses.length < 3) { %>
-                                                <div class="form-group row">
-                                                    <div class="col-lg-12">
-                                                        <a href="/new-address"
-                                                            class="btn btn-outline-primary btn-lg btn-block">
-                                                            Add New Address
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
+                <% } else if (currentUser.profile) { %>
+                <form action="/profile/remove-image" method="post" id="removeImg-form">
+                  <img src="<%= currentUser.profile %>" style="border-radius: 10px; display: inline;" height="100px" width="100px" id="previewForm-img" alt="profileImage">
+                  <button type="button" class="btn btn-danger mt-0" style="display: inline;" id="removeBtn" onclick="removeProfileImage()">X</button>
+                </form>
+                <% } %>
+                <img src="<%= currentUser.profile %>" class="preview" id="preview-img" style="border-radius: 10px; display: none;" height="100px" width="100px" id="preview-img" alt="profileImage">
+              </div>
+              <form action="/profile?_method=PATCH" method="post" id="profile-form" enctype="multipart/form-data">
+                <div class="form-group row">
+                  <div class="form-group col-md-12">
+                    <label for="profileImage">Profile Image</label>
+                    <input type="file" name="profile" id="preview-input" accept="image/*">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="username" class="text-black">Username <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="exampleInputUsername1" name="username" value="<%= currentUser.username %>">
+                    <p class="text-danger" id="username-error-display"></p>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone" class="text-black">Phone <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="exampleInputPhone1" name="phone" value="<%= currentUser.phone %>">
+                    <p class="text-danger" id="phone-error-display"></p>
+                  </div>
                 </div>
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <label for="email" class="text-black">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" name="email" value="<%= currentUser.email %>">
+                    <p class="text-danger" id="email-error-display"></p>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-12">
+                    <a href="/change-password">Change Password</a>
+                  </div>
+                </div>
+                <p class="text-danger" id="common-error-display">
+                  <%= error %>
+                </p>
+                <div class="form-group row">
+                  <div class="col-lg-12">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" id="updateProfileButton" data-toggle="modal" data-target="#confirmationModal">
+                      Update Profile
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group row d-flex justify-content-center">
+              <div class="col-md-4 mt-1 mb-1">
+                <a href="/orders" class="btn btn-primary btn-lg btn-block">
+                  Orders
+                </a>
+              </div>
+              <div class="col-md-4 mt-1 mb-1">
+                <a href="/wallet" class="btn btn-outline-primary btn-lg btn-block">
+                  Wallet
+                </a>
+              </div>
+              <div class="col-md-4 mt-1 mb-1">
+                <a href="/Coupons" class="btn btn-outline-primary btn-lg btn-block">
+                  Coupons
+                </a>
+              </div>
+            </div>
 
-                <script>
-                    
-                    const imageForm = document.getElementById('removeImg-form');
-                    function removeProfileImage() {
-                        imageForm.submit();
-                    }
+            <div>
+              <% if (addresses.length) { %>
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="address" class="text-black">
+                    <%= addresses.length %> Saved Address
+                  </label>
+                  <% addresses.forEach((address)=> { %>
+                  <div class="col-lg-12 p-4 border mb-3">
+                    <span class="d-block text-primary h6 text-uppercase">
+                      <%= address.state %>
+                    </span>
+                    <p class="mb-0">
+                      <%= address.building %>,
+                      <%= address.area %>,
+                      <%= address.city %>,
+                      <%= address.state %>,
+                      <%= address.pincode %>
+                    </p>
+                    <p class="mt-3">
+                    <form action="/delete-address/<%= address._id %>" method="post">
+                      <a href="/edit-address/<%= address._id %>" class="btn btn-sm btn-outline-primary">Edit</a>
+                      <button type="submit" href="" class="btn btn-sm btn-primary">Delete</button>
+                    </form>
+                    </p>
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% } %>
+              <% if (addresses.length < 3) { %>
+              <div class="form-group row">
+                <div class="col-lg-12">
+                  <a href="/new-address" class="btn btn-outline-primary btn-lg btn-block">
+                    Add New Address
+                  </a>
+                </div>
+              </div>
+              <% } %>
+            </div>
 
-                    const previewArea = document.getElementById('preview-group');
-                    const previewInput = document.getElementById('preview-input');
-                    const previewImg = document.getElementById('preview-img');
+          </div>
 
-                    previewInput.onchange = e => {
-                        if (e.target.files && e.target.files.length) {
-                            previewImg.style.display = 'block';
-                            const imgSrc = URL.createObjectURL(e.target.files[0]);
-                            previewImg.src = imgSrc;
-                            previewArea.style.display = 'block';
-                            if (document.getElementById("personIcon")) {
-                                document.getElementById("personIcon").style.display = 'none';
-                            }
-                            document.getElementById("previewForm-img").style.display = 'none';
-                            document.getElementById("removeBtn").style.display = 'none';
-                        }
-                    }
+        </div>
+      </div>
+    </div>
 
-                    const form = document.getElementById('profile-form');
-                    const usernameInput = document.getElementById('exampleInputUsername1');
-                    const emailInput = document.getElementById('exampleInputEmail1');
-                    const phoneInput = document.getElementById('exampleInputPhone1');
+    <!-- Update Profile Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">Confirm Update</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to update your address?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary" id="confirmUpdate">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                    form.addEventListener('submit', (event) => {
-                        let hasErrors = false;
+    <script>
+      const form = document.getElementById('profile-form');
+      const usernameInput = document.getElementById('exampleInputUsername1');
+      const emailInput = document.getElementById('exampleInputEmail1');
+      const phoneInput = document.getElementById('exampleInputPhone1');
 
-                        // Clear previous error messages
-                        document.getElementById("common-error-display").innerHTML = "";
-                        document.getElementById("username-error-display").innerHTML = "";
-                        document.getElementById("phone-error-display").innerHTML = "";
-                        document.getElementById("email-error-display").innerHTML = "";
+      // To show/hide the profile update modal
+      const confirmationModal = document.getElementById("confirmationModal");
+      const confirmUpdateButton = document.getElementById("confirmUpdate");
+      const updateProfileButton = document.getElementById("updateProfileButton");
 
-                        if (!usernameInput.value || !emailInput.value || !phoneInput.value) {
-                            hasErrors = true;
-                            document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
-                        } else {
-                            if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
-                                hasErrors = true;
-                                document.getElementById("email-error-display").innerHTML = "Please enter a valid email.";
-                            }
-                            if (phoneInput.value.length !== 10) {
-                                hasErrors = true;
-                                document.getElementById("phone-error-display").innerHTML = "Please enter a valid phone number";
-                            }
-                        }
+      // Show the modal when the "Update Profile" button is clicked
+      updateProfileButton.addEventListener("click", () => {
+        confirmationModal.show();
+      });
 
-                        if (hasErrors) {
-                            event.preventDefault();
-                        }
-                    });
+      // Close the modal when the "Cancel" button is clicked
+      confirmUpdateButton.addEventListener('click', (event) => {
+        form.submit();
+        confirmationModal.hide();
+      });
 
-                </script>
+      const imageForm = document.getElementById('removeImg-form');
 
-                <%- include('../partials/customer/footer') -%>
+      function removeProfileImage() {
+        imageForm.submit();
+      }
+
+      const previewArea = document.getElementById('preview-group');
+      const previewInput = document.getElementById('preview-input');
+      const previewImg = document.getElementById('preview-img');
+
+      previewInput.onchange = e => {
+        if (e.target.files && e.target.files.length) {
+          previewImg.style.display = 'block';
+          const imgSrc = URL.createObjectURL(e.target.files[0]);
+          previewImg.src = imgSrc;
+          previewArea.style.display = 'block';
+          if (document.getElementById("personIcon")) {
+            document.getElementById("personIcon").style.display = 'none';
+          }
+          document.getElementById("previewForm-img").style.display = 'none';
+          document.getElementById("removeBtn").style.display = 'none';
+        }
+      }
+
+      form.addEventListener('submit', (event) => {
+        let hasErrors = false;
+
+        // Clear previous error messages
+        document.getElementById("common-error-display").innerHTML = "";
+        document.getElementById("username-error-display").innerHTML = "";
+        document.getElementById("phone-error-display").innerHTML = "";
+        document.getElementById("email-error-display").innerHTML = "";
+
+        if (!usernameInput.value || !emailInput.value || !phoneInput.value) {
+          hasErrors = true;
+          document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
+        } else {
+          if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
+            hasErrors = true;
+            document.getElementById("email-error-display").innerHTML = "Please enter a valid email.";
+          }
+          if (phoneInput.value.length !== 10) {
+            hasErrors = true;
+            document.getElementById("phone-error-display").innerHTML = "Please enter a valid phone number";
+          }
+        }
+
+        if (hasErrors) {
+          event.preventDefault();
+        }
+      });
+    </script>
+
+    <%- include('../partials/customer/footer') -%>

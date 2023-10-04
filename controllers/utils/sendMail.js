@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import nodeMailer from 'nodemailer';
-import UserOTPVerification from '../models/userOTPModel.js';
+import UserOTPVerification from '../../models/userOTPModel.js';
 
 let salt;
 

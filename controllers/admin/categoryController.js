@@ -10,21 +10,30 @@ const __dirname = dirname(__filename);
 export const getCategories = async (req, res, next) => {
     try {
         const foundCategories = await Category.find();
-        res.render('admin/categories/categories', { categoryDatas: foundCategories });
+        res.render('admin/categories/categories', { 
+            categoryDatas: foundCategories,
+            activePage: 'Categories' 
+        });
     } catch (error) {
         next(error);
     }
 };
 
 export const newCategory = (req, res) => {
-    res.render('admin/categories/newCategory', { error: "" });
+    res.render('admin/categories/newCategory', { 
+        error: "",
+        activePage: 'Categories' 
+    });
 };
 
 export const addNewCategory = async (req, res, next) => {
     try {
         const { name, photo } = req.body;
         if (!name || !photo) {
-            res.render('admin/categories/newCategory', { error: "All fields are required." });
+            res.render('admin/categories/newCategory', { 
+                error: "All fields are required.",
+                activePage: 'Categories'
+            });
         }
         await Category.create({
             name,
@@ -36,11 +45,13 @@ export const addNewCategory = async (req, res, next) => {
             res.render('admin/categories/newCategory', { error: "Category with the name already exist." });
         } else if (error.message.includes("Category validation failed: name: Path `name`")) {
             res.render('admin/categories/newCategory', {
-                error: "Category name length should be between 4 and 20 characters."
+                error: "Category name length should be between 4 and 20 characters.",
+                activePage: 'Categories'
             });
         } else if (error.message.includes("Category validation failed: name: Category name must not contain special characters")) {
             res.render('admin/categories/newCategory', {
-                error: error.message
+                error: error.message,
+                activePage: 'Categories'
             });
         }
         else {
@@ -55,7 +66,11 @@ export const getCategory = async (req, res, next) => {
         if (!foundCategory) {
             console.log("no category found");
         } else {
-            res.render('admin/categories/editCategory', { categoryData: foundCategory, error: "" });
+            res.render('admin/categories/editCategory', { 
+                categoryData: foundCategory, 
+                error: "",
+                activePage: 'Categories' 
+            });
         }
     } catch (error) {
         next(error);
@@ -88,17 +103,20 @@ export const editCategory = async (req, res, next) => {
         if (error.code === 11000) {
             res.render('admin/categories/editCategory', {
                 categoryData: foundCategory,
-                error: "Category with the name already exist."
+                error: "Category with the name already exist.",
+                activePage: 'Categories'
             });
         } else if (error.message.includes("is longer than the maximum allowed length (20)")) {
             res.render('admin/categories/editCategory', {
                 categoryData: foundCategory,
-                error: "Category name length should be between 4 and 20 characters."
+                error: "Category name length should be between 4 and 20 characters.",
+                activePage: 'Categories'
             });
         } else if (error.message.includes("Category name must not contain special characters")) {
             res.render('admin/categories/editCategory', {
                 categoryData: foundCategory,
-                error: error.message
+                error: error.message,
+                activePage: 'Categories'
             });
         } else {
             next(error);

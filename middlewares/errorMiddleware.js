@@ -8,6 +8,7 @@ export const newProductErrorPage = function (req, res, error, categories) {
     res.render('admin/products/newProduct', {
         categoryOptions: categories,
         error: error || "An error occurred",
+        activePage: 'Products'
     });
 }
 
@@ -16,6 +17,7 @@ export const editProductErrorPage = function (req, res, error, product, foundCat
         productData: product,
         categoryOptions: foundCategories,
         error: error || "An error occurred",
+        activePage: 'Products'
     });
 }
 

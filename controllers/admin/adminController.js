@@ -124,24 +124,20 @@ export const getDashboard = async (req, res, next) => {
             totalCustomersThisMonth,
             paymentMethods,
             monthlyOrderCountsCurrentYear: resultArray,
+            activePage: 'Dashboard',
         });
     } catch (error) {
         next(error);
     }
 };
 
-export const getNotifications = (req, res) => {
-    res.render('admin/notifications');
-};
-
-export const getProfile = (req, res) => {
-    res.render('admin/profile');
-};
-
 export const getCustomers = async (req, res, next) => {
     try {
         const foundCustomers = await User.find();
-        res.render('admin/customers', { customerDatas: foundCustomers });
+        res.render('admin/customers', { 
+            customerDatas: foundCustomers,
+            activePage: 'Customers', 
+        });
     } catch (error) {
         next(error);
     }
@@ -167,7 +163,10 @@ export const getOrders = async (req, res, next) => {
             { path: 'products.product' },
         ]);
 
-        res.render('admin/orders', { orders });
+        res.render('admin/orders', { 
+            orders,
+            activePage: 'Orders', 
+        });
     } catch (error) {
         next(error);
     }
@@ -210,7 +209,10 @@ export const getReturnRequests = async (req, res, next) => {
             { path: 'order' },
             { path: 'product' },
         ]);
-        res.render("admin/returns", { returnRequests });
+        res.render("admin/returns", { 
+            returnRequests,
+            activePage: 'Orders', 
+        });
     } catch (error) {
         next(error);
     }
@@ -242,24 +244,36 @@ export const returnRequestAction = async (req, res, next) => {
 export const getCoupons = async (req, res, next) => {
     try {
         const foundCoupons = await Coupon.find();
-        res.render('admin/coupons/coupons', { foundCoupons });
+        res.render('admin/coupons/coupons', { 
+            foundCoupons,
+            activePage: 'Coupons',
+        });
     } catch (error) {
         next(error);
     }
 };
 
 export const getAddNewCoupon = (req, res) => {
-    res.render('admin/coupons/newCoupon', { error: "" });
+    res.render('admin/coupons/newCoupon', { 
+        error: "",
+        activePage: 'Coupons', 
+    });
 };
 
 export const addNewCoupon = async (req, res, next) => {
     try {
         const { description, discountType, discountAmount, minimumPurchaseAmount, usageLimit } = req.body;
         if (!description || !discountType || !discountAmount || !minimumPurchaseAmount || !usageLimit) {
-            res.render('admin/coupons/newCoupon', { error: "All fields are required" });
+            res.render('admin/coupons/newCoupon', { 
+                error: "All fields are required",
+                activePage: 'Coupons', 
+            });
         } else {
             if (description.length < 4 || description.length > 100) {
-                return res.render('admin/coupons/newCoupon', { error: "Description must be between 4 and 100 characters" });
+                return res.render('admin/coupons/newCoupon', { 
+                    error: "Description must be between 4 and 100 characters", 
+                    activePage: 'Coupons',
+                });
             } else {
                 const uniqueCode = await generateCouponCode();
                 const newCoupon = new Coupon({
@@ -380,7 +394,10 @@ export const getSalesReport = async (req, res, next) => {
             }
         ]);
 
-        res.render('admin/salesReports', { salesReport: filteredOrders });
+        res.render('admin/salesReports', { 
+            salesReport: filteredOrders,
+            activePage: 'SalesReport', 
+        });
     } catch (error) {
         next(error);
     }
@@ -440,5 +457,15 @@ export const downloadSalesReport = (req, res, next) => {
 };
 
 export const getBanner = (req, res) => {
-    res.render('admin/banner/banners');
+    res.render('admin/banner/banners', {
+        activePage: 'Banner',
+    });
+};
+
+export const getNotifications = (req, res) => {
+    res.render('admin/notifications', 
+        {
+            activePage: ''
+        }
+    );
 };

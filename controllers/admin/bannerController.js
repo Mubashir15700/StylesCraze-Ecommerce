@@ -11,7 +11,10 @@ const __dirname = dirname(__filename);
 export const getBanners = async (req, res, next) => {
     try {
         const foundBanners = await Banner.find();
-        res.render('admin/banner/banners', { foundBanners });
+        res.render('admin/banner/banners', { 
+            foundBanners,
+            activePage: 'Banner' 
+        });
     } catch (error) {
         next(error);
     }
@@ -19,7 +22,10 @@ export const getBanners = async (req, res, next) => {
 
 export const getAddNewBanner = async (req, res, next) => {
     try {
-        res.render('admin/banner/newBanner', { error: '' });
+        res.render('admin/banner/newBanner', { 
+            error: '',
+            activePage: 'Banner' 
+        });
     } catch (error) {
         next(error);
     }
@@ -31,6 +37,7 @@ export const addNewBanner = async (req, res, next) => {
         if (!title || !description || !images) {
             res.render('admin/banner/newBanner', {
                 error: "All fields are required.",
+                activePage: 'Banner'
             });
         } else {
             const imagesWithPath = images.map(img => '/banners/' + img);
@@ -50,7 +57,11 @@ export const addNewBanner = async (req, res, next) => {
 export const getBanner = async (req, res, next) => {
     try {
         const banner = await Banner.findById(req.params.id);
-        res.render('admin/banner/editBanner', { banner, error: '' });
+        res.render('admin/banner/editBanner', { 
+            banner, 
+            error: '',
+            activePage: 'Banner' 
+        });
     } catch (error) {
         next(error);
     }
@@ -61,7 +72,11 @@ export const editBanner = async (req, res, next) => {
         const banner = await Banner.findById(req.params.id);
         const { title, description } = req.body;
         if (!title || !description) {
-            res.render('admin/banner/editBanner', { banner, error: 'All fields are required.' });
+            res.render('admin/banner/editBanner', { 
+                banner, 
+                error: 'All fields are required.',
+                activePage: 'Banner'
+            });
         } else {
             banner.title = title;
             banner.description = description;

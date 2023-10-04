@@ -3,101 +3,101 @@
 
 <%- include('../partials/admin/head') -%>
 
-    <body>
-        <div class="container-scroller">
-            <%- include('../partials/admin/header') -%>
-                <div class="main-panel">
-                    <div class="content-wrapper my-custom-wrapper">
-                        <div class="col-lg-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Sales Report</h4>
-                                    <form action="/admin/sales-report?filtered=true" method="post">
-                                        <input type="date" name="from">
-                                        <input type="date" name="upto">
-                                        <button class="btn btn-outline-primary btn-sm" type="submit">Apply</button>
-                                    </form>
-                                    <div class="table-responsive">
-                                        <% let productsCount = 0 %>
-                                        <% let totalRevenue = 0 %>
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        User
-                                                    </th>
-                                                    <th>
-                                                        Order Details
-                                                    </th>
-                                                    <th>
-                                                        Order Date
-                                                    </th>
-                                                    <th>
-                                                        Delivery Address
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (!salesReport.length) { %>
-                                                    <tr>
-                                                        <td colspan="6">
-                                                            No data found.
-                                                        </td>
-                                                    </tr>
-                                                <% } else { %>
-                                                    <% salesReport.forEach((report) => { %>
-                                                        <tr>
-                                                            <td>
-                                                                <%= report.userInfo.username %><br>
-                                                                <p class="text-dark"><%= report.userInfo.email %></p><br>
-                                                                <%= report.userInfo.phone %>
-                                                             </td>
-                                                             <td>
-                                                                <div>
-                                                                    <% productsCount += 1 %>
-                                                                    <div class="border-bottom mb-3">
-                                                                        <span class="text-primary h6 text-uppercase">
-                                                                            <%= report.products.productInfo.name %> 
-                                                                        </span><br>
-                                                                        Price: <%= report.products.productInfo.price %>,
-                                                                        Quantity: <%= report.products.quantity %>
-                                                                        <% totalRevenue += (report.products.productInfo.price * report.products.quantity) %>
-                                                                    </div>
-                                                                <span>
-                                                                    <strong>
-                                                                        Payment Method: <%= report.paymentMethod %>
-                                                                    </strong>
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                Order Confirmed, <%= report.orderDate.toLocaleDateString() %><br>
-                                                                Delivery, <%= report.deliveryDate.toLocaleDateString() %>
-                                                            </td>
-                                                            <td>
-                                                                <%= report.deliveryAddress.state %>,
-                                                                <%= report.deliveryAddress.city %><br>
-                                                                <%= report.deliveryAddress.area %>,
-                                                                Pincode: <%= report.deliveryAddress.pincode %><br>
-                                                                House No.: <%= report.deliveryAddress.building %>
-                                                            </td>
-                                                        </tr>
-                                                    <% }) %>
-                                                <% } %>
-                                            </tbody>
-                                        </table>
-                                        <div class="d-flex border-top">
-                                            <div class="col-lg-9 pt-3">
-                                                Total orders done: <%= salesReport.length %><br>
-                                                Total products sold: <%= productsCount %><br>
-                                                <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
-                                            </div>
-                                            <div class="col-lg-3 p-4">
-                                                <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">Download</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%- include('../partials/admin/footer') -%>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Sales Report</h4>
+              <form action="/admin/sales-report?filtered=true" method="post">
+                <input class="m-1" type="date" name="from">
+                <input class="m-1" type="date" name="upto">
+                <button class="btn btn-outline-primary btn-sm m-1" type="submit">Apply</button>
+              </form>
+              <div class="table-responsive">
+                <% let productsCount = 0 %>
+                <% let totalRevenue = 0 %>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        User
+                      </th>
+                      <th>
+                        Order Details
+                      </th>
+                      <th>
+                        Order Date
+                      </th>
+                      <th>
+                        Delivery Address
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!salesReport.length) { %>
+                    <tr>
+                      <td colspan="6">
+                        No data found.
+                      </td>
+                    </tr>
+                    <% } else { %>
+                    <% salesReport.forEach((report) => { %>
+                    <tr>
+                      <td>
+                        <%= report.userInfo.username %><br>
+                        <p class="text-dark"><%= report.userInfo.email %></p><br>
+                        <%= report.userInfo.phone %>
+                      </td>
+                      <td>
+                        <div>
+                          <% productsCount += 1 %>
+                          <div class="border-bottom mb-3">
+                            <span class="text-primary h6 text-uppercase">
+                              <%= report.products.productInfo.name %>
+                            </span><br>
+                            Price: <%= report.products.productInfo.price %>,
+                            Quantity: <%= report.products.quantity %>
+                            <% totalRevenue += (report.products.productInfo.price * report.products.quantity) %>
+                          </div>
+                          <span>
+                            <strong>
+                              Payment Method: <%= report.paymentMethod %>
+                            </strong>
+                          </span>
+                      </td>
+                      <td>
+                        Order Confirmed, <%= report.orderDate.toLocaleDateString() %><br>
+                        Delivery, <%= report.deliveryDate.toLocaleDateString() %>
+                      </td>
+                      <td>
+                        <%= report.deliveryAddress.state %>,
+                        <%= report.deliveryAddress.city %><br>
+                        <%= report.deliveryAddress.area %>,
+                        Pincode: <%= report.deliveryAddress.pincode %><br>
+                        House No.: <%= report.deliveryAddress.building %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+                <div class="d-flex border-top">
+                  <div class="col-lg-9 pt-3">
+                    Total orders done: <%= salesReport.length %><br>
+                    Total products sold: <%= productsCount %><br>
+                    <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
+                  </div>
+                  <div class="col-lg-3 p-4">
+                    <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">Download</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('../partials/admin/footer') -%>

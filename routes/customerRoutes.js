@@ -8,7 +8,7 @@ import { checkAuth, isLoggedIn, checkToBlock } from '../middlewares/customerMidd
 import {
     getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts,
     getContact, getLogin, getRegister, getEnterEmail, getWishlist, updateWishlist, applyCoupon, placeOrder,
-    cancelOrder, getReturnProductForm, requestReturnProduct
+    saveRzpOrder, cancelOrder, getReturnProductForm, requestReturnProduct
 } from '../controllers/customer/customerController.js';
 // profile controller
 import {
@@ -85,6 +85,7 @@ router.post("/update-cart/:id", checkToBlock, checkAuth, updateCart);
 router.route("/checkout")
     .get(checkToBlock, checkAuth, getCheckout)
     .post(checkToBlock, checkAuth, placeOrder);
+router.post("/save-rzporder", checkToBlock, checkAuth, saveRzpOrder);
 
 router.post("/apply-coupon", checkToBlock, checkAuth, applyCoupon);
 

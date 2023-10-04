@@ -3,169 +3,169 @@
 
 <%- include('../partials/admin/head') -%>
 
-    <body>
-        <div class="container-scroller">
-            <%- include('../partials/admin/header') -%>
-                <!-- partial -->
-                <div class="main-panel">
-                    <div class="content-wrapper my-custom-wrapper right-0">
-                        <div class="row">
-                            <div class="col-md-12 grid-margin">
-                                <div class="row">
-                                    <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                                        <h3 class="font-weight-bold">Welcome Admin</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 grid-margin stretch-card">
-                                <div class="card tale-bg">
-                                    <div class="card-people mt-auto">
-                                        <img src="images/dashboard/people.svg" alt="people">
-                                    </div>
-                                </div>
-                            </div>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/admin/header') -%>
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper right-0">
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="row">
+              <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                <h3 class="font-weight-bold">Welcome Admin</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 grid-margin stretch-card">
+            <div class="card tale-bg">
+              <div class="card-people mt-auto">
+                <img src="images/dashboard/people.svg" alt="people">
+              </div>
+            </div>
+          </div>
 
-                            <div class="col-md-6 grid-margin transparent">
-                                <div class="row">
-                                    <div class="col-md-6 mb-4 stretch-card transparent">
-                                        <div class="card card-tale">
-                                            <div class="card-body">
-                                                <p class="mb-4">Today’s Orders</p>
-                                                <p class="fs-30 mb-2">
-                                                    <%= todaysOrders %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4 stretch-card transparent">
-                                        <div class="card card-dark-blue">
-                                            <div class="card-body">
-                                                <p class="mb-4">Monthly Orders</p>
-                                                <p class="fs-30 mb-2">
-                                                    <%= thisMonthsOrders %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-                                        <div class="card card-light-blue">
-                                            <div class="card-body">
-                                                <p class="mb-4">Monthly Revenue</p>
-                                                <p class="fs-30 mb-2">
-                                                    ₹<%= thisMonthsTotalRevenue %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 stretch-card transparent">
-                                        <div class="card card-light-danger">
-                                            <div class="card-body">
-                                                <p class="mb-4">Number of Customers</p>
-                                                <p class="fs-30 mb-2">
-                                                    <%= totalCustomersThisMonth %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+          <div class="col-md-6 grid-margin transparent">
+            <div class="row">
+              <div class="col-md-6 mb-4 stretch-card transparent">
+                <div class="card card-tale">
+                  <div class="card-body">
+                    <p class="mb-4">Today’s Orders</p>
+                    <p class="fs-30 mb-2">
+                      <%= todaysOrders %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4 stretch-card transparent">
+                <div class="card card-dark-blue">
+                  <div class="card-body">
+                    <p class="mb-4">Monthly Orders</p>
+                    <p class="fs-30 mb-2">
+                      <%= thisMonthsOrders %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                <div class="card card-light-blue">
+                  <div class="card-body">
+                    <p class="mb-4">Monthly Revenue</p>
+                    <p class="fs-30 mb-2">
+                      ₹<%= thisMonthsTotalRevenue %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 stretch-card transparent">
+                <div class="card card-light-danger">
+                  <div class="card-body">
+                    <p class="mb-4">Number of Customers</p>
+                    <p class="fs-30 mb-2">
+                      <%= totalCustomersThisMonth %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
 
-                        <div class="row">
-                            <div class="col-md-6 grid-margin stretch-card">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Payment Method Distribution</h4>
-                                        <div class="chart-container">
-                                            <canvas id="paymentMethodChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 grid-margin stretch-card">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Monthly Sales</h4>
-                                        <div class="chart-container">
-                                            <canvas id="monthlySalesChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- content-wrapper ends -->
-                    <%- include('../partials/admin/footer') -%>
-                        <script>
-                            const codCount = <%= paymentMethods.cod ?paymentMethods.cod: 0  %>;
-                            const wltCount = <%= paymentMethods.wlt ?paymentMethods.wlt: 0  %>;
-                            const rzpCount = <%= paymentMethods.rzp ?paymentMethods.rzp: 0  %>;
+        <div class="row">
+          <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Payment Method Distribution</h4>
+                <div class="chart-container">
+                  <canvas id="paymentMethodChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Monthly Sales</h4>
+                <div class="chart-container">
+                  <canvas id="monthlySalesChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <%- include('../partials/admin/footer') -%>
+      <script>
+        const codCount = '<%= paymentMethods.cod ?paymentMethods.cod: 0  %>'
+        const wltCount = '<%= paymentMethods.wlt ?paymentMethods.wlt: 0  %>'
+        const rzpCount = '<%= paymentMethods.rzp ?paymentMethods.rzp: 0  %>'
 
-                            const paymentMethodData = {
-                                labels: ['COD', 'Wallet', 'Online'],
-                                datasets: [{
-                                    data: [codCount, wltCount, rzpCount],
-                                    backgroundColor: ['#FF5733', '#33FF57', '#5733FF'],
-                                }],
-                            };
+        const paymentMethodData = {
+          labels: ['COD', 'Wallet', 'Online'],
+          datasets: [{
+            data: [codCount, wltCount, rzpCount],
+            backgroundColor: ['#FF5733', '#33FF57', '#5733FF'],
+          }],
+        };
 
-                            const monthlySalesData = {
-                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], // Add labels for each month
-                                datasets: [{
-                                    label: 'Monthly Sales',
-                                    data: [
-                                        <%= monthlyOrderCountsCurrentYear[0] %>, 
-                                        <%= monthlyOrderCountsCurrentYear[1] %>,
-                                        <%= monthlyOrderCountsCurrentYear[2] %>,
-                                        <%= monthlyOrderCountsCurrentYear[3] %>,
-                                        <%= monthlyOrderCountsCurrentYear[4] %>,
-                                        <%= monthlyOrderCountsCurrentYear[5] %>,
-                                        <%= monthlyOrderCountsCurrentYear[6] %>,
-                                        <%= monthlyOrderCountsCurrentYear[7] %>,
-                                        <%= monthlyOrderCountsCurrentYear[8] %>,
-                                        <%= monthlyOrderCountsCurrentYear[9] %>,
-                                        <%= monthlyOrderCountsCurrentYear[10] %>,
-                                        <%= monthlyOrderCountsCurrentYear[11] %>,
-                                    ],
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 1,
-                                }],
-                            };
+        const monthlySalesData = {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], // Add labels for each month
+          datasets: [{
+            label: 'Monthly Sales',
+            data: [
+              '<%= monthlyOrderCountsCurrentYear[0] %>',
+              '<%= monthlyOrderCountsCurrentYear[1] %>',
+              '<%= monthlyOrderCountsCurrentYear[2] %>',
+              '<%= monthlyOrderCountsCurrentYear[3] %>',
+              '<%= monthlyOrderCountsCurrentYear[4] %>',
+              '<%= monthlyOrderCountsCurrentYear[5] %>',
+              '<%= monthlyOrderCountsCurrentYear[6] %>',
+              '<%= monthlyOrderCountsCurrentYear[7] %>',
+              '<%= monthlyOrderCountsCurrentYear[8] %>',
+              '<%= monthlyOrderCountsCurrentYear[9] %>',
+              '<%= monthlyOrderCountsCurrentYear[10] %>',
+              '<%= monthlyOrderCountsCurrentYear[11] %>',
+            ],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          }],
+        };
 
-                            // Function to render the payment method pie chart
-                            function renderPaymentMethodChart() {
-                                const ctx = document.getElementById('paymentMethodChart').getContext('2d');
-                                new Chart(ctx, {
-                                    type: 'pie',
-                                    data: paymentMethodData,
-                                });
-                            }
+        // Function to render the payment method pie chart
+        function renderPaymentMethodChart() {
+          const ctx = document.getElementById('paymentMethodChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'pie',
+            data: paymentMethodData,
+          });
+        }
 
-                            // Function to render the monthly sales bar chart
-                            function renderMonthlySalesChart() {
-                                const ctx = document.getElementById('monthlySalesChart').getContext('2d');
-                                new Chart(ctx, {
-                                    type: 'bar',
-                                    data: monthlySalesData,
-                                    options: {
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true,
-                                            },
-                                        },
-                                    },
-                                });
-                            }
+        // Function to render the monthly sales bar chart
+        function renderMonthlySalesChart() {
+          const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: monthlySalesData,
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        }
 
-                            // Call the chart rendering functions when your data is ready
-                            // For example, after fetching data from the server
-                            renderPaymentMethodChart();
-                            renderMonthlySalesChart();
-                        </script>
+        // Call the chart rendering functions when your data is ready
+        // For example, after fetching data from the server
+        renderPaymentMethodChart();
+        renderMonthlySalesChart();
+      </script>

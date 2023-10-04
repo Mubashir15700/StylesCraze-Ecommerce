@@ -3,65 +3,68 @@
 
 <%- include('../partials/customer/head') -%>
 
-    <body>
-        <div class="site-wrap">
-            <%- include('../partials/customer/header') -%>
-                <div class="bg-light py-3">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                                    class="text-black">Coupons
-                                </strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<body>
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Coupons
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                <div class="container">
-                    <div class="coupon-container">
-                        <div class="col-lg-6 pt-5 pb-3">
-                            <span class="text-primary h5 text-uppercase">
-                                All New Coupons
-                            </span>
-                            <% if (!allCoupons.length) { %>
-                                <div class="p-4 border mb-3">
-                                    No new coupons found.
-                                </div>
-                            <% } else { %>
-                                <% allCoupons.forEach((coupon)=> { %>
-                                    <div class="p-4 border mb-3">
-                                        <p class="mb-0 text-black">
-                                            <%= coupon.description %>,<br>
-                                            Discount Type: <%= coupon.discountType %>,
-                                            Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %>,<br>
-                                            Expires At: <%= coupon.expirationDate %>
-                                        </p>
-                                    </div>
-                                <% }) %>
-                            <% } %>
-                        </div>
-                        <div class="col-lg-6 pt-5 pb-3">
-                            <span class="text-primary h5 text-uppercase">
-                                Coupons Earned
-                            </span>
-                            <% if (!earnedCoupons.length) { %>
-                                <div class="p-4 border mb-3">
-                                    You haven't earned any coupons yet.
-                                </div>
-                            <% } else { %>
-                                <% earnedCoupons.forEach((coupon)=> { %>
-                                    <div class="p-4 border mb-3">
-                                        <p class="mb-0 text-black">
-                                            Code: <%= coupon.coupon.code %>,<br>
-                                            <%= coupon.coupon.description %>,
-                                            Discount Type: <%= coupon.coupon.discountType %>,
-                                            Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
-                                        </p>
-                                    </div>
-                                <% }) %>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+      <div class="coupon-container">
+        <div class="col-lg-6 pt-5 pb-3">
+          <span class="text-primary h5 text-uppercase">
+            All New Coupons
+          </span>
+          <% if (!allCoupons.length) { %>
+          <div class="p-4 border mb-3">
+            No new coupons found.
+          </div>
+          <% } else { %>
+          <% allCoupons.forEach((coupon)=> { %>
+          <div class="p-4 border mb-3">
+            <p class="mb-0 text-black">
+              <%= coupon.description %>,<br>
+              Discount Type: <%= coupon.discountType %>,
+              Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %>,<br>
+              Expires At: <%= coupon.expirationDate %>
+            </p>
+          </div>
+          <% }) %>
+          <% } %>
+        </div>
+        <div class="col-lg-6 pt-5 pb-3">
+          <span class="text-primary h5 text-uppercase">
+            Coupons Earned
+          </span>
+          <% if (!earnedCoupons.length) { %>
+          <div class="p-4 border mb-3">
+            You haven't earned any coupons yet.
+          </div>
+          <% } else { %>
+          <% earnedCoupons.forEach((coupon)=> { %>
+          <div class="p-4 border mb-3">
+            <p class="mb-0 text-black">
+              <% if (coupon.isUsed) { %>
+                Code: Already used.<br>
+              <% } else { %>
+                Code: <%= coupon.coupon.code %>,<br>
+              <% } %>
+              <%= coupon.coupon.description %>,
+              Discount Type: <%= coupon.coupon.discountType %>,
+              Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
+            </p>
+          </div>
+          <% }) %>
+          <% } %>
+        </div>
+      </div>
+    </div>
 
-                <%- include('../partials/customer/footer') -%>
+    <%- include('../partials/customer/footer') -%>

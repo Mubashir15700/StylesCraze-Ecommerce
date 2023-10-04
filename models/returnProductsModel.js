@@ -16,6 +16,10 @@ const returnSchema = new mongoose.Schema({
         ref: 'Product',
         required: true,
     },
+    quantity: {
+        type: Number,
+        required: true,
+    },
     reason: {
         type: String,
         required: true,

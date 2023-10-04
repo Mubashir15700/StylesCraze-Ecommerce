@@ -5,8 +5,8 @@ import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 // admin controller
 import { 
-    getLogin, getDashboard, getNotifications, getProfile, getOrders, getReturnRequests,
-    returnRequestAction, getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, 
+    getLogin, getDashboard, getNotifications, getOrders, getReturnRequests, returnRequestAction, 
+    getCustomers, customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, 
     getSalesReport, downloadSalesReport
 } from '../controllers/admin/adminController.js';
 // category controller
@@ -32,7 +32,6 @@ const router = Router();
 router.get("/", checkAuth, getDashboard);
 router.route("/login").get(isLoggedIn, getLogin).post(loginAdmin);
 router.get("/notifications", checkAuth, getNotifications);
-router.get("/profile", checkAuth, getProfile);
 
 router.get("/orders", checkAuth, getOrders);
 

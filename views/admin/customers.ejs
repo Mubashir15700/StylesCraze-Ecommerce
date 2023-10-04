@@ -4,98 +4,99 @@
 <%- include('../partials/admin/head') -%>
 
 <body>
-    <div class="container-scroller">
-        <%- include('../partials/admin/header') -%>
-            <div class="main-panel">
-                <div class="content-wrapper my-custom-wrapper">
-                    <div class="col-lg-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Customers</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    User
-                                                </th>
-                                                <th>
-                                                    Username
-                                                </th>
-                                                <th>
-                                                    Email
-                                                </th>
-                                                <th>
-                                                    Phone
-                                                </th>
-                                                <th>
-                                                    Verified
-                                                </th>
-                                                <th>
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% if (!customerDatas.length) { %>
-                                                <tr>
-                                                    <td colspan="6">No customers found.</td>
-                                                </tr>
-                                            <% } else { %>
-                                            <% customerDatas.forEach((customer) => { %>
-                                                <tr>
-                                                    <td class="py-1">
-                                                        <% if (customer.profile.includes('undefined') || customer.profile === '') { %>
-                                                            <i class="bi bi-person-circle"  style="font-size: 24px;"></i>
-                                                        <% } else { %>
-                                                            <img src="<%= customer.profile %>" alt="profile"
-                                                            onclick="openModal('<%= customer.profile %>')" />
-                                                        <% } %>
-                                                    </td>
-                                                    <!-- for display and zoom image -->
-                                                    <div id="imageModal" class="modal">
-                                                        <button id="closeButton" class="close-button">
-                                                            <i class="bi bi-x-lg"></i>
-                                                        </button>
-                                                        <div class="image-zoom mt-5">
-                                                            <img src="" id="modalImage" alt="Image">
-                                                        </div>
-                                                    </div>
-                                                    <td>
-                                                        <%= customer.username %>
-                                                    </td>
-                                                    <td>
-                                                        <%= customer.email %>
-                                                    </td>
-                                                    <td>
-                                                        <%= customer.phone %>
-                                                    </td>
-                                                    <td>
-                                                        <%= customer.verified %>
-                                                    </td>
-                                                    <td>
-                                                        <form action="/admin/customers/action/<%= customer._id %>?_method=PATCH" method="post">
-                                                            <% if(customer.blocked === true) { %>
-                                                                <input type="hidden" name="state" value="">
-                                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                                    Unblock
-                                                                </button>
-                                                            <% } else { %>
-                                                                <input type="hidden" name="state" value="1">
-                                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                                    Block
-                                                                </button>
-                                                            <% } %>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
-                                                <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+  <div class="container-scroller">
+    <%- include('../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Customers</h4>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        User
+                      </th>
+                      <th>
+                        Username
+                      </th>
+                      <th>
+                        Email
+                      </th>
+                      <th>
+                        Phone
+                      </th>
+                      <th>
+                        Verified
+                      </th>
+                      <th>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!customerDatas.length) { %>
+                    <tr>
+                      <td colspan="6">No customers found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% customerDatas.forEach((customer)=> { %>
+                    <tr>
+                      <td class="py-1">
+                        <% if (customer.profile.includes('undefined') ||
+                                                                        customer.profile==='' ) { %>
+                        <i class="bi bi-person-circle" style="font-size: 24px;"></i>
+                        <% } else { %>
+                        <img src="<%= customer.profile %>" alt="profile" onclick="openModal('<%= customer.profile %>')" />
+                        <% } %>
+                      </td>
+                      <!-- for display and zoom image -->
+                      <div id="imageModal" class="modal">
+                        <button id="closeButton" class="close-button">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                        <div class="image-zoom mt-5">
+                          <img src="" id="modalImage" alt="Image">
                         </div>
-                    </div>
-                </div>
-                <%- include('../partials/admin/footer') -%>
+                      </div>
+                      <td>
+                        <%= customer.username %>
+                      </td>
+                      <td>
+                        <%= customer.email %>
+                      </td>
+                      <td>
+                        <%= customer.phone %>
+                      </td>
+                      <td>
+                        <%= customer.verified %>
+                      </td>
+                      <td>
+                        <form action="/admin/customers/action/<%= customer._id %>?_method=PATCH" method="post" id="action-form">
+                          <% if(customer.blocked===true) { %>
+                          <input type="hidden" name="state" value="">
+                          <button type="submit" class="btn btn-warning btn-sm block-button">
+                            Unblock
+                          </button>
+                          <% } else { %>
+                          <input type="hidden" name="state" value="1">
+                          <button type="submit" class="btn btn-danger btn-sm block-button">
+                            Block
+                          </button>
+                          <% } %>
+                        </form>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%- include('../partials/admin/footer') -%>

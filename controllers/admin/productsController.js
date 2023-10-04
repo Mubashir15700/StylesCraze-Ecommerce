@@ -12,7 +12,10 @@ const __dirname = dirname(__filename);
 export const getProducts = async (req, res, next) => {
     try {
         const foundProducts = await Product.find({}).populate('category');
-        res.render('admin/products/products', { productDatas: foundProducts });
+        res.render('admin/products/products', { 
+            productDatas: foundProducts,
+            activePage: 'Products' 
+        });
     } catch (error) {
         next(error);
     }
@@ -24,6 +27,7 @@ export const getAddNewProduct = async (req, res, next) => {
         res.render('admin/products/newProduct', {
             categoryOptions: foundCategories,
             error: "",
+            activePage: 'Products'
         });
     } catch (error) {
         next(error);
@@ -38,6 +42,7 @@ export const addNewProduct = async (req, res, next) => {
             res.render('admin/products/newProduct', {
                 categoryOptions: foundCategories,
                 error: "All fields are required.",
+                activePage: 'Products'
             });
         } else {
             const imagesWithPath = images.map(img => '/products/' + img);
@@ -82,7 +87,8 @@ export const getProduct = async (req, res, next) => {
         res.render('admin/products/editProduct', {
             productData: foundProduct,
             categoryOptions: foundCategories,
-            error: ""
+            error: "",
+            activePage: 'Products'
         });
     } catch (error) {
         next(error);
