@@ -25,7 +25,7 @@ const router = Router();
 router.get("/", checkToBlock, getHome);
 router.get("/about", checkToBlock, getAbout);
 
-router.get("/shop/", checkToBlock, getShop);
+router.get("/shop/:page", checkToBlock, getShop);
 router.get("/shop/:id/:page", checkToBlock, getCategoryProducts);
 router.get("/single/:id", checkToBlock, getSingleProduct);
 router.post("/search-product", checkToBlock, searchProducts);

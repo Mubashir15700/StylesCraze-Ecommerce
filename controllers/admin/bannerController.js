@@ -11,9 +11,9 @@ const __dirname = dirname(__filename);
 export const getBanners = async (req, res, next) => {
     try {
         const foundBanners = await Banner.find();
-        res.render('admin/banner/banners', { 
+        res.render('admin/banner/banners', {
             foundBanners,
-            activePage: 'Banner' 
+            activePage: 'Banner'
         });
     } catch (error) {
         next(error);
@@ -22,9 +22,9 @@ export const getBanners = async (req, res, next) => {
 
 export const getAddNewBanner = async (req, res, next) => {
     try {
-        res.render('admin/banner/newBanner', { 
+        res.render('admin/banner/newBanner', {
             error: '',
-            activePage: 'Banner' 
+            activePage: 'Banner'
         });
     } catch (error) {
         next(error);
@@ -39,9 +39,13 @@ export const addNewBanner = async (req, res, next) => {
                 error: "All fields are required.",
                 activePage: 'Banner'
             });
+        } else if (description.length > 100) {
+            res.render('admin/banner/newBanner', {
+                error: 'Description should be less than or equal to 100 characters.',
+                activePage: 'Banner'
+            });
         } else {
             const imagesWithPath = images.map(img => '/banners/' + img);
-
             await Banner.create({
                 title,
                 description,
@@ -57,10 +61,10 @@ export const addNewBanner = async (req, res, next) => {
 export const getBanner = async (req, res, next) => {
     try {
         const banner = await Banner.findById(req.params.id);
-        res.render('admin/banner/editBanner', { 
-            banner, 
+        res.render('admin/banner/editBanner', {
+            banner,
             error: '',
-            activePage: 'Banner' 
+            activePage: 'Banner'
         });
     } catch (error) {
         next(error);
@@ -72,9 +76,15 @@ export const editBanner = async (req, res, next) => {
         const banner = await Banner.findById(req.params.id);
         const { title, description } = req.body;
         if (!title || !description) {
-            res.render('admin/banner/editBanner', { 
-                banner, 
+            res.render('admin/banner/editBanner', {
+                banner,
                 error: 'All fields are required.',
+                activePage: 'Banner'
+            });
+        } else if (description.length > 100) {
+            res.render('admin/banner/editBanner', {
+                banner,
+                error: 'Description should be less than or equal to 100 characters.',
                 activePage: 'Banner'
             });
         } else {
@@ -127,7 +137,7 @@ export const bannerAction = async (req, res, next) => {
             await Banner.findOneAndUpdate({ isActive: true }, { $set: { isActive: false } });
         }
         await Banner.findByIdAndUpdate(req.params.id, { $set: { isActive: state } });
-        res.redirect('/admin/banners');   
+        res.redirect('/admin/banners');
     } catch (error) {
         next(error);
     }

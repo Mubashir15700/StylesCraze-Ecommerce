@@ -65,12 +65,12 @@
                         <%= banner.title %>
                       </td>
                       <td>
-                        <%= banner.description %>
+                        <%= banner.description.slice(0, 50) + '...' %>
                       </td>
                       <td>
                         <div class="d-flex">
                           <a href="/admin/edit-banner/<%= banner._id %>" class="btn btn-info btn-sm mr-1">
-                            Edit
+                            <i class="bi bi-pen"></i>
                           </a>
                           <form action="/admin/banners/action/<%= banner._id %>?_method=PATCH" method="post">
                             <% if(!banner.isActive) { %>

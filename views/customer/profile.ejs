@@ -32,7 +32,9 @@
                 <% } else if (currentUser.profile) { %>
                 <form action="/profile/remove-image" method="post" id="removeImg-form">
                   <img src="<%= currentUser.profile %>" style="border-radius: 10px; display: inline;" height="100px" width="100px" id="previewForm-img" alt="profileImage">
-                  <button type="button" class="btn btn-danger mt-0" style="display: inline;" id="removeBtn" onclick="removeProfileImage()">X</button>
+                  <button type="button" class="btn btn-danger mt-0" style="display: inline;" id="removeBtn" onclick="removeProfileImage()">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </form>
                 <% } %>
                 <img src="<%= currentUser.profile %>" class="preview" id="preview-img" style="border-radius: 10px; display: none;" height="100px" width="100px" id="preview-img" alt="profileImage">
@@ -81,17 +83,17 @@
           </div>
           <div class="col-md-6">
             <div class="form-group row d-flex justify-content-center">
-              <div class="col-md-4 mt-1 mb-1">
+              <div class="col-lg-4 mt-1 mb-1">
                 <a href="/orders" class="btn btn-primary btn-lg btn-block">
                   Orders
                 </a>
               </div>
-              <div class="col-md-4 mt-1 mb-1">
+              <div class="col-lg-4 mt-1 mb-1">
                 <a href="/wallet" class="btn btn-outline-primary btn-lg btn-block">
                   Wallet
                 </a>
               </div>
-              <div class="col-md-4 mt-1 mb-1">
+              <div class="col-lg-4 mt-1 mb-1">
                 <a href="/Coupons" class="btn btn-outline-primary btn-lg btn-block">
                   Coupons
                 </a>

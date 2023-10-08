@@ -11,9 +11,14 @@
         <div class="col-lg-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
+              <h4 class="card-title">Orders</h4>
               <div class="d-flex justify-content-between">
-                <h4 class="card-title">Orders</h4>
-                <a href="/admin/return-requests" class="btn border btn-outline-primary">
+                <form action="/admin/orders/1?filtered=true" method="post">
+                  <input class="m-1" type="date" name="from">
+                  <input class="m-1" type="date" name="upto">
+                  <button class="btn btn-outline-primary btn-sm m-1" type="submit">Apply</button>
+                </form>
+                <a href="/admin/return-requests" class="btn btn-sm border btn-outline-primary">
                   View Return Requests
                 </a>
               </div>
@@ -22,19 +27,19 @@
                   <thead>
                     <tr>
                       <th>
-                        User
-                      </th>
-                      <th>
-                        Details
-                      </th>
-                      <th>
                         Order Date
                       </th>
                       <th>
                         Delivery Address
                       </th>
                       <th>
+                        Order Details
+                      </th>
+                      <th>
                         Status
+                      </th>
+                      <th>
+                        options
                       </th>
                     </tr>
                   </thead>
@@ -47,28 +52,6 @@
                     <% orders.forEach((order) => { %>
                     <tr>
                       <td>
-                        <%= order.user.username %><br>
-                        <p class="text-dark"><%= order.user.email %></p><br>
-                        <%= order.user.phone %>
-                      </td>
-                      <td>
-                        <div>
-                          <% order.products.forEach((product) => { %>
-                          <div class="border-bottom mb-3">
-                            <span class="text-primary h6 text-uppercase">
-                              <%= product.product.name %>
-                            </span><br>
-                            Price: <%= product.product.price %>,
-                            Quantity: <%= product.quantity %>
-                          </div>
-                          <% }) %>
-                          <span>
-                            <strong>
-                              Payment Method: <%= order.paymentMethod %>
-                            </strong>
-                          </span>
-                      </td>
-                      <td>
                         Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
                         Delivery, <%= order.deliveryDate.toLocaleDateString() %>
                       </td>
@@ -80,21 +63,42 @@
                         House No.: <%= order.deliveryAddress.building %>
                       </td>
                       <td>
+                        <div>
+                          <% order.products.forEach((product) => { %>
+                          <div class="border-bottom mb-3">
+                            <span class="text-primary h6 text-uppercase">
+                              <%= product.product.name %>
+                            </span><br>
+                            Price: ₹<%= product.product.price %>,
+                            Quantity: <%= product.quantity %>
+                          </div>
+                          <% }) %>
+                          <span>
+                            <strong>
+                              Total Amount: ₹<%= order.totalAmount.toFixed(2) %><br>
+                              Payment Method: <%= order.paymentMethod %>
+                            </strong>
+                          </span>
+                      </td>
+                      <td>
                         <% order.products.forEach((product) => { %>
                         <% if(product.isCancelled) { %>
-                        <p class="text-danger">Order Cancelled</p>
+                        <p class="text-danger font-weight-bolder">Order Cancelled</p>
                         <% } else if(product.returnRequested === 'Pending') { %>
-                        <p class="text-muted">Return requested</p>
+                        <p class="text-info font-weight-bolder">Return requested</p>
                         <% } else if(product.returnRequested === 'Approved') { %>
-                        <p class="text-muted">Return Approved</p>
+                        <p class="text-success font-weight-bolder">Return Approved</p>
                         <% } else if(product.returnRequested === 'Rejected') { %>
-                        <p class="text-muted">Return Rejected</p>
+                        <p class="text-warning font-weight-bolder">Return Rejected</p>
                         <% } else if(product.returnRequested === 'Completed') { %>
-                        <p class="text-muted">Return Completed</p>
+                        <p class="text-dark font-weight-bolder">Return Completed</p>
                         <% } else { %>
-                        <p class="text-primary"><%= order.status %></p>
+                        <p class="text-primary font-weight-bolder"><%= order.status %></p>
                         <% } %>
                         <% }) %>
+                      </td>
+                      <td>
+                        <a href="/admin/single-order/<%= order._id %>" class="btn btn-sm btn-info">View</a>
                       </td>
                     </tr>
                     <% }) %>
@@ -105,5 +109,43 @@
             </div>
           </div>
         </div>
+
+        <div class="container">
+          <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/orders/<%= currentPage - 1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <% } %>
+                <% for (let i=1; i <= totalPages; i++) { %>
+                  <% if (i === currentPage) { %>
+                    <li class="page-item">
+                      <a class="page-link bg-primary text-light" href="/admin/orders/<%= i %>"><%= i %></a>
+                    </li>
+                  <% } else { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/admin/orders/<%= i %>"><%= i %></a>
+                    </li>
+                  <% } %>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/orders/<%= currentPage + 1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+
       </div>
       <%- include('../partials/admin/footer') -%>

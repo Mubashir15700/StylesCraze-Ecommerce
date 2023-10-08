@@ -1,6 +1,7 @@
 <li class="custom-li">
   <a href="/profile"><span class="icon icon-person" id="menuProfile1"></span></a>
 </li>
+
 <li class="custom-li">
   <a href="/wishlist" class="site-cart">
     <% if (currentUser && currentUser.wishlist.length) { %>
@@ -15,6 +16,7 @@
     <% } %>
   </a>
 </li>
+
 <li class="custom-li"><a href="/cart" class="site-cart">
     <span class="icon icon-shopping_cart" id="menuCart1"></span>
     <% if (currentUser) { %>
@@ -24,6 +26,7 @@
     <% } %>
   </a>
 </li>
+
 <li>
   <% if (!isLoggedIn) { %>
   <a href="/login">Login</a>
@@ -38,8 +41,8 @@
 </li>
 
 <!-- Dropdown -->
-<li id="list-icon" class="ml-5">
-  <i class="bi bi-list"></i>
+<li id="list-icon">
+  <i class="bi bi-list ml-5"></i>
   <ul id="dropdown-menu">
     <li><a href="/about" id="menuAbout" class="">About</a></li>
     <li><a href="/shop" id="menuShop" class="">Shop</a></li>

@@ -3,14 +3,15 @@
 
 <%- include('../partials/customer/head') -%>
 
-<% const productsWithSizeSmall=productDatas.filter(product=> product.size === "Small");
-        const productsWithSizeMedium = productDatas.filter(product => product.size === "Medium");
-        const productsWithSizeLarge = productDatas.filter(product => product.size === "Large");
+<%
+  const productsWithSizeSmall=productDatas.filter(product=> product.size === "Small");
+  const productsWithSizeMedium = productDatas.filter(product => product.size === "Medium");
+  const productsWithSizeLarge = productDatas.filter(product => product.size === "Large");
 
-        const productsWithColorPink = productDatas.filter(product => product.color === "Pink");
-        const productsWithColorBlack = productDatas.filter(product => product.color === "Black");
-        const productsWithColorBlue = productDatas.filter(product => product.color === "Blue");
-        %>
+  const productsWithColorPink = productDatas.filter(product => product.color === "Pink");
+  const productsWithColorBlack = productDatas.filter(product => product.color === "Black");
+  const productsWithColorBlue = productDatas.filter(product => product.color === "Blue");
+%>
 
 <body>
 
@@ -90,11 +91,7 @@
                         Size: <%= product.size %>,
                         ₹<%= product.price.toFixed(2) %>
                         <input type="hidden" name="productId" value="<%= product._id %>">
-                        <% if
-                                                                                            (currentUser.wishlist.some((item)=>
-                                                                                            item.toString() ===
-                                                                                            product._id.toString() )) {
-                                                                                            %>
+                        <% if (currentUser.wishlist.some((item)=> item.toString() === product._id.toString() )) { %>
                         <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>" data-to-do="remove">
                           <span class="icon icon-heart">
                           </span>
@@ -144,15 +141,14 @@
             <div class="row" data-aos="fade-up">
               <div class="col-md-12 text-center">
                 <div class="site-block-27">
-                  <% if (categoryBased) { %>
+                  <% if (!categoryBased) { %>
                   <ul>
                     <% if (currentPage> 1) { %>
-                    <li><a href="/shop/<%= category.id %>/<%= currentPage - 1 %>">&lt;</a>
+                    <li><a href="/shop/<%= currentPage - 1 %>">&lt;</a>
                     </li>
                     <% } %>
-                    <% for (let i=1; i <=totalPages; i++) { %>
-                    <li <% if (i===currentPage) { %>class="active" <% }
-                                                                            %>>
+                    <% for (let i=1; i <= totalPages; i++) { %>
+                    <li <% if (i === currentPage) { %>class="active" <% } %>>
                       <a href="/shop/<%= i %>">
                         <%= i %>
                       </a>
@@ -160,7 +156,7 @@
                     <% } %>
                     <% if (currentPage < totalPages) { %>
                     <li>
-                      <a href="/shop/<%= category.id %>/<%= currentPage + 1 %>">&gt;</a>
+                      <a href="/shop/<%= currentPage + 1 %>">&gt;</a>
                     </li>
                     <% } %>
                   </ul>

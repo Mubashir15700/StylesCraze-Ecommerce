@@ -11,7 +11,12 @@
         <div class="col-lg-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title">Customers</h4>
+              <div class="customer-title-section d-flex justify-content-between flex-wrap">
+                <h4 class="card-title flex-grow-1 col-md-8">Customers</h4>
+                <form class="form-inline flex-grow-1 col-md-4">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                </form>
+              </div>
               <div class="table-responsive">
                 <table class="table table-striped">
                   <thead>
@@ -45,8 +50,7 @@
                     <% customerDatas.forEach((customer)=> { %>
                     <tr>
                       <td class="py-1">
-                        <% if (customer.profile.includes('undefined') ||
-                                                                        customer.profile==='' ) { %>
+                        <% if (customer.profile.includes('undefined') || customer.profile==='' ) { %>
                         <i class="bi bi-person-circle" style="font-size: 24px;"></i>
                         <% } else { %>
                         <img src="<%= customer.profile %>" alt="profile" onclick="openModal('<%= customer.profile %>')" />

@@ -48,7 +48,7 @@
                 <input type="hidden" name="from" value="wishlist">
                 <input type="hidden" name="hiddenQuantity" value="1">
                 <button type="submit" class="buy-now btn btn-sm btn-outline-primary mb-3">
-                  Add To Cart
+                  <i class="bi bi-cart3"></i>
                 </button>
               </form>
               <% } %>
@@ -61,8 +61,8 @@
                 <input type="hidden" name="productId" value="<%= item._id %>">
                 <input type="hidden" name="todo" value="remove">
                 <input type="hidden" name="goto" value="toWishlist">
-                <button type="submit" class="btn btn-sm btn-primary">
-                  Remove
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash"></i>
                 </button>
               </form>
             </div>

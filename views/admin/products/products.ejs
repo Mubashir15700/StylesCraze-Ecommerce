@@ -48,7 +48,7 @@
                   <tbody>
                     <% if (!productDatas.length) { %>
                     <tr>
-                      <td colspan="6">No products found.</td>
+                      <td colspan="8">No products found.</td>
                     </tr>
                     <% } else { %>
                     <% productDatas.forEach((product)=> { %>
@@ -92,7 +92,7 @@
                       <td>
                         <div class="d-flex">
                           <a href="/admin/edit-product/<%= product._id %>" class="btn btn-info btn-sm mr-1">
-                            Edit
+                            <i class="bi bi-pen"></i>
                           </a>
                           <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post" id="action-form">
                             <input type="hidden" name="category" value="<%= product.category.name %>">

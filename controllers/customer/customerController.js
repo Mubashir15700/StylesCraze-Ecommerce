@@ -41,7 +41,21 @@ export const getAbout = async (req, res, next) => {
 
 export const getShop = async (req, res, next) => {
     try {
-        const foundProducts = await Product.find({ softDeleted: false }).populate('category');
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+
+        const totalProducts = await Product.countDocuments({
+            softDeleted: false,
+        });
+
+        const totalPages = Math.ceil(totalProducts / pageSize);
+
+        const foundProducts = await Product
+            .find({ softDeleted: false })
+            .populate('category')
+            .skip(skip)
+            .limit(pageSize);
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
@@ -51,6 +65,8 @@ export const getShop = async (req, res, next) => {
             categoryDatas: foundCategories,
             categoryBased: false,
             activePage: 'Shop',
+            currentPage: page,
+            totalPages: totalPages,
         });
     } catch (error) {
         next(error);
@@ -175,8 +191,8 @@ export const filterProducts = async (req, res, next) => {
                 { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } },
             ],
             $and: [
-                { price: { $gte: minPrice } },
-                { price: { $lte: maxPrice } }
+                { price: { $gte: minPrice || 0 } },
+                { price: { $lte: maxPrice || Number.POSITIVE_INFINITY } }
             ]
         }).populate('category');
 
@@ -490,6 +506,11 @@ export const cancelOrder = async (req, res, next) => {
             const refundAmount = (foundProduct.product.price * foundProduct.quantity) + 5;
             currentUser.wallet.balance += refundAmount;
 
+            foundOrder.totalAmount -= (foundProduct.product.price * foundProduct.quantity);
+            if (foundOrder.totalAmount === 5) {
+                foundOrder.totalAmount = 0;
+            }
+
             const transactionData = {
                 amount: refundAmount,
                 description: 'Order cancelled.',
@@ -507,6 +528,10 @@ export const cancelOrder = async (req, res, next) => {
             await currentUser.save();
             await foundCurrentProduct.save();
         } else {
+            foundOrder.totalAmount -= (foundProduct.product.price * foundProduct.quantity);
+            if (foundOrder.totalAmount === 5) {
+                foundOrder.totalAmount = 0;
+            }
             foundProduct.isCancelled = true;
             const foundCurrentOrder = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
             const foundCurrentProduct = await Product.findById(req.body.productId);
@@ -518,15 +543,13 @@ export const cancelOrder = async (req, res, next) => {
         function areAllProductsCancelled(order) {
             for (const product of order.products) {
                 if (!product.isCancelled) {
-                    return false; // If any product is not cancelled, return false
+                    return false;
                 }
             }
-            return true; // All products are cancelled
+            return true;
         }
 
-        // Check if all products in the order are cancelled
         if (areAllProductsCancelled(foundOrder)) {
-            // Update the order status to "Cancelled"
             foundOrder.status = "Cancelled";
         }
 

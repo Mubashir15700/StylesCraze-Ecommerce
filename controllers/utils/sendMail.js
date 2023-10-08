@@ -38,7 +38,7 @@ export const sendToMail = (req, res, userId, isForgotPassword) => {
 
     const mailOptions = {
         from: {
-            name: "Shoppers",
+            name: "StylesCraze",
             address: process.env.USER,
         },
         to: req.body.email,

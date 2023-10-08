@@ -35644,6 +35644,13 @@ div.tagsinput span.tag a {
   }
 }
 
+@media (max-width: 991px) {
+  .navbar-brand-wrapper {
+    width: 100px !important;
+    margin-left: 10px !important;
+  }
+}
+
 @media (min-width: 992px) {
   .sidebar-hidden .sidebar {
     transition: width 0.25s ease;
@@ -36167,7 +36174,26 @@ div.tagsinput span.tag a {
 /* Hide the default number input stepper arrows for inputs with placeholder "Phone" */
 input[type="number"][placeholder="Phone"]::-webkit-inner-spin-button,
 input[type="number"][placeholder="Phone"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Single order page */
+@media (min-width: 1270px) {
+  .custom-card-body {
+    display: flex;
+  }
+}
+
+@media (min-width: 500px) {
+  .custom-deliver-card {
+    display: flex;
+  }
+}
+
+@media (min-width: 678px) {
+  .custom-products-card {
+    display: flex;
+  }
 }

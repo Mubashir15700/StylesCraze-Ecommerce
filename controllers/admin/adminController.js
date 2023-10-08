@@ -134,9 +134,9 @@ export const getDashboard = async (req, res, next) => {
 export const getCustomers = async (req, res, next) => {
     try {
         const foundCustomers = await User.find();
-        res.render('admin/customers', { 
+        res.render('admin/customers', {
             customerDatas: foundCustomers,
-            activePage: 'Customers', 
+            activePage: 'Customers',
         });
     } catch (error) {
         next(error);
@@ -148,7 +148,13 @@ export const customerAction = async (req, res, next) => {
         const state = req.body.state === "1";
         const customerId = req.params.id;
         await User.findByIdAndUpdate(customerId, { $set: { blocked: state } });
-        res.redirect('/admin/customers');
+        if (!req.query.orderId) {
+            res.redirect('/admin/customers');
+        } else {
+            const orderId = req.query.orderId; // Get the orderId from the query parameters
+            // Pass the orderId as a parameter to the getSingleOrder function
+            await getSingleOrder({ params: { id: orderId } }, res, next);
+        }
     } catch (error) {
         next(error);
     }
@@ -158,15 +164,58 @@ export const getOrders = async (req, res, next) => {
     try {
         // Update order statuses before fetching orders
         await updateOrderStatus();
-        const orders = await Order.find().populate([
+
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalOrders = await Order.countDocuments();
+        const totalPages = Math.ceil(totalOrders / pageSize);
+
+        let orders;
+        if (req.query.filtered) {
+            let startOfMonth = req.body.from;
+            let endOfMonth = req.body.upto;
+            orders = await Order.find(
+                {
+                    $and: [
+                        { orderDate: { $gte: startOfMonth } },
+                        { orderDate: { $lte: endOfMonth } }
+                    ]
+                }
+            ).populate([
+                { path: 'user' },
+                { path: 'products.product' },
+            ]).sort({ orderDate: -1 });
+        } else {
+            orders = await Order.find().populate([
+                { path: 'user' },
+                { path: 'products.product' },
+            ]).sort({ orderDate: -1 })
+                .skip(skip)
+                .limit(pageSize);
+        }
+
+        res.render('admin/orders', {
+            orders,
+            activePage: 'Orders',
+            filtered: req.query.filtered ? true : false,
+            currentPage: page,
+            totalPages: totalPages,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getSingleOrder = async (req, res, next) => {
+    try {
+        await updateOrderStatus();
+        const foundOrder = await Order.findById(req.params.id).populate([
             { path: 'user' },
             { path: 'products.product' },
         ]);
-
-        res.render('admin/orders', { 
-            orders,
-            activePage: 'Orders', 
-        });
+        res.render('admin/singleOrder', { foundOrder, activePage: 'Orders', });
     } catch (error) {
         next(error);
     }
@@ -202,6 +251,22 @@ const updateOrderStatus = async () => {
     }
 };
 
+export const manuelStatusUpdate = async (req, res, next) => {
+    try {
+        const foundOrder = await Order.findById(req.body.orderId);
+        const allCancelled = foundOrder.products.every(product => product.isCancelled === true);
+        if (!allCancelled) {
+            foundOrder.status = req.body.status;
+            await foundOrder.save();
+            return res.status(200).json({ message: "Order status updated successfully." });
+        } else {
+            return res.status(404).json({ message: "All product's are cancelled." });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getReturnRequests = async (req, res, next) => {
     try {
         const returnRequests = await Return.find().populate([
@@ -209,9 +274,9 @@ export const getReturnRequests = async (req, res, next) => {
             { path: 'order' },
             { path: 'product' },
         ]);
-        res.render("admin/returns", { 
+        res.render("admin/returns", {
             returnRequests,
-            activePage: 'Orders', 
+            activePage: 'Orders',
         });
     } catch (error) {
         next(error);
@@ -244,7 +309,7 @@ export const returnRequestAction = async (req, res, next) => {
 export const getCoupons = async (req, res, next) => {
     try {
         const foundCoupons = await Coupon.find();
-        res.render('admin/coupons/coupons', { 
+        res.render('admin/coupons/coupons', {
             foundCoupons,
             activePage: 'Coupons',
         });
@@ -254,9 +319,9 @@ export const getCoupons = async (req, res, next) => {
 };
 
 export const getAddNewCoupon = (req, res) => {
-    res.render('admin/coupons/newCoupon', { 
+    res.render('admin/coupons/newCoupon', {
         error: "",
-        activePage: 'Coupons', 
+        activePage: 'Coupons',
     });
 };
 
@@ -264,14 +329,14 @@ export const addNewCoupon = async (req, res, next) => {
     try {
         const { description, discountType, discountAmount, minimumPurchaseAmount, usageLimit } = req.body;
         if (!description || !discountType || !discountAmount || !minimumPurchaseAmount || !usageLimit) {
-            res.render('admin/coupons/newCoupon', { 
+            res.render('admin/coupons/newCoupon', {
                 error: "All fields are required",
-                activePage: 'Coupons', 
+                activePage: 'Coupons',
             });
         } else {
             if (description.length < 4 || description.length > 100) {
-                return res.render('admin/coupons/newCoupon', { 
-                    error: "Description must be between 4 and 100 characters", 
+                return res.render('admin/coupons/newCoupon', {
+                    error: "Description must be between 4 and 100 characters",
                     activePage: 'Coupons',
                 });
             } else {
@@ -335,7 +400,7 @@ export const getSalesReport = async (req, res, next) => {
         const filteredOrders = await Order.aggregate([
             {
                 $match: {
-                    status: "Processing",
+                    status: "Delivered",
                     orderDate: {
                         $gte: startOfMonth,
                         $lte: endOfMonth
@@ -394,9 +459,9 @@ export const getSalesReport = async (req, res, next) => {
             }
         ]);
 
-        res.render('admin/salesReports', { 
+        res.render('admin/salesReports', {
             salesReport: filteredOrders,
-            activePage: 'SalesReport', 
+            activePage: 'SalesReport',
         });
     } catch (error) {
         next(error);
@@ -463,7 +528,7 @@ export const getBanner = (req, res) => {
 };
 
 export const getNotifications = (req, res) => {
-    res.render('admin/notifications', 
+    res.render('admin/notifications',
         {
             activePage: ''
         }

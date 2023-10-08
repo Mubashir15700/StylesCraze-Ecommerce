@@ -27,13 +27,13 @@
                         User
                       </th>
                       <th>
+                        Delivery Address
+                      </th>
+                      <th>
                         Order Details
                       </th>
                       <th>
                         Order Date
-                      </th>
-                      <th>
-                        Delivery Address
                       </th>
                     </tr>
                   </thead>
@@ -51,6 +51,13 @@
                         <%= report.userInfo.username %><br>
                         <p class="text-dark"><%= report.userInfo.email %></p><br>
                         <%= report.userInfo.phone %>
+                      </td>
+                      <td>
+                        <%= report.deliveryAddress.state %>,
+                        <%= report.deliveryAddress.city %><br>
+                        <%= report.deliveryAddress.area %>,
+                        Pincode: <%= report.deliveryAddress.pincode %><br>
+                        House No.: <%= report.deliveryAddress.building %>
                       </td>
                       <td>
                         <div>
@@ -73,13 +80,6 @@
                         Order Confirmed, <%= report.orderDate.toLocaleDateString() %><br>
                         Delivery, <%= report.deliveryDate.toLocaleDateString() %>
                       </td>
-                      <td>
-                        <%= report.deliveryAddress.state %>,
-                        <%= report.deliveryAddress.city %><br>
-                        <%= report.deliveryAddress.area %>,
-                        Pincode: <%= report.deliveryAddress.pincode %><br>
-                        House No.: <%= report.deliveryAddress.building %>
-                      </td>
                     </tr>
                     <% }) %>
                     <% } %>
@@ -92,7 +92,9 @@
                     <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
                   </div>
                   <div class="col-lg-3 p-4">
-                    <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">Download</a>
+                    <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
+                      <i class="bi bi-download"></i>
+                    </a>
                   </div>
                 </div>
               </div>

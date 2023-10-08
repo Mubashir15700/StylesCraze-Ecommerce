@@ -76,9 +76,9 @@
                       <td>
                         <div class="d-flex justify-content-between">
                           <% if (request.status==="Approved" ) { %>
-                          <p class="text-success">Approved</p>
+                          <p class="text-success font-weight-bolder">Approved</p>
                           <% } else if (request.status==="Rejected" ) { %>
-                          <p class="text-danger">Rejected</p>
+                          <p class="text-danger font-weight-bolder">Rejected</p>
                           <% } else { %>
                           <form action="/admin/return-requests" method="post">
                             <input type="hidden" name="action" value="approve">

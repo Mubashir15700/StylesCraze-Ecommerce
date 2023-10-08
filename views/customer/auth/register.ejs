@@ -5,8 +5,9 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Shoppers</title>
+  <title>StylesCraze</title>
   <link rel="stylesheet" href="/admin/css/vertical-layout-light/style.css">
+  <link rel="icon" href="/Icon.svg" sizes="16x16 32x32" type="image/x-icon">
 </head>
 
 <body>
@@ -17,7 +18,7 @@
           <div class="col-lg-4 mx-auto">
             <div class="auth-form-light text-left py-3 px-4 px-sm-5">
               <div>
-                <img src="/shoppers.svg" class="mr-2" alt="logo" height="50" width="130" />
+                <img src="/StylesCraze.svg" class="mr-2" alt="logo" height="50" width="130" />
                 <p class="font-weight-light">Create account.</p>
               </div>
               <form action="/register" method="post" class="pt-1" id="register-form">
@@ -33,7 +34,10 @@
                   <p class="text-danger" id="phone-error-display"></p>
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" name="password">
+                  <div class="border d-flex">
+                    <input type="password" style="border: none;" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" name="password">
+                    <input type="checkbox" id="showPassword" class="mr-2">
+                  </div>
                   <p class="text-danger" id="password-error-display"></p>
                 </div>
                 <div class="form-group">
@@ -122,6 +126,17 @@
         event.preventDefault();
       }
     });
+
+    // show password input
+    const showPasswordCheckbox = document.getElementById('showPassword');
+    showPasswordCheckbox.addEventListener('change', function() {
+      if (showPasswordCheckbox.checked) {
+        passwordInput.type = 'text';
+      } else {
+        passwordInput.type = 'password';
+      }
+    });
+    
   </script>
 
 </body>

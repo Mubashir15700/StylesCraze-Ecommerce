@@ -18,53 +18,91 @@
 
     <div class="container">
       <div class="coupon-container">
-        <div class="col-lg-6 pt-5 pb-3">
+        <div class="pt-5 pb-3">
           <span class="text-primary h5 text-uppercase">
             All New Coupons
           </span>
           <% if (!allCoupons.length) { %>
-          <div class="p-4 border mb-3">
+          <div class="p-4 border mt-2 mb-3">
             No new coupons found.
           </div>
           <% } else { %>
-          <% allCoupons.forEach((coupon)=> { %>
-          <div class="p-4 border mb-3">
-            <p class="mb-0 text-black">
-              <%= coupon.description %>,<br>
-              Discount Type: <%= coupon.discountType %>,
-              Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %>,<br>
-              Expires At: <%= coupon.expirationDate %>
-            </p>
+          <div class="mt-2">
+            <% allCoupons.forEach((coupon)=> { %>
+            <div class="card mr-2 mb-3">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                  Expires At: <%= coupon.expirationDate.toLocaleDateString() %>
+                </h6>
+                <p class="card-text">
+                  <%= coupon.description %>
+                </p>
+                <p>
+                  Discount Type: <%= coupon.discountType %>
+                </p>
+                <p>
+                  Min. Purchase Amount: <%= coupon.minimumPurchaseAmount %>
+                </p>
+                <a href="/shop" class="btn btn-primary">Get Coupon</a>
+              </div>
+            </div>
+            <% }) %>
           </div>
-          <% }) %>
           <% } %>
         </div>
-        <div class="col-lg-6 pt-5 pb-3">
+
+        <div class="pt-5 pb-3">
           <span class="text-primary h5 text-uppercase">
             Coupons Earned
           </span>
           <% if (!earnedCoupons.length) { %>
-          <div class="p-4 border mb-3">
+          <div class="p-4 border mt-2 mb-3">
             You haven't earned any coupons yet.
           </div>
           <% } else { %>
-          <% earnedCoupons.forEach((coupon)=> { %>
-          <div class="p-4 border mb-3">
-            <p class="mb-0 text-black">
-              <% if (coupon.isUsed) { %>
+          <div class="mt-2">
+            <% earnedCoupons.forEach((coupon)=> { %>
+            <div class="p-4 border mb-3">
+              <p class="mb-0 text-black">
+                <% if (coupon.isUsed) { %>
                 Code: Already used.<br>
-              <% } else { %>
-                Code: <%= coupon.coupon.code %>,<br>
-              <% } %>
-              <%= coupon.coupon.description %>,
-              Discount Type: <%= coupon.coupon.discountType %>,
-              Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
-            </p>
+                <% } else { %>
+                Code: <span class="coupon-code"><%= coupon.coupon.code %></span>
+                <button class="copy-button btn btn-sm btn-primary">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+                <br>
+                <% } %>
+                <%= coupon.coupon.description %>,
+                Discount Type: <%= coupon.coupon.discountType %>,
+                Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
+              </p>
+            </div>
+            <% }) %>
           </div>
-          <% }) %>
           <% } %>
         </div>
       </div>
     </div>
+
+
+    <script>
+      // Get all the "Copy Code" buttons and add a click event listener
+      const copyButtons = document.querySelectorAll(".copy-button");
+      copyButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const couponCode = button.previousElementSibling.innerText; // Get the coupon code
+          const textArea = document.createElement("textarea");
+          textArea.value = couponCode;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          button.innerText = "Copied!";
+          button.disabled = true;
+        });
+      });
+    </script>
 
     <%- include('../partials/customer/footer') -%>
