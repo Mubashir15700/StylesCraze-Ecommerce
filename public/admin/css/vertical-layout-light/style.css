@@ -36159,6 +36159,10 @@ div.tagsinput span.tag a {
 
 
 /* My Styles */
+.container-scroller {
+  min-height: 100vh; /* Ensure the container takes up at least 100% of the viewport height */
+}
+
 @media (min-width: 992px) {
   .sidebar {
     position: fixed;

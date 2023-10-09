@@ -1094,6 +1094,10 @@ i.bi-list {
   font-size: 20px;
 }
 
+.container-scroller {
+  min-height: 100vh; /* Ensure the container takes up at least 100% of the viewport height */
+}
+
 @media (min-width: 768px) {
   i.bi-list {
     display: none;

@@ -46,7 +46,7 @@
                     </tr>
                     <% } else { %>
                     <% salesReport.forEach((report) => { %>
-                    <tr>
+                    <tr class=" border-bottom">
                       <td>
                         <%= report.userInfo.username %><br>
                         <p class="text-dark"><%= report.userInfo.email %></p><br>
@@ -85,13 +85,13 @@
                     <% } %>
                   </tbody>
                 </table>
-                <div class="d-flex border-top">
-                  <div class="col-lg-9 pt-3">
+                <div class="d-flex">
+                  <div class="col-md-9 col-12 pt-3">
                     Total orders done: <%= salesReport.length %><br>
                     Total products sold: <%= productsCount %><br>
                     <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
                   </div>
-                  <div class="col-lg-3 p-4">
+                  <div class="col-md-3 col-12 p-4">
                     <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
                       <i class="bi bi-download"></i>
                     </a>

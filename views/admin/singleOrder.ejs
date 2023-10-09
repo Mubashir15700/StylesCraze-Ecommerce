@@ -14,18 +14,19 @@
               <div class="custom-card-body">
                 <div class="col-12 col-md-4 mb-3">
                   <h4 class="card-title">Customer Details</h4>
-                  <div class="custom-user-card card border" style="width: 18rem;">
+
+                  <div class="custom-user-card card border" style="max-width: 18rem;">
                     <div class="card-body">
-                      <h5 class="card-title">
+                      <h5 class="card-title text-sm">
                         <img src="<%= foundOrder.user.profile %>" class="img-fluid" width="70px" height="70px" style="border-radius: 10px;">
                         <%= foundOrder.user.username %>
                       </h5>
-                      <h6 class="card-subtitle mb-2 text-muted">
+                      <h6 class="card-subtitle mb-2 text-muted text-sm">
                         <%= foundOrder.user.email %>
                         <%= foundOrder.user.phone %>
                       </h6>
-                      <div class="d-flex">
-                        <a href="admin/customers" class="card-link mr-2">Got To Customers</a>
+                      <div class="d-md-flex">
+                        <a href="/admin/customers" class="card-link mr-2">Go to Customers</a>
                         <form action="/admin/customers/action/<%= foundOrder.user._id %>?_method=PATCH&orderId=<%= foundOrder._id %>" method="post" id="action-form">
                           <% if(foundOrder.user.blocked===true) { %>
                           <input type="hidden" name="state" value="">
@@ -40,8 +41,9 @@
                           <% } %>
                         </form>
                       </div>
-                    </div>
+                    </div>  
                   </div>
+
                 </div>
                 <div class="col-12 col-md-8 mb-3 w-100">
                   <h5 class="card-title">Delivery To:</h5>
