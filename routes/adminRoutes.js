@@ -67,6 +67,7 @@ router.route("/edit-category/:id")
 router.patch("/categories/action/:id", checkAuth, categoryAction);
 
 router.get("/customers", checkAuth, getCustomers);
+router.post("/customers", checkAuth, getCustomers);
 router.patch("/customers/action/:id", checkAuth, customerAction);
 
 router.get("/coupons", checkAuth, getCoupons);

@@ -10,7 +10,7 @@ async function generateSalt() {
 
 generateSalt();
 
-export const sendToMail = (req, res, userId, isForgotPassword) => {
+export const sendToMail = (req, res, userId, isForgotPassword, next) => {
     const transporter = nodeMailer.createTransport({
         service: 'Gmail',
         host: 'smtp.gmail.com',
@@ -51,20 +51,19 @@ export const sendToMail = (req, res, userId, isForgotPassword) => {
             await UserOTPVerification.deleteMany({ userId });
             const hashedOTP = await bcrypt.hash(OTP, salt);
             const newUserOTPVerification = new UserOTPVerification({
-                userId: userId,
+                userId,
                 otp: hashedOTP,
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
-            res.render('customer/auth/verification', { userId, 
-                email: req.body.email, error: "", 
+            res.render('customer/auth/verification', { 
+                userId, 
+                email: req.body.email, 
+                error: "", 
                 isForgotPassword,
             });
         } catch (error) {
-            res.status(500).json({
-                status: 'FAILED',
-                message: 'Error sending verification email:' + error.message,
-            });
+            next(error);
         }
     }
 

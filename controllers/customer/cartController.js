@@ -54,7 +54,7 @@ export const addToCart = async (req, res, next) => {
         if (req.body.from) {
             res.redirect("/wishlist");
         } else {
-            res.redirect("/shop");
+            res.redirect("/shop/1");
         }
     } catch (error) {
         next(error);
@@ -66,14 +66,10 @@ export const removeFromCart = async (req, res, next) => {
         const currentUser = await getCurrentUser(req, res);
         const cartItemIndex = currentUser.cart.findIndex(item => item._id.toString() === req.params.id);
 
-        if (cartItemIndex !== -1) {
-            currentUser.cart.splice(cartItemIndex, 1);
-            await currentUser.save();
+        currentUser.cart.splice(cartItemIndex, 1);
+        await currentUser.save();
 
-            res.redirect("/cart");
-        } else {
-            console.log('Cart item not found in the user\'s cart');
-        }
+        res.redirect("/cart");
     } catch (error) {
         next(error);
     }

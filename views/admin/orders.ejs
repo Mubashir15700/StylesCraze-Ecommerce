@@ -110,6 +110,7 @@
           </div>
         </div>
 
+        <% if (!filtered && orders.length) { %>
         <div class="container">
           <div class="d-flex justify-content-end">
             <nav aria-label="Page navigation">
@@ -123,15 +124,15 @@
                 </li>
                 <% } %>
                 <% for (let i=1; i <= totalPages; i++) { %>
-                  <% if (i === currentPage) { %>
-                    <li class="page-item">
-                      <a class="page-link bg-primary text-light" href="/admin/orders/<%= i %>"><%= i %></a>
-                    </li>
-                  <% } else { %>
-                    <li class="page-item">
-                      <a class="page-link" href="/admin/orders/<%= i %>"><%= i %></a>
-                    </li>
-                  <% } %>
+                <% if (i === currentPage) { %>
+                <li class="page-item">
+                  <a class="page-link bg-primary text-light" href="/admin/orders/<%= i %>"><%= i %></a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/orders/<%= i %>"><%= i %></a>
+                </li>
+                <% } %>
                 <% } %>
                 <% if (currentPage < totalPages) { %>
                 <li class="page-item">
@@ -145,7 +146,7 @@
             </nav>
           </div>
         </div>
-        
+        <% } %>
 
       </div>
       <%- include('../partials/admin/footer') -%>

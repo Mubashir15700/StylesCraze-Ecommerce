@@ -133,10 +133,25 @@ export const getDashboard = async (req, res, next) => {
 
 export const getCustomers = async (req, res, next) => {
     try {
-        const foundCustomers = await User.find();
+        let foundCustomers;
+        if (req.query.search) {
+            foundCustomers = await User.find({
+                $or: [
+                    { username: { $regex: req.body.searchQuery, $options: 'i' } },
+                    { email: { $regex: req.body.searchQuery, $options: 'i' } },
+                ]
+            });
+
+            return res.status(200).json({
+                customerDatas: foundCustomers,
+            });
+        } else {
+            foundCustomers = await User.find();
+        }
         res.render('admin/customers', {
             customerDatas: foundCustomers,
             activePage: 'Customers',
+            searched: req.query.search ? true : false
         });
     } catch (error) {
         next(error);
@@ -174,8 +189,10 @@ export const getOrders = async (req, res, next) => {
 
         let orders;
         if (req.query.filtered) {
-            let startOfMonth = req.body.from;
-            let endOfMonth = req.body.upto;
+            let startOfMonth = new Date(req.body.from);
+            let endOfMonth = new Date(req.body.upto);
+            endOfMonth.setHours(23, 59, 59, 999);
+
             orders = await Order.find(
                 {
                     $and: [
@@ -187,6 +204,7 @@ export const getOrders = async (req, res, next) => {
                 { path: 'user' },
                 { path: 'products.product' },
             ]).sort({ orderDate: -1 });
+
         } else {
             orders = await Order.find().populate([
                 { path: 'user' },
@@ -200,8 +218,8 @@ export const getOrders = async (req, res, next) => {
             orders,
             activePage: 'Orders',
             filtered: req.query.filtered ? true : false,
-            currentPage: page,
-            totalPages: totalPages,
+            currentPage: page || 1,
+            totalPages: totalPages || 1,
         });
     } catch (error) {
         next(error);
@@ -390,8 +408,9 @@ export const getSalesReport = async (req, res, next) => {
         let startOfMonth;
         let endOfMonth;
         if (req.query.filtered) {
-            startOfMonth = req.body.from;
-            endOfMonth = req.body.upto;
+            startOfMonth = new Date(req.body.from);
+            endOfMonth = new Date(req.body.upto);
+            endOfMonth.setHours(23, 59, 59, 999);
         } else {
             const today = new Date();
             startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);

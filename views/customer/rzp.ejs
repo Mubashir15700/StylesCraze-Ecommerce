@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<%- include('../partials/customer/head') -%>
 
 <head>
   <meta charset="UTF-8">
@@ -10,9 +11,12 @@
 </head>
 
 <body>
-  <h5 id="heading" style="display: block;">Payment processing...</h5>
-  <p id="error" style="color: red;"></p>
-  <a id="link" href="/checkout" style="display: none;">Go back to checkout</a>
+  <div class="container mt-5">
+    <h5 id="heading" style="display: block;">Payment processing...</h5>
+    <p id="error" class="text-danger"></p>
+    <a id="link" href="/checkout" class="btn btn-primary" style="display: none;">Go back to checkout</a>
+  </div>
+
   <script>
     const headingElement = document.getElementById("heading");
     const errorElement = document.getElementById("error");
@@ -25,7 +29,17 @@
       currency: "INR",
       name: "StylesCraze",
       description: "Order Payment",
-      order_id: "<%= order.id %>", // Order ID from the server
+      order_id: "<%= order.id %>", // Order ID from the 
+      modal: {
+        // Define an ondismiss callback function
+        ondismiss: function() {
+          // This function is called when the modal is dismissed
+          // Handle the user closing the payment popup here
+          headingElement.style.display = 'none';
+          errorElement.textContent = "Payment was canceled or unsuccessful";
+          linkElement.style.display = 'block';
+        }
+      },
       handler: function(response) {
         if (response.razorpay_payment_id) {
           const transactionId = response.razorpay_payment_id;

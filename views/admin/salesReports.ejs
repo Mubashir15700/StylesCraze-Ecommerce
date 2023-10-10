@@ -91,11 +91,13 @@
                     Total products sold: <%= productsCount %><br>
                     <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
                   </div>
-                  <div class="col-md-3 col-12 p-4">
-                    <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
-                      <i class="bi bi-download"></i>
-                    </a>
-                  </div>
+                  <% if (salesReport.length) { %>
+                    <div class="col-md-3 col-12 p-4">
+                      <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
+                        <i class="bi bi-download"></i>
+                      </a>
+                    </div>
+                  <% } %>
                 </div>
               </div>
             </div>

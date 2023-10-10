@@ -14,7 +14,7 @@
               <div class="customer-title-section d-flex justify-content-between flex-wrap">
                 <h4 class="card-title flex-grow-1 col-md-8">Customers</h4>
                 <form class="form-inline flex-grow-1 col-md-4">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
                 </form>
               </div>
               <div class="table-responsive">
@@ -102,5 +102,35 @@
           </div>
         </div>
       </div>
+
+      <script>
+
+        // JavaScript code for handling the AJAX request when input changes
+        $(document).ready(function() {
+          // Listen for changes in the search input
+          $('#search-input').on('input', function() {
+            // Get the search query from the input field
+            const searchQuery = $(this).val();
+
+            // Send an AJAX request to your server
+            $.ajax({
+              type: 'POST', // Use GET or POST as needed
+              url: '/admin/customers?search=true', // Replace with your server endpoint
+              data: {
+                searchQuery
+              }, // Send the search query to the server
+              success: function(response) {
+                // Handle the response from the server
+                console.log(response);
+                $('#search-results').html(response.customerDatas);
+              },
+              error: function(error) {
+                console.error('Error:', error);
+              }
+            });
+          });
+        });
+
+      </script>
 
       <%- include('../partials/admin/footer') -%>

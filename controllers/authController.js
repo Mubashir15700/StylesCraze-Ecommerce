@@ -96,7 +96,7 @@ export const registerCustomer = async (req, res, next) => {
                     await newUser.save();
                     const savedUser = await User.findOne({ username: username });
                     req.session.user = savedUser._id;
-                    sendToMail(req, res, savedUser._id, false);
+                    sendToMail(req, res, savedUser._id, false, next);
                 } else {
                     res.render('customer/auth/register', {
                         commonError: "Password and confirm password didn't match."
@@ -197,7 +197,7 @@ export const sendOTP = async (req, res, next) => {
     try {
         const foundUser = await User.findOne({ email: req.body.email });
         if (foundUser) {
-            sendToMail(req, res, foundUser._id, true);
+            sendToMail(req, res, foundUser._id, true, next);
         } else {
             res.render("customer/auth/forgot", { commonError: "No user with this email found." });
         }
@@ -209,9 +209,9 @@ export const sendOTP = async (req, res, next) => {
 export const resendOTP = async (req, res, next) => {
     try {
         if (req.body.isForgotPassword === "true") {
-            sendToMail(req, res, req.body.id, true);
+            sendToMail(req, res, req.body.id, true, next);
         } else {
-            sendToMail(req, res, req.body.id, false);
+            sendToMail(req, res, req.body.id, false, next);
         }
     } catch (error) {
         next(error);

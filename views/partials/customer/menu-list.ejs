@@ -4,13 +4,15 @@
 
 <li class="custom-li">
   <a href="/wishlist" class="site-cart">
-    <% if (currentUser && currentUser.wishlist.length) { %>
-    <span class="icon icon-heart" id="menuWishlist1"></span>
     <% if (currentUser) { %>
-    <span class="count">
+    <span class="icon icon-heart" id="menuWishlist1"></span>
+    <span class="count" id="wishlistCount">
+      <% if (currentUser.wishlist.length) { %>
       <%= currentUser.wishlist.length %>
+      <% } else { %>
+      0
+      <% } %>
     </span>
-    <% } %>
     <% } else { %>
     <span class="icon icon-heart-o" id="menuWishlist1"></span>
     <% } %>
@@ -55,13 +57,15 @@
     </li>
     <li>
       <a href="/wishlist" class="site-cart">
-        <% if (currentUser && currentUser.wishlist.length) { %>
-        <span class="icon icon-heart" id="menuWishlist2"></span>
         <% if (currentUser) { %>
-        <span class="count">
+        <span class="icon icon-heart" id="menuWishlist1"></span>
+        <span class="count" id="wishlistCount">
+          <% if (currentUser.wishlist.length) { %>
           <%= currentUser.wishlist.length %>
+          <% } else { %>
+          0
+          <% } %>
         </span>
-        <% } %>
         <% } else { %>
         <span class="icon icon-heart-o" id="menuWishlist2"></span>
         <% } %>

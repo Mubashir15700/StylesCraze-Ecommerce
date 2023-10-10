@@ -18,7 +18,9 @@
                   <div class="custom-user-card card border" style="max-width: 18rem;">
                     <div class="card-body">
                       <h5 class="card-title text-sm">
-                        <img src="<%= foundOrder.user.profile %>" class="img-fluid" width="70px" height="70px" style="border-radius: 10px;">
+                        <!-- <% if (foundOrder.user.profile) { %> -->
+                          <img src="<%= foundOrder.user.profile %>" class="img-fluid" width="70px" height="70px" style="border-radius: 10px;">
+                        <!-- <% } %> -->
                         <%= foundOrder.user.username %>
                       </h5>
                       <h6 class="card-subtitle mb-2 text-muted text-sm">

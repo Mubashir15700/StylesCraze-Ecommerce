@@ -92,12 +92,12 @@
                         ₹<%= product.price.toFixed(2) %>
                         <input type="hidden" name="productId" value="<%= product._id %>">
                         <% if (currentUser.wishlist.some((item)=> item.toString() === product._id.toString() )) { %>
-                        <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>" data-to-do="remove">
+                        <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>">
                           <span class="icon icon-heart">
                           </span>
                         </a>
                         <% } else { %>
-                        <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>" data-to-do="add">
+                        <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>">
                           <span class="icon icon-heart-o">
                           </span>
                         </a>
@@ -257,7 +257,13 @@
         event.preventDefault();
 
         const productId = $(this).data('product-id');
-        const todo = $(this).data('to-do');
+        const element1 = event.target;
+        let todo;
+        if (element1.classList.contains('icon-heart-o')) {
+          todo = "add";
+        } else {
+          todo = "remove";
+        }
 
         $.ajax({
           url: '/update-wishlist',
@@ -267,6 +273,7 @@
             todo
           },
           success: function(response) {
+            $('#wishlistCount').text(response.wishlistCount);
             const element = event.target;
             if (response.message === "added") {
               if (element.classList.contains('icon-heart-o')) {

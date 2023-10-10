@@ -146,6 +146,8 @@ export const searchProducts = async (req, res, next) => {
             categoryDatas: foundCategories,
             categoryBased: false,
             activePage: 'Shop',
+            currentPage: 1,
+            totalPages: 1,
         });
     } catch (error) {
         next(error);
@@ -180,21 +182,31 @@ export const filterProducts = async (req, res, next) => {
             }
         }
 
-        const foundProducts = await Product.find({
+        const query = {
             softDeleted: false,
             $or: [
                 { 'size': { $in: sizes } },
                 { 'color': { $in: colors } }
-            ],
-            $or: [
-                { name: { $regex: searchText, $options: 'i' } },
-                { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } },
-            ],
-            $and: [
+            ]
+        };
+
+        // Check if minPrice and maxPrice are provided, and include the price filter if they are
+        if (minPrice !== undefined && maxPrice !== undefined) {
+            query.$and = [
                 { price: { $gte: minPrice || 0 } },
                 { price: { $lte: maxPrice || Number.POSITIVE_INFINITY } }
-            ]
-        }).populate('category');
+            ];
+        }
+
+        // Check if searchText is provided, and include the name and description filters if it is
+        if (searchText) {
+            query.$or = [
+                { name: { $regex: searchText, $options: 'i' } },
+                { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } }
+            ];
+        }
+
+        const foundProducts = await Product.find(query).populate('category');
 
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
@@ -205,6 +217,8 @@ export const filterProducts = async (req, res, next) => {
             categoryDatas: foundCategories,
             categoryBased: false,
             activePage: 'Shop',
+            currentPage: 1,
+            totalPages: 1,
         });
     } catch (error) {
         next(error);
@@ -255,6 +269,7 @@ export const updateWishlist = async (req, res, next) => {
 
         return res.status(200).json({
             message: req.body.todo === "add" ? "added" : "removed",
+            wishlistCount: currentUser.wishlist.length
         });
     } catch (error) {
         next(error);
