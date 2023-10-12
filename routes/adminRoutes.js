@@ -5,8 +5,8 @@ import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
 import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
 // admin controller
 import {
-    getLogin, getDashboard, getNotifications, getOrders, getSingleOrder, manuelStatusUpdate, 
-    getReturnRequests, returnRequestAction, getCustomers, customerAction, getCoupons, getAddNewCoupon, 
+    getLogin, getDashboard, getNotifications, getOrders, getSingleOrder, manuelStatusUpdate,
+    getReturnRequests, returnRequestAction, getCustomers, customerAction, getCoupons, getAddNewCoupon,
     addNewCoupon, couponAction, getSalesReport, downloadSalesReport
 } from '../controllers/admin/adminController.js';
 // category controller
@@ -39,12 +39,15 @@ router.route("/orders/:page")
 router.get("/single-order/:id", checkAuth, getSingleOrder);
 router.post("/update-order-status", checkAuth, manuelStatusUpdate);
 
-router.route("/return-requests")
+router.route("/return-requests/:page")
     .get(checkAuth, getReturnRequests)
-    .post(checkAuth, returnRequestAction);
+    .post(checkAuth, getReturnRequests)
+router.post("/return-request-action", checkAuth, returnRequestAction);
 
 // product
-router.get("/products", checkAuth, getProducts);
+router.route("/products/:page")
+.get(checkAuth, getProducts)
+.post(checkAuth, getProducts);
 router.route("/new-product")
     .get(checkAuth, getAddNewProduct)
     .post(checkAuth, uploadProductImages, resizeProductImages, addNewProduct);
@@ -55,7 +58,9 @@ router.delete("/products/img-delete/:id", checkAuth, deleteImage);
 router.patch("/products/img-add/:id", checkAuth, uploadProductImages, resizeProductImages, addImage);
 router.patch("/products/action/:id", checkAuth, productAction);
 
-router.get("/categories", checkAuth, getCategories);
+router.route("/categories/:page")
+    .get(checkAuth, getCategories)
+    .post(checkAuth, getCategories);
 router.route("/new-category")
     .get(checkAuth, newCategory)
     .post(checkAuth, uploadCategoryImage, resizeCategoryImage, addNewCategory);
@@ -63,14 +68,16 @@ router.route("/new-category")
 router.route("/edit-category/:id")
     .get(checkAuth, getCategory)
     .patch(checkAuth, uploadCategoryImage, resizeCategoryImage, editCategory);
-
 router.patch("/categories/action/:id", checkAuth, categoryAction);
 
-router.get("/customers", checkAuth, getCustomers);
-router.post("/customers", checkAuth, getCustomers);
+router.route("/customers/:page")
+    .get(checkAuth, getCustomers)
+    .post(checkAuth, getCustomers);
 router.patch("/customers/action/:id", checkAuth, customerAction);
 
-router.get("/coupons", checkAuth, getCoupons);
+router.route("/coupons/:page")
+.get(checkAuth, getCoupons)
+.post(checkAuth, getCoupons);
 router.route("/new-coupon")
     .get(checkAuth, getAddNewCoupon)
     .post(checkAuth, addNewCoupon);
@@ -83,7 +90,9 @@ router.route("/sales-report")
 router.get("/download-report", checkAuth, downloadSalesReport);
 
 // banner
-router.get("/banners", checkAuth, getBanners);
+router.route("/banners/:page")
+    .get(checkAuth, getBanners)
+    .post(checkAuth, getBanners);
 router.route("/new-banner")
     .get(checkAuth, getAddNewBanner)
     .post(checkAuth, uploadBannerImages, resizeBannerImages, addNewBanner);

@@ -14,11 +14,19 @@
               <h4 class="card-title">Orders</h4>
               <div class="d-flex justify-content-between">
                 <form action="/admin/orders/1?filtered=true" method="post">
+                  <select name="status" class="mr-3">
+                    <option>Select Status</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Pending">Pending</option>
+                  </select>
                   <input class="m-1" type="date" name="from">
                   <input class="m-1" type="date" name="upto">
                   <button class="btn btn-outline-primary btn-sm m-1" type="submit">Apply</button>
                 </form>
-                <a href="/admin/return-requests" class="link-offset-2 link-underline link-underline-opacity-100">
+                <a href="/admin/return-requests/1" class="link-offset-2 link-underline link-underline-opacity-100">
                   View Return Requests
                 </a>
               </div>
@@ -110,7 +118,7 @@
           </div>
         </div>
 
-        <% if (!filtered && orders.length) { %>
+        <% if (orders.length) { %>
         <div class="container">
           <div class="d-flex justify-content-end">
             <nav aria-label="Page navigation">

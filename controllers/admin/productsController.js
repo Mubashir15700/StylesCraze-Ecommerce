@@ -11,10 +11,31 @@ const __dirname = dirname(__filename);
 
 export const getProducts = async (req, res, next) => {
     try {
-        const foundProducts = await Product.find({}).populate('category');
-        res.render('admin/products/products', { 
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / pageSize);
+
+        let foundProducts;
+        if (req.query.search) {
+            foundProducts = await Product.find({
+                name: { $regex: req.body.searchQuery, $options: 'i' }
+            }).populate('category');
+
+            return res.status(200).json({
+                productDatas: foundProducts,
+            });
+        } else {
+            foundProducts = await Product.find({}).populate('category').skip(skip).limit(pageSize);
+        }
+        res.render('admin/products/products', {
             productDatas: foundProducts,
-            activePage: 'Products' 
+            activePage: 'Products',
+            filtered: req.query.search ? true : false,
+            currentPage: page || 1,
+            totalPages: totalPages || 1,
         });
     } catch (error) {
         next(error);
@@ -60,7 +81,7 @@ export const addNewProduct = async (req, res, next) => {
 
             await Category.findByIdAndUpdate(req.body.category, { $inc: { productsCount: 1 } });
         }
-        res.redirect('/admin/products');
+        res.redirect('/admin/products/1');
     } catch (error) {
         if (error.code === 11000) {
             newProductErrorPage(req, res, "Product with the name already exist.", foundCategories);
@@ -122,7 +143,7 @@ export const editProduct = async (req, res, next) => {
         await currentCategory.save();
         await newCategory.save();
 
-        res.redirect("/admin/products");
+        res.redirect("/admin/products/1");
     } catch (error) {
         if (error.code === 11000) {
             editProductErrorPage(req, res, "Product with the name already exist.", foundProduct, foundCategories);
@@ -183,7 +204,7 @@ export const productAction = async (req, res, next) => {
         } else {
             await Category.findOneAndUpdate({ name: req.body.category }, { $inc: { productsCount: 1 } });
         }
-        res.redirect('/admin/products');
+        res.redirect('/admin/products/1');
     } catch (error) {
         next(error);
     }

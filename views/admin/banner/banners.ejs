@@ -11,9 +11,14 @@
         <div class="col-lg-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-between flex-wrap">
                 <h4 class="card-title">Banner</h4>
-                <a href="/admin/new-banner" class="btn btn-primary">New Banner</a>
+                <div class="d-flex justify-content-between">
+                  <form class="form-inline">
+                    <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
+                  </form>
+                  <a href="/admin/new-banner" class="btn btn-primary">New Banner</a>
+                </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-striped">
@@ -33,7 +38,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="search-results">
                     <% if (!foundBanners.length) { %>
                     <tr>
                       <td colspan="4">
@@ -96,5 +101,158 @@
             </div>
           </div>
         </div>
+
+        <% if (foundBanners.length) { %>
+        <div class="container">
+          <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/banners/<%= currentPage - 1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <% } %>
+                <% for (let i=1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                <li class="page-item">
+                  <a class="page-link bg-primary text-light" href="/admin/banners/<%= i %>"><%= i %></a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/banners/<%= i %>"><%= i %></a>
+                </li>
+                <% } %>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/banners/<%= currentPage + 1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <% } %>
+
       </div>
+
+      <script>
+        $(document).ready(function() {
+          $('#search-input').on('input', function() {
+            const searchQuery = $(this).val();
+            $.ajax({
+              type: 'POST',
+              url: '/admin/banners/1?search=true',
+              data: {
+                searchQuery
+              },
+              success: function(response) {
+                const bannerDatas = response.bannerDatas;
+
+                const searchResultsContainer = $('#search-results');
+
+                searchResultsContainer.empty();
+
+                if (!bannerDatas.length) {
+                  const row = $('<tr>');
+                  const messageCell = $('<td>', {
+                    colspan: 6,
+                    text: 'No banners found.'
+                  });
+
+                  row.append(messageCell);
+                  searchResultsContainer.append(row);
+                } else {
+                  bannerDatas.forEach(banner => {
+                    const row = $('<tr>');
+
+                    // for images
+                    const imgTd = $('<td>', {
+                      class: 'py-1',
+                    });
+                    banner.images.forEach((image) => {
+                      const rowClassDiv = $('<div>', {
+                        class: 'row',
+                      });
+                      const colClassDiv = $('<div>', {
+                        class: 'col-4',
+                      });
+                      const img = $('img', {
+                        src: "${image}",
+                        class: "bannerImg",
+                        alt: "Banner Image",
+                        onclick: "openModal('${image}')"
+                      });
+                      colClassDiv.append(img);
+                      rowClassDiv.append(colClassDiv);
+                      imgTd.append(rowClassDiv);
+                    });
+
+                    row.append(imgTd);
+                    row.append($('<td>').text(banner.title));
+                    row.append($('<td>').text(banner.description));
+                    // Create the last <td> with the form
+                    let elementsToAppend = [];
+
+                    const editButton = $('<a>', {
+                      href: `/admin/edit-banner/${banner._id}`,
+                      class: "btn btn-info btn-sm mb-1",
+                    }).append($('<i>', {
+                      class: "bi bi-pen"
+                    }));
+
+                    elementsToAppend.push(editButton);
+
+                    const actionForm = $('<form>', {
+                      action: `/admin/banners/action/${banner._id}?_method=PATCH`,
+                      method: 'post',
+                      id: 'action-form'
+                    });
+
+                    if (banner.isActive === true) {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: ''
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-warning btn-sm block-button',
+                        text: 'Activate'
+                      }))
+                    } else {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: '1'
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-danger btn-sm block-button',
+                        text: 'Deactivate'
+                      }));
+                    }
+
+                    elementsToAppend.push(actionForm);
+
+                    row.append($('<td>').html(elementsToAppend));
+                    // Append the row to the table
+                    searchResultsContainer.append(row);
+                  });
+                }
+              },
+              error: function(error) {
+                console.error('Error:', error);
+              }
+            });
+          });
+        });
+      </script>
+
       <%- include('../../partials/admin/footer') -%>

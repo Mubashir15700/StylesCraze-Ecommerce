@@ -14,7 +14,7 @@
               <div class="customer-title-section d-flex justify-content-between flex-wrap">
                 <h4 class="card-title flex-grow-1 col-md-8">Customers</h4>
                 <form class="form-inline flex-grow-1 col-md-4">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
+                  <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
                 </form>
               </div>
               <div class="table-responsive">
@@ -41,7 +41,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="search-results">
                     <% if (!customerDatas.length) { %>
                     <tr>
                       <td colspan="6">No customers found.</td>
@@ -101,28 +101,123 @@
             </div>
           </div>
         </div>
+
+        <% if (customerDatas.length) { %>
+        <div class="container">
+          <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/customers/<%= currentPage - 1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <% } %>
+                <% for (let i=1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                <li class="page-item">
+                  <a class="page-link bg-primary text-light" href="/admin/customers/<%= i %>"><%= i %></a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/customers/<%= i %>"><%= i %></a>
+                </li>
+                <% } %>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/customers/<%= currentPage + 1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <% } %>
+
       </div>
 
       <script>
-
-        // JavaScript code for handling the AJAX request when input changes
         $(document).ready(function() {
-          // Listen for changes in the search input
           $('#search-input').on('input', function() {
-            // Get the search query from the input field
             const searchQuery = $(this).val();
 
-            // Send an AJAX request to your server
             $.ajax({
-              type: 'POST', // Use GET or POST as needed
-              url: '/admin/customers?search=true', // Replace with your server endpoint
+              type: 'POST',
+              url: '/admin/customers/1?search=true',
               data: {
                 searchQuery
-              }, // Send the search query to the server
+              },
               success: function(response) {
-                // Handle the response from the server
-                console.log(response);
-                $('#search-results').html(response.customerDatas);
+                const customerDatas = response.customerDatas;
+
+                const searchResultsContainer = $('#search-results');
+
+                searchResultsContainer.empty();
+
+                if (customerDatas.length === 0) {
+                  const row = $('<tr>');
+                  const messageCell = $('<td>', {
+                    colspan: 6,
+                    text: 'No customers found.'
+                  });
+
+                  row.append(messageCell);
+                  searchResultsContainer.append(row);
+                } else {
+                  customerDatas.forEach(customer => {
+                    const row = $('<tr>');
+                    if (customer.profile) {
+                      row.append($('<td>').html(`<img src="${customer.profile}" alt="Profile Image" onclick="openModal('${customer.profile}')" />`));
+                    } else {
+                      row.append($('<td>').html('<i class="bi bi-person-circle" style="font-size: 24px;"></i>'));
+                    }
+                    row.append($('<td>').text(customer.username));
+                    row.append($('<td>').text(customer.email));
+                    row.append($('<td>').text(customer.phone));
+                    row.append($('<td>').text(customer.verified));
+                    // Create the last <td> with the form
+                    const actionForm = $('<form>', {
+                      action: `/admin/customers/action/${customer._id}?_method=PATCH`,
+                      method: 'post',
+                      id: 'action-form'
+                    });
+
+                    if (customer.blocked === true) {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: ''
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-warning btn-sm block-button',
+                        text: 'Unblock'
+                      }))
+                    } else {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: '1'
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-danger btn-sm block-button',
+                        text: 'Block'
+                      }));
+                    }
+
+                    row.append($('<td>').html(actionForm));
+
+                    // Append the row to the table
+                    searchResultsContainer.append(row);
+                  });
+                }
               },
               error: function(error) {
                 console.error('Error:', error);
@@ -130,7 +225,6 @@
             });
           });
         });
-
       </script>
 
       <%- include('../partials/admin/footer') -%>

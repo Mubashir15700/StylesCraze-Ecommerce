@@ -3,17 +3,38 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Banner from '../../models/bannerModel.js';
-import { newProductErrorPage, editProductErrorPage } from '../../middlewares/errorMiddleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const getBanners = async (req, res, next) => {
     try {
-        const foundBanners = await Banner.find();
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalBanners = await Banner.countDocuments();
+        const totalPages = Math.ceil(totalBanners / pageSize);
+
+        let foundBanners;
+        if (req.query.search) {
+            foundBanners = await Banner.find({
+                $or: [
+                    { title: { $regex: req.body.searchQuery, $options: 'i' } }
+                ]
+            });
+            return res.status(200).json({
+                bannerDatas: foundBanners,
+            });
+        } else {
+            foundBanners = await Banner.find().skip(skip).limit(pageSize);
+        }
         res.render('admin/banner/banners', {
             foundBanners,
-            activePage: 'Banner'
+            activePage: 'Banner',
+            filtered: req.query.search ? true : false,
+            currentPage: page || 1,
+            totalPages: totalPages || 1,
         });
     } catch (error) {
         next(error);
@@ -52,7 +73,7 @@ export const addNewBanner = async (req, res, next) => {
                 images: imagesWithPath,
             });
         }
-        res.redirect('/admin/banners');
+        res.redirect('/admin/banners/1');
     } catch (error) {
         next(error);
     }
@@ -91,7 +112,7 @@ export const editBanner = async (req, res, next) => {
             banner.title = title;
             banner.description = description;
             await banner.save();
-            res.redirect('/admin/banners');
+            res.redirect('/admin/banners/1');
         }
     } catch (error) {
         next(error);
@@ -137,7 +158,7 @@ export const bannerAction = async (req, res, next) => {
             await Banner.findOneAndUpdate({ isActive: true }, { $set: { isActive: false } });
         }
         await Banner.findByIdAndUpdate(req.params.id, { $set: { isActive: state } });
-        res.redirect('/admin/banners');
+        res.redirect('/admin/banners/1');
     } catch (error) {
         next(error);
     }

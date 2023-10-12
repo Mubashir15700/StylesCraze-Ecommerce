@@ -1,4 +1,5 @@
 import PDFDocument from 'pdfkit';
+import Admin from '../../models/adminModel.js';
 import User from '../../models/userModel.js';
 import Order from '../../models/orderModel.js';
 import Coupon from '../../models/couponModel.js';
@@ -10,6 +11,7 @@ export const getLogin = (req, res) => {
 
 export const getDashboard = async (req, res, next) => {
     try {
+        const admin = await Admin.findById(req.session.admin);
         const today = new Date();
         // Calculate the start and end dates for this month
         const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -125,6 +127,7 @@ export const getDashboard = async (req, res, next) => {
             paymentMethods,
             monthlyOrderCountsCurrentYear: resultArray,
             activePage: 'Dashboard',
+            admin
         });
     } catch (error) {
         next(error);
@@ -133,6 +136,13 @@ export const getDashboard = async (req, res, next) => {
 
 export const getCustomers = async (req, res, next) => {
     try {
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalCustomers = await User.countDocuments();
+        const totalPages = Math.ceil(totalCustomers / pageSize);
+
         let foundCustomers;
         if (req.query.search) {
             foundCustomers = await User.find({
@@ -146,12 +156,14 @@ export const getCustomers = async (req, res, next) => {
                 customerDatas: foundCustomers,
             });
         } else {
-            foundCustomers = await User.find();
+            foundCustomers = await User.find().skip(skip).limit(pageSize);
         }
         res.render('admin/customers', {
             customerDatas: foundCustomers,
             activePage: 'Customers',
-            searched: req.query.search ? true : false
+            filtered: req.query.search ? true : false,
+            currentPage: page || 1,
+            totalPages: totalPages || 1,
         });
     } catch (error) {
         next(error);
@@ -164,7 +176,7 @@ export const customerAction = async (req, res, next) => {
         const customerId = req.params.id;
         await User.findByIdAndUpdate(customerId, { $set: { blocked: state } });
         if (!req.query.orderId) {
-            res.redirect('/admin/customers');
+            res.redirect('/admin/customers/1');
         } else {
             const orderId = req.query.orderId; // Get the orderId from the query parameters
             // Pass the orderId as a parameter to the getSingleOrder function
@@ -189,17 +201,23 @@ export const getOrders = async (req, res, next) => {
 
         let orders;
         if (req.query.filtered) {
-            let startOfMonth = new Date(req.body.from);
-            let endOfMonth = new Date(req.body.upto);
-            endOfMonth.setHours(23, 59, 59, 999);
+            let query = {};
+            if (req.body.from !== '' && req.body.upto !== '') {
+                let startOfMonth = new Date(req.body.from);
+                let endOfMonth = new Date(req.body.upto);
+                endOfMonth.setHours(23, 59, 59, 999);
+                query.$and = [
+                    { orderDate: { $gte: startOfMonth } },
+                    { orderDate: { $lte: endOfMonth } }
+                ]
+            }
+
+            if (req.body.status !== 'Select Status') {
+                query.status = req.body.status;
+            }
 
             orders = await Order.find(
-                {
-                    $and: [
-                        { orderDate: { $gte: startOfMonth } },
-                        { orderDate: { $lte: endOfMonth } }
-                    ]
-                }
+                query
             ).populate([
                 { path: 'user' },
                 { path: 'products.product' },
@@ -287,14 +305,48 @@ export const manuelStatusUpdate = async (req, res, next) => {
 
 export const getReturnRequests = async (req, res, next) => {
     try {
-        const returnRequests = await Return.find().populate([
-            { path: 'user' },
-            { path: 'order' },
-            { path: 'product' },
-        ]);
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalRequests = await Return.countDocuments();
+        const totalPages = Math.ceil(totalRequests / pageSize);
+
+        let returnRequests;
+        if (req.query.filtered) {
+            let query = {};
+            if (req.body.from !== '' && req.body.upto !== '') {
+                let startOfMonth = new Date(req.body.from);
+                let endOfMonth = new Date(req.body.upto);
+                endOfMonth.setHours(23, 59, 59, 999);
+                query.$and = [
+                    { createdAt: { $gte: startOfMonth } },
+                    { createdAt: { $lte: endOfMonth } }
+                ]
+            }
+
+            if (req.body.status !== 'Select Status') {
+                query.status = req.body.status;
+            }
+
+            returnRequests = await Return.find(query).populate([
+                { path: 'user' },
+                { path: 'order' },
+                { path: 'product' },
+            ]);
+        } else {
+            returnRequests = await Return.find().populate([
+                { path: 'user' },
+                { path: 'order' },
+                { path: 'product' },
+            ]).skip(skip).limit(pageSize);
+        }
         res.render("admin/returns", {
             returnRequests,
             activePage: 'Orders',
+            filtered: req.query.search ? true : false,
+            currentPage: page || 1,
+            totalPages: totalPages || 1,
         });
     } catch (error) {
         next(error);
@@ -309,16 +361,14 @@ export const returnRequestAction = async (req, res, next) => {
         currentProduct.returnRequested = '';
         if (req.body.action === "approve") {
             foundRequet.status = 'Approved';
-            const currentProduct = foundOrders.products.find((product) => product.product.toString() === req.body.product.toString());
             currentProduct.returnRequested = 'Approved';
         } else {
             foundRequet.status = 'Rejected';
-            const currentProduct = foundOrders.products.find((product) => product.product.toString() === req.body.product.toString());
             currentProduct.returnRequested = 'Rejected';
         }
         await foundRequet.save();
         await foundOrders.save();
-        res.redirect('/admin/return-requests');
+        res.redirect('/admin/return-requests/1');
     } catch (error) {
         next(error);
     }
@@ -326,11 +376,31 @@ export const returnRequestAction = async (req, res, next) => {
 
 export const getCoupons = async (req, res, next) => {
     try {
-        const foundCoupons = await Coupon.find();
-        res.render('admin/coupons/coupons', {
-            foundCoupons,
-            activePage: 'Coupons',
-        });
+        // pagination
+        const page = parseInt(req.params.page) || 1;
+        const pageSize = 3;
+        const skip = (page - 1) * pageSize;
+        const totalCoupons = await Coupon.countDocuments();
+        const totalPages = Math.ceil(totalCoupons / pageSize);
+
+        let foundCoupons;
+        if (req.query.search) {
+            foundCoupons = await Coupon.find({
+                isActive: req.body.searchQuery === "1" ? true : false
+            });
+            return res.status(200).json({
+                couponDatas: foundCoupons,
+            });
+        } else {
+            foundCoupons = await Coupon.find().skip(skip).limit(pageSize);
+            res.render('admin/coupons/coupons', {
+                foundCoupons,
+                activePage: 'Coupons',
+                filtered: req.query.search ? true : false,
+                currentPage: page || 1,
+                totalPages: totalPages || 1,
+            });
+        }
     } catch (error) {
         next(error);
     }
@@ -370,7 +440,7 @@ export const addNewCoupon = async (req, res, next) => {
 
                 await newCoupon.save();
 
-                res.redirect("/admin/coupons");
+                res.redirect("/admin/coupons/1");
             }
         }
     } catch (error) {
@@ -397,7 +467,7 @@ export const couponAction = async (req, res, next) => {
         const state = req.body.state === "";
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { $set: { isActive: state } });
-        res.redirect('/admin/coupons');
+        res.redirect('/admin/coupons/1');
     } catch (error) {
         next(error);
     }
