@@ -174,6 +174,7 @@ export const filterProducts = async (req, res, next) => {
             minPrice = filterPrice;
             maxPrice = filterPrice + 199;
         }
+
         for (const key in data) {
             if (key.startsWith('size')) {
                 sizes.push(data[key]);
@@ -184,18 +185,23 @@ export const filterProducts = async (req, res, next) => {
 
         const query = {
             softDeleted: false,
-            $or: [
-                { 'size': { $in: sizes } },
-                { 'color': { $in: colors } }
-            ]
         };
 
+        if (sizes.length) {
+            query.$or = [
+                { 'size': { $in: sizes } }
+            ]
+        }
+
+        if (colors.length) {
+            query.$or = [
+                { 'color': { $in: colors } }
+            ]
+        }
+
         // Check if minPrice and maxPrice are provided, and include the price filter if they are
-        if (minPrice !== undefined && maxPrice !== undefined) {
-            query.$and = [
-                { price: { $gte: minPrice || 0 } },
-                { price: { $lte: maxPrice || Number.POSITIVE_INFINITY } }
-            ];
+        if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+            query.price = { $gte: minPrice, $lte: maxPrice }
         }
 
         // Check if searchText is provided, and include the name and description filters if it is
@@ -205,9 +211,8 @@ export const filterProducts = async (req, res, next) => {
                 { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } }
             ];
         }
-
+        
         const foundProducts = await Product.find(query).populate('category');
-
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
