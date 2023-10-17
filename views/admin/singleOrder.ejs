@@ -161,6 +161,7 @@
         url: '/admin/update-order-status',
         data: {
           status: selectedStatus,
+          userId: '<%= foundOrder.user._id %>',
           orderId: '<%= foundOrder._id %>',
         },
         success: function(response) {

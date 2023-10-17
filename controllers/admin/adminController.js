@@ -246,7 +246,7 @@ export const getOrders = async (req, res, next) => {
 
 export const getSingleOrder = async (req, res, next) => {
     try {
-        await updateOrderStatus();
+        await updateOrderStatus(req, res, next);
         const foundOrder = await Order.findById(req.params.id).populate([
             { path: 'user' },
             { path: 'products.product' },
@@ -258,7 +258,7 @@ export const getSingleOrder = async (req, res, next) => {
 };
 
 // Function to update order status
-const updateOrderStatus = async () => {
+const updateOrderStatus = async (req, res, next) => {
     try {
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
@@ -271,19 +271,8 @@ const updateOrderStatus = async () => {
             },
             { $set: { status: 'Shipped' } }
         );
-
-        const currentDate = new Date();
-
-        // Update orders from Shipped to Delivered if the deliveryDate is in the past
-        await Order.updateMany(
-            {
-                status: 'Shipped',
-                deliveryDate: { $lte: currentDate },
-            },
-            { $set: { status: 'Delivered' } }
-        );
     } catch (error) {
-        console.error('Error updating order statuses:', error);
+        next(error);
     }
 };
 
@@ -294,6 +283,23 @@ export const manuelStatusUpdate = async (req, res, next) => {
         if (!allCancelled) {
             foundOrder.status = req.body.status;
             await foundOrder.save();
+
+            if (req.body.status === "Delivered") {
+                // coupons
+                const foundCoupon = await Coupon.findOne({
+                    isActive: true, minimumPurchaseAmount: { $lte: foundOrder.totalAmount }
+                }).sort({ minimumPurchaseAmount: -1 });
+
+                if (foundCoupon) {
+                    const currentUser = await User.findById(req.body.userId);
+                    const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
+                    if (!couponExists) {
+                        currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
+                    }
+                    await currentUser.save();
+                }
+            }
+
             return res.status(200).json({ message: "Order status updated successfully." });
         } else {
             return res.status(404).json({ message: "All product's are cancelled." });

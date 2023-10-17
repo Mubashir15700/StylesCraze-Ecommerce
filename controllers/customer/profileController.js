@@ -21,20 +21,37 @@ export const getProfile = async (req, res, next) => {
     }
 };
 
+const renderProfileView = async (req, res, error, addresses) => {
+    res.render("customer/profile", {
+        isLoggedIn: isLoggedIn(req, res),
+        currentUser: await getCurrentUser(req, res),
+        error,
+        addresses,
+        activePage: 'Profile',
+    });
+};
+
 export const updateProfile = async (req, res, next) => {
     const { profile, username, phone, email } = req.body;
+    const addresses = await Address.find({ user: req.session.user });
     try {
         if (!username || !phone || !email) {
-            const addresses = await Address.find({ user: req.session.user });
-            return res.render("customer/profile", {
-                isLoggedIn: isLoggedIn(req, res),
-                currentUser: await getCurrentUser(req, res),
-                error: "Username, mobile and email are required.",
-                addresses,
-                activePage: 'Profile',
-            });
+            renderProfileView(req, res, "Username, mobile, and email are required.", addresses);
+            return;
         } else {
             const currentUser = await User.findById(req.session.user);
+
+            const usernameExist = await User.findOne({ _id: { $ne: currentUser._id }, username });
+            if (usernameExist) {
+                renderProfileView(req, res, "User with this username already exists.", addresses);
+                return;
+            }
+
+            const emailExist = await User.findOne({ _id: { $ne: currentUser._id }, email });
+            if (emailExist) {
+                renderProfileView(req, res, "User with this email already exists.", addresses);
+                return;
+            }
 
             let updatedObj = {
                 username, phone, email
@@ -255,7 +272,7 @@ export const getCoupons = async (req, res, next) => {
 export const getOrders = async (req, res, next) => {
     try {
         // Update order statuses before fetching orders
-        await updateOrderStatus();
+        await updateOrderStatus(req, res, next);
 
         const currentUser = await User.findById(req.session.user);
         const orders = await Order.aggregate([
@@ -284,7 +301,7 @@ export const getOrders = async (req, res, next) => {
 };
 
 // Function to update order status
-const updateOrderStatus = async () => {
+const updateOrderStatus = async (req, res, next) => {
     try {
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
@@ -297,18 +314,7 @@ const updateOrderStatus = async () => {
             },
             { $set: { status: 'Shipped' } }
         );
-
-        const currentDate = new Date();
-
-        // Update orders from Shipped to Delivered if the deliveryDate is in the past
-        await Order.updateMany(
-            {
-                status: 'Shipped',
-                deliveryDate: { $lte: currentDate },
-            },
-            { $set: { status: 'Delivered' } }
-        );
     } catch (error) {
-        console.error('Error updating order statuses:', error);
+        next(error);
     }
 };

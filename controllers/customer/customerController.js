@@ -426,17 +426,6 @@ export const placeOrder = async (req, res, next) => {
         currentUser.cart = [];
 
         // coupons
-        const foundCoupon = await Coupon.findOne({
-            isActive: true, minimumPurchaseAmount: { $lte: grandTotal }
-        }).sort({ minimumPurchaseAmount: -1 });
-
-        if (foundCoupon) {
-            const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
-            if (!couponExists) {
-                currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
-            }
-        }
-
         const currentUsedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
         if (currentUsedCoupon) {
             currentUsedCoupon.isUsed = true;
@@ -488,17 +477,6 @@ export const saveRzpOrder = async (req, res, next) => {
             currentUser.cart = [];
 
             // coupons
-            const foundCoupon = await Coupon.findOne({
-                isActive: true, minimumPurchaseAmount: { $lte: grandTotal }
-            }).sort({ minimumPurchaseAmount: -1 });
-
-            if (foundCoupon) {
-                const couponExists = currentUser.earnedCoupons.some((coupon) => coupon.coupon.equals(foundCoupon._id));
-                if (!couponExists) {
-                    currentUser.earnedCoupons.push({ coupon: foundCoupon._id });
-                }
-            }
-
             const currentUsedCoupon = await currentUser.earnedCoupons.find((coupon) => coupon.coupon.equals(req.body.currentCoupon));
             if (currentUsedCoupon) {
                 currentUsedCoupon.isUsed = true;
