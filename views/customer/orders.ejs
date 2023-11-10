@@ -65,15 +65,18 @@
             </p>
             <% } else { %>
             <% if (order.status==='Processing' ) { %>
+            <% order.orderedProducts.forEach((product) => { %>
             <p class="ml-3">
-            <form action="/cancel-order" method="post" id="orders-form">
+            <form action="/cancel-order" method="post" class="orders-form" id='<%= `cancelForm_${order._id}${product._id}` %>'>
               <input type="hidden" name="orderId" value="<%= order._id %>">
               <input type="hidden" name="productId" value="<%= order.orderedProducts[0]._id %>">
-              <button type="button" class="btn btn-sm btn-outline-danger mb-3" onclick="openCancelOrderModal()">
+              <button type="button" class="btn btn-sm btn-outline-danger mb-3"
+                onclick="openCancelOrderModal('<%= `cancelForm_${order._id}${product._id}` %>')">
                 Cancel
               </button>
             </form>
             </p>
+            <% }) %>
             <% } else if (order.status==='Delivered' ) { %>
             <% const currentDate=new Date(); %>
             <% const deliveryDate=new Date(order.deliveryDate); %>
@@ -111,7 +114,7 @@
           <div class="col-md-6">
             <div class="row">
               <div class="col-md-6">
-                <p><a href="/shop" class="btn btn-outline-primary btn-sm btn-block">Continue
+                <p><a href="/shop/1" class="btn btn-outline-primary btn-sm btn-block">Continue
                     Shopping
                   </a>
                 </p>
@@ -146,18 +149,39 @@
     </div>
 
     <script>
-      // Function to open the "Place Order" modal
-      function openCancelOrderModal() {
+      // Function to open the "Cancel Order" modal
+      function openCancelOrderModal(formId) {
+        // Set the form data dynamically based on the form ID
+        const form = document.getElementById(formId);
+        const productId = form.querySelector('input[name="productId"]').value;
+
+        // Set the form data dynamically based on the product ID
+        form.querySelector('input[name="productId"]').value = productId;
+
+        // Open the modal
         $('#cancelOrderModal').modal('show');
+
+        // Event listener for the "Cancel Order" button click inside the modal
+        document.getElementById('confirmCancelOrder').addEventListener('click', function() {
+          // You can perform any additional actions here before submitting the form
+          form.submit();
+
+          // After submitting the form, you can close the modal
+          $('#cancelOrderModal').modal('hide');
+        });
       }
 
-      // Event handler for the "Place Order" button click
-      $('#confirmCancelOrder').on('click', function() {
-        const ordersForm = document.getElementById("orders-form");
-        ordersForm.submit();
-        // After placing the order, you can close the modal
-        $('#cancelOrderModal').modal('hide');
-      });
+      // Event handler for the "Cancel Order" button click
+      const orderForms = document.getElementsByClassName('orders-form');
+      for (let i = 0; i < orderForms.length; i++) {
+        orderForms[i].addEventListener('submit', function(event) {
+          event.preventDefault();
+          // Handle the form submission for the specific product
+          const productId = orderForms[i].querySelector('input[name="productId"]').value;
+          // You can perform any additional actions here before opening the modal
+          openCancelOrderModal(orderForms[i].id);
+        });
+      }
     </script>
 
     <%- include('../partials/customer/footer') -%>
