@@ -28,7 +28,7 @@
                         <%= foundOrder.user.phone %>
                       </h6>
                       <div class="d-md-flex">
-                        <a href="/admin/customers" class="card-link mr-2">Go to Customers</a>
+                        <a href="/admin/customers/1" class="card-link mr-2">Go to Customers</a>
                         <form action="/admin/customers/action/<%= foundOrder.user._id %>?_method=PATCH&orderId=<%= foundOrder._id %>" method="post" id="action-form">
                           <% if(foundOrder.user.blocked===true) { %>
                           <input type="hidden" name="state" value="">

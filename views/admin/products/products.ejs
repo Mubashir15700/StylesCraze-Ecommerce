@@ -196,6 +196,14 @@
                 } else {
                   productDatas.forEach(product => {
                     const row = $('<tr>');
+                    const imageTd = $('<td>');
+                    // Loop through each image in the product.images array
+                    product.images.forEach(image => {
+                      const imgElement = $(`<img src="${image}" alt="Product Image" onclick="openModal('${image}')" />`);
+                      imageTd.append(imgElement);  // Append each image to the <td>
+                    });
+                    // Append the <td> with images to the row
+                    row.append(imageTd);
                     row.append($('<td>').html(`<img src="${product.image}" alt="Product Image" onclick="openModal('${product.image}')" />`));
                     row.append($('<td>').text(product.name));
                     row.append($('<td>').text(product.category.name));

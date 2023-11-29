@@ -201,6 +201,7 @@ export const getOrders = async (req, res, next) => {
 
         let orders;
         if (req.query.filtered) {
+            console.log("here");
             let query = {};
             if (req.body.from !== '' && req.body.upto !== '') {
                 let startOfMonth = new Date(req.body.from);
@@ -302,7 +303,7 @@ export const manuelStatusUpdate = async (req, res, next) => {
 
             return res.status(200).json({ message: "Order status updated successfully." });
         } else {
-            return res.status(404).json({ message: "All product's are cancelled." });
+            return res.status(404).json({ message: "Can't Update. The user has cancelled this oreder." });
         }
     } catch (error) {
         next(error);

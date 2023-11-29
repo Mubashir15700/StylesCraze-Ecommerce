@@ -176,6 +176,7 @@
                     const imgTd = $('<td>', {
                       class: 'py-1',
                     });
+
                     banner.images.forEach((image) => {
                       const rowClassDiv = $('<div>', {
                         class: 'row',
@@ -183,12 +184,17 @@
                       const colClassDiv = $('<div>', {
                         class: 'col-4',
                       });
-                      const img = $('img', {
-                        src: "${image}",
+                      const img = $('<img>', {
+                        src: image,
                         class: "bannerImg",
                         alt: "Banner Image",
-                        onclick: "openModal('${image}')"
                       });
+
+                      // Add an event listener for the click event
+                      img.on('click', function () {
+                        openModal(image);
+                      });
+
                       colClassDiv.append(img);
                       rowClassDiv.append(colClassDiv);
                       imgTd.append(rowClassDiv);
