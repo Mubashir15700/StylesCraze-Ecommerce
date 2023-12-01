@@ -70,7 +70,7 @@
                             <span class="text-primary h6 text-uppercase">
                               <%= request.product.name %>
                             </span><br>
-                            Price: <%= request.product.price %> <br>
+                            Price: ₹<%= request.product.actualPrice %> <br>
                             Quantity: <%= request.quantity %> <br>
                           </div>
                           Requested Date: <%= request.createdAt.toLocaleDateString() %>

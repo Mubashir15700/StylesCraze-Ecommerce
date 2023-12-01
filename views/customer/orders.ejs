@@ -32,7 +32,7 @@
               <%= order.orderedProducts[0].name %>
             </span>
             <p>
-              Price: ₹<%= order.orderedProducts[0].price.toFixed(2) %>,
+              Price: ₹<%= order.orderedProducts[0].actualPrice.toFixed(2) %>,
               Quantity: <%= order.products.quantity %>,<br>
               Payment Method: <%= order.paymentMethod %><br>
               Delivery Address: <%= order.deliveryAddress.state %>,

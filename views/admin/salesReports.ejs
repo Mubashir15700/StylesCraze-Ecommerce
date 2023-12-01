@@ -66,7 +66,7 @@
                             <span class="text-primary h6 text-uppercase">
                               <%= report.products.productInfo.name %>
                             </span><br>
-                            Price: <%= report.products.productInfo.price %>,
+                            Price: ₹<%= report.products.productInfo.actualPrice %>,
                             Quantity: <%= report.products.quantity %>
                             <% totalRevenue += (report.products.productInfo.price * report.products.quantity) %>
                           </div>

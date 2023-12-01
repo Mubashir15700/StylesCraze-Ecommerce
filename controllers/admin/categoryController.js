@@ -51,17 +51,19 @@ export const newCategory = (req, res) => {
 };
 
 export const addNewCategory = async (req, res, next) => {
+    const { name, photo, offerPercentage, offerValidUpto } = req.body;
     try {
-        const { name, photo } = req.body;
         if (!name || !photo) {
             res.render('admin/categories/newCategory', {
-                error: "All fields are required.",
+                error: "Category name and photo are required.",
                 activePage: 'Categories'
             });
         }
         await Category.create({
             name,
             image: "/categories/" + photo,
+            offerPercentage,
+            offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         });
         res.redirect('/admin/categories/1');
     } catch (error) {
@@ -107,13 +109,15 @@ export const getCategory = async (req, res, next) => {
 
 export const editCategory = async (req, res, next) => {
     const { id } = req.params;
-    const { name, photo } = req.body;
+    const { name, photo, offerPercentage, offerValidUpto } = req.body;
     const foundCategory = await Category.findById(req.params.id);
     try {
         const category = await Category.findById(id);
 
         let updatedObj = {
             name,
+            offerPercentage, 
+            offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
         if (typeof photo !== "undefined") {

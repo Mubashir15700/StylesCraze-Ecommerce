@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
         minLength: 2,
         maxLength: 20,
         validate: {
-            validator: function(value) {
+            validator: function (value) {
                 return /^[a-zA-Z0-9\s]+$/.test(value);
             },
             message: 'Product name must not contain special characters'
@@ -20,10 +20,26 @@ const productSchema = new mongoose.Schema({
         maxLength: 200,
         required: true
     },
-    price: {
+    actualPrice: {
         type: Number,
         required: true,
         min: 1,
+    },
+    offerPercentage: {
+        type: Number,
+        min: 0,
+        max: 100,
+        default: 0,
+    },
+    offerValidUpto: {
+        type: Date,
+    },
+    isOfferActive: {
+        type: Boolean,
+        default: function () {
+            const currentDate = new Date();
+            return this.offerValidUpto ? currentDate <= this.offerValidUpto : true;
+        },
     },
     stock: {
         type: Number,

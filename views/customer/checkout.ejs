@@ -35,7 +35,7 @@
               <p>
                 <%= cartItem.product.description %><br>
                 Category: <%= cartItem.product.category.name %><br>
-                <strong class="text-black">₹<%= cartItem.product.price %>.00</strong>
+                <strong class="text-black">₹<%= cartItem.product.actualPrice %>.00</strong>
               </p>
               <p>
                 Stock: <%= cartItem.product.stock %>
@@ -45,7 +45,7 @@
               <span class="text-black">
                 Quantity: <%= cartItem.quantity %><br>
                 Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
-                  <%=cartItem.product.price * cartItem.quantity %>
+                  <%=cartItem.product.actualPrice * cartItem.quantity %>
                   .00
                 </span>
               </span>

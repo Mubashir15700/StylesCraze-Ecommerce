@@ -34,7 +34,7 @@
               </span>
               <p>
                 Category: <%= cartItem.product.category.name %><br>
-                <strong class="text-black">₹<%= cartItem.product.price.toFixed(2) %>
+                <strong class="text-black">₹<%= cartItem.product.actualPrice.toFixed(2) %>
                 </strong>
               </p>
               <p>Stock: <%= cartItem.product.stock %>
@@ -46,7 +46,7 @@
             <div class="col-md-4">
               <span class="text-black">
                 Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
-                  <%= (cartItem.product.price * cartItem.quantity).toFixed(2) %>
+                  <%= (cartItem.product.actualPrice * cartItem.quantity).toFixed(2) %>
                 </span>
               </span>
               <div class="input-group mb-3" style="max-width: 120px;">

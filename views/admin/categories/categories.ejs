@@ -34,6 +34,12 @@
                         Product's Count
                       </th>
                       <th>
+                        Offer
+                      </th>
+                      <th>
+                        Offer Validity
+                      </th>
+                      <th>
                         Actions
                       </th>
                     </tr>
@@ -41,7 +47,7 @@
                   <tbody id="search-results">
                     <% if (!categoryDatas.length) { %>
                     <tr>
-                      <td colspan="3">No categories found.</td>
+                      <td colspan="4">No categories found.</td>
                     </tr>
                     <% } else { %>
                     <% categoryDatas.forEach((category)=> { %>
@@ -65,6 +71,12 @@
                         <%= category.productsCount %>
                       </td>
                       <td>
+                        <%= category.offerPercentage ?? 0 %>%
+                      </td>
+                      <td>
+                        <%= category.offerValidUpto ? category.offerValidUpto.toLocaleDateString() : 'No offer' %>
+                      </td>
+                      <td>
                         <div class="d-flex">
                           <a href="/admin/edit-category/<%= category._id %>" class="btn btn-info btn-sm mr-1">
                             <i class="bi bi-pen"></i>
@@ -81,6 +93,12 @@
                               Deactivate
                             </button>
                             <% } %>
+                          </form>
+                          <!-- Add a button for deactivating the offer -->
+                          <form action="/admin/categories/deactivate-offer/<%= category._id %>?_method=PATCH" method="post" id="deactivate-offer-form">
+                            <button type="submit" class="btn btn-light btn-sm mr-1">
+                              Remove Offer
+                            </button>
                           </form>
                         </div>
                       </td>
@@ -167,6 +185,8 @@
                     row.append($('<td>').html(`<img src="${category.image}" alt="Category Image" onclick="openModal('${category.image}')" />`));
                     row.append($('<td>').text(category.name));
                     row.append($('<td>').text(category.productsCount));
+                    row.append($('<td>').text((category.offerPercentage ?? 0) + "%"));
+                    row.append($('<td>').text(category.offerValidUpto ? new Date(category.offerValidUpto).toLocaleDateString() : 'No offer'));
                     // Create the last <td> with the form
                     let elementsToAppend = [];
 
@@ -184,6 +204,18 @@
                       method: 'post',
                       id: 'action-form'
                     });
+
+                    const offerForm = $('<form>', {
+                      action: `/admin/categories/deactivate-offer/${category._id}?_method=PATCH`,
+                      method: 'post',
+                      id: 'deactivate-offer-form'
+                    });
+
+                    offerForm.append($('<button>', {
+                      type: 'submit',
+                      class: 'btn btn-light btn-sm mr-1',
+                      text: 'Remove Offer'
+                    }));
 
                     if (category.removed === true) {
                       actionForm.append($('<input>', {
@@ -210,6 +242,7 @@
                     }
 
                     elementsToAppend.push(actionForm);
+                    elementsToAppend.push(offerForm);
 
                     row.append($('<td>').html(elementsToAppend));
                     // Append the row to the table

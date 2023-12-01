@@ -110,7 +110,7 @@
                         <%= product.product.name %>
                       </p>
                       <p>
-                        Price: ₹<%= product.product.price %>
+                        Price: ₹<%= product.product.actualPrice %>
                       </p>
                     </div>
                     <div>
@@ -121,7 +121,7 @@
                     <p>Quanity: <%= product.quantity %></p>
                     <p>Payment Method: <%= foundOrder.paymentMethod %></p>
                     <strong>
-                      Total Price: ₹<%= (product.product.price * product.quantity).toFixed(2) %>
+                      Total Price: ₹<%= (product.product.actualPrice * product.quantity).toFixed(2) %>
                     </strong>
                   </div>
                 </div>

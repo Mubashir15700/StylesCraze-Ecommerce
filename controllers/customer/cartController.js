@@ -13,7 +13,7 @@ export const getCart = async (req, res, next) => {
             await currentUser.populate('cart.product.category');
             const cartProducts = currentUser.cart;
             const grandTotal = cartProducts.reduce((total, element) => {
-                return total + (element.quantity * element.product.price);
+                return total + (element.quantity * element.product.actualPrice);
             }, 0);
             res.render("customer/cart", {
                 isLoggedIn: isLoggedIn(req, res),
@@ -102,13 +102,13 @@ export const updateCart = async (req, res, next) => {
 
             await currentUser.populate('cart.product');
             const grandTotal = currentUser.cart.reduce((total, element) => {
-                return total + (element.quantity * element.product.price);
+                return total + (element.quantity * element.product.actualPrice);
             }, 0);
             await currentUser.save();
             return res.status(200).json({
                 message: "Success",
                 quantity: cartItem.quantity,
-                totalPrice: product.price * cartItem.quantity,
+                totalPrice: product.actualPrice * cartItem.quantity,
                 grandTotal,
                 insufficientStock,
             });
@@ -129,7 +129,7 @@ export const getCheckout = async (req, res, next) => {
             await currentUser.populate('cart.product.category');
             const cartProducts = currentUser.cart;
             const grandTotal = cartProducts.reduce((total, element) => {
-                return total + (element.quantity * element.product.price);
+                return total + (element.quantity * element.product.actualPrice);
             }, 0);
 
             let insufficientStockProduct;

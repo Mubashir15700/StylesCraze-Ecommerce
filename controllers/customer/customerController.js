@@ -201,7 +201,7 @@ export const filterProducts = async (req, res, next) => {
 
         // Check if minPrice and maxPrice are provided, and include the price filter if they are
         if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-            query.price = { $gte: minPrice, $lte: maxPrice }
+            query.actualPrice = { $gte: minPrice, $lte: maxPrice }
         }
 
         // Check if searchText is provided, and include the name and description filters if it is
@@ -303,7 +303,7 @@ export const applyCoupon = async (req, res, next) => {
         const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
         const currentCoupon = await Coupon.findOne({ code: req.body.coupon });
         const grandTotal = cartProducts.reduce((total, element) => {
-            return total + (element.quantity * element.product.price);
+            return total + (element.quantity * element.product.actualPrice);
         }, 0);
         let couponError = "";
         let discount = 0;
@@ -354,7 +354,7 @@ export const placeOrder = async (req, res, next) => {
         const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
 
         const grandTotal = currentUser.cart.reduce((total, element) => {
-            return total + (element.quantity * element.product.price);
+            return total + (element.quantity * element.product.actualPrice);
         }, 0);
 
         const orderedProducts = currentUser.cart.map((item) => {
@@ -455,7 +455,7 @@ export const saveRzpOrder = async (req, res, next) => {
             });
 
             const grandTotal = currentUser.cart.reduce((total, element) => {
-                return total + (element.quantity * element.product.price);
+                return total + (element.quantity * element.product.actualPrice);
             }, 0);
 
             const orderedProducts = currentUser.cart.map((item) => {
@@ -501,10 +501,10 @@ export const cancelOrder = async (req, res, next) => {
         if (foundOrder.paymentMethod !== 'cod') {
             const currentUser = await User.findById(req.session.user);
 
-            const refundAmount = (foundProduct.product.price * foundProduct.quantity) + 5;
+            const refundAmount = (foundProduct.product.actualPrice * foundProduct.quantity) + 5;
             currentUser.wallet.balance += refundAmount;
 
-            foundOrder.totalAmount -= (foundProduct.product.price * foundProduct.quantity);
+            foundOrder.totalAmount -= (foundProduct.product.actualPrice * foundProduct.quantity);
             if (foundOrder.totalAmount === 5) {
                 foundOrder.totalAmount = 0;
             }
@@ -526,7 +526,7 @@ export const cancelOrder = async (req, res, next) => {
             await currentUser.save();
             await foundCurrentProduct.save();
         } else {
-            foundOrder.totalAmount -= (foundProduct.product.price * foundProduct.quantity);
+            foundOrder.totalAmount -= (foundProduct.product.actualPrice * foundProduct.quantity);
             if (foundOrder.totalAmount === 5) {
                 foundOrder.totalAmount = 0;
             }

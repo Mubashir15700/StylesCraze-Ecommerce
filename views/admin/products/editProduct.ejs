@@ -28,7 +28,7 @@
                       <label for="category">Category</label>
                       <select name="category" id="category" class="form-control" required>
                         <% categoryOptions.forEach(category=> { %>
-                        <option value="<%= category._id %>">
+                        <option value="<%= category._id %>" <%= category._id === productData.category ? 'selected' : '' %>>
                           <%= category.name %>
                         </option>
                         <% }) %>
@@ -44,12 +44,24 @@
                   <div class="d-flex justify-content-between">
                     <div class="form-group col-md-6">
                       <label for="exampleInputName1">Price</label>
-                      <input type="number" class="form-control" name="price" value="<%= productData.price %>" id="exampleInputName1" placeholder="price" required>
+                      <input type="number" class="form-control" name="price" value="<%= productData.actualPrice %>" id="exampleInputName1" placeholder="price" required>
                     </div>
 
                     <div class="form-group col-md-6">
                       <label for="exampleInputName1">Stock</label>
                       <input type="number" class="form-control" name="stock" value="<%= productData.stock %>" id="exampleInputName1" placeholder="stock" required>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-column flex-md-row justify-content-between">
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Offer Percentage</label>
+                      <input type="number" class="form-control" name="offerPercentage" value="<%= productData.offerPercentage %>" id="exampleInputName1" placeholder="Offer Percentage">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <label for="exampleInputName1">Offer Valid Upto</label>
+                      <input type="date" class="form-control" name="offerValidUpto" value="<%= productData.offerValidUpto %>" id="exampleInputName1" placeholder="Offer Valid Upto">
                     </div>
                   </div>
 

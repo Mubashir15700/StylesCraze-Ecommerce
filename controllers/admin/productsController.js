@@ -56,7 +56,7 @@ export const getAddNewProduct = async (req, res, next) => {
 };
 
 export const addNewProduct = async (req, res, next) => {
-    const { name, category, description, price, stock, size, color, images } = req.body;
+    const { name, category, description, price, offerPercentage, offerValidUpto, stock, size, color, images } = req.body;
     const foundCategories = await Category.find({}, { name: 1 });
     try {
         if (!name || !description || !category || !price || !stock || !size || !color || !images) {
@@ -72,7 +72,9 @@ export const addNewProduct = async (req, res, next) => {
                 name,
                 description,
                 stock,
-                price,
+                actualPrice: price,
+                offerPercentage,
+                offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 category,
                 size,
                 color,
@@ -125,7 +127,9 @@ export const editProduct = async (req, res, next) => {
                 name: req.body.name,
                 category: req.body.category,
                 description: req.body.description,
-                price: req.body.price,
+                actualPrice: req.body.price,
+                offerPercentage: req.body.offerPercentage,
+                offerValidUpto: req.body.offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 stock: req.body.stock,
                 size: req.body.size,
                 color: req.body.color

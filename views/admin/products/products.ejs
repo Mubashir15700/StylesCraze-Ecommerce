@@ -31,19 +31,16 @@
                         Name
                       </th>
                       <th>
-                        category
-                      </th>
-                      <th>
                         Price
                       </th>
                       <th>
-                        Stock
+                        Size & Color
                       </th>
                       <th>
-                        Size
+                        Offers
                       </th>
                       <th>
-                        Color
+                        Offer Validity
                       </th>
                       <th>
                         Actions
@@ -77,22 +74,23 @@
                         </div>
                       </div>
                       <td>
-                        <%= product.name %>
-                      </td>
-                      <td>
+                        <%= product.name %><br>
                         <%= product.category.name %>
                       </td>
                       <td>
-                        ₹<%= product.price %>.00
+                        ₹<%= product.actualPrice %>.00<br>
+                        Stock: <%= product.stock %>
                       </td>
                       <td>
-                        <%= product.stock %>
-                      </td>
-                      <td>
-                        <%= product.size %>
-                      </td>
-                      <td>
+                        <%= product.size %><br>
                         <%= product.color %>
+                      </td>
+                      <td>
+                        Product: <%= product.offerPercentage ?? 0 %>%<br>
+                        Category: <%= product.category.offerPercentage ?? 0 %>%
+                      </td>
+                      <td>
+                        <%= product.offerValidUpto ? product.offerValidUpto.toLocaleDateString() : 'No offer' %>
                       </td>
                       <td>
                         <div class="d-flex">
@@ -200,17 +198,19 @@
                     // Loop through each image in the product.images array
                     product.images.forEach(image => {
                       const imgElement = $(`<img src="${image}" alt="Product Image" onclick="openModal('${image}')" />`);
-                      imageTd.append(imgElement);  // Append each image to the <td>
+                      imageTd.append(imgElement); // Append each image to the <td>
                     });
                     // Append the <td> with images to the row
                     row.append(imageTd);
-                    row.append($('<td>').html(`<img src="${product.image}" alt="Product Image" onclick="openModal('${product.image}')" />`));
-                    row.append($('<td>').text(product.name));
-                    row.append($('<td>').text(product.category.name));
-                    row.append($('<td>').text(product.price));
-                    row.append($('<td>').text(product.stock));
-                    row.append($('<td>').text(product.color));
-                    row.append($('<td>').text(product.size));
+                    row.append($('<td>').html(product.name + "<br>" + product.category.name));
+                    row.append($('<td>').html("₹" + product.actualPrice + "<br>" + "Stock: " + product.stock));
+                    row.append($('<td>').html(product.size + "<br>" + product.color));
+                    row.append($('<td>').html(
+                      "Product: " + (product.offerPercentage ?? 0) + "%" +
+                      "<br> Category: " + (product.category.offerPercentage ?? 0) + "%"
+                    ));
+                    row.append($('<td>').text(product.offerValidUpto ? new Date(product.offerValidUpto).toLocaleDateString() : 'No offer'));
+
                     // Create the last <td> with the form
                     let elementsToAppend = [];
 

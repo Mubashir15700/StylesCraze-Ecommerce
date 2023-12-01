@@ -591,7 +591,7 @@ export const downloadSalesReport = (req, res, next) => {
 
             // Iterate over the products for each report
             doc.text(`Product Name: ${report.products.productInfo.name}`);
-            doc.text(`Price: ${report.products.productInfo.price}`);
+            doc.text(`Price: ${report.products.productInfo.actualPrice}`);
             doc.text(`Quantity: ${report.products.quantity}`);
             doc.text(`Payment Method: ${report.products.paymentMethod}`);
             doc.moveDown();
