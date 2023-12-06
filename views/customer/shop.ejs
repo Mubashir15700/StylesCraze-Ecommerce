@@ -88,8 +88,7 @@
                     <% if (isLoggedIn) { %>
                     <form action="/wishlist" method="post" id="wishlistForm_<%= product._id %>">
                       <p class="text-primary font-weight-bold">
-                        Size: <%= product.size %>,
-                        ₹<%= product.actualPrice.toFixed(2) %>
+                        Size: <%= product.size %>
                         <input type="hidden" name="productId" value="<%= product._id %>">
                         <% if (currentUser.wishlist.some((item)=> item.toString() === product._id.toString() )) { %>
                         <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>">
@@ -114,11 +113,6 @@
                       <% } %>
                     </form>
                     <% } else { %>
-                    <p class="text-primary font-weight-bold">
-                      Size: <%= product.size %>,
-                      ₹<%= product.actualPrice.toFixed(2) %><br>
-
-                    </p>
                     <% if (!product.stock) { %>
                     <p class="text-danger">
                       Currently Unavailable
@@ -128,6 +122,23 @@
                       Stock: <%= product.stock %>
                     </p>
                     <% } %>
+                    <% } %>
+                    <!-- Price -->
+                    <% if (!product.productOfferPrice && !product.categoryOfferPrice) { %>
+                    <div class="d-flex align-items-center justify-content-center">
+                      <p class="text-primary font-weight-bold">₹<%= product.actualPrice.toFixed(2) %></p>
+                    </div>
+                    <% } else { %>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <p class="text-decoration-line-through shop-actual-price mr-1"><%= product.actualPrice.toFixed(2) %></p>
+                        <% if (product.productOfferPrice && product.categoryOfferPrice) { %>
+                          <p class="text-primary font-weight-bold">₹<%= Math.min(product.productOfferPrice, product.categoryOfferPrice).toFixed(2) %></p>
+                        <% } else if (product.productOfferPrice) { %>
+                          <p class="text-primary font-weight-bold">₹<%= product.productOfferPrice.toFixed(2) %></p>
+                        <% } else if (product.categoryOfferPrice) { %>
+                          <p class="text-primary font-weight-bold">₹<%= product.categoryOfferPrice.toFixed(2) %></p>
+                        <% } %>
+                      </div>
                     <% } %>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import Category from '../../models/categoryModel.js';
+import Product from '../../models/productModel.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -59,12 +60,17 @@ export const addNewCategory = async (req, res, next) => {
                 activePage: 'Categories'
             });
         }
-        await Category.create({
+
+        const category = await Category.create({
             name,
             image: "/categories/" + photo,
             offerPercentage,
-            offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            offerValidUpto: offerValidUpto || offerPercentage && new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         });
+
+        const categoryId = category._id;
+        await updateCategoryOfferPrice(categoryId, offerPercentage);
+
         res.redirect('/admin/categories/1');
     } catch (error) {
         let foundError = false;
@@ -116,8 +122,8 @@ export const editCategory = async (req, res, next) => {
 
         let updatedObj = {
             name,
-            offerPercentage, 
-            offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            offerPercentage,
+            offerValidUpto: offerValidUpto || offerPercentage && new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
         if (typeof photo !== "undefined") {
@@ -130,6 +136,9 @@ export const editCategory = async (req, res, next) => {
         }
 
         await category.updateOne(updatedObj, { runValidators: true });
+
+        await updateCategoryOfferPrice(id, offerPercentage);
+
         res.redirect("/admin/categories/1");
     } catch (error) {
         let foundError = false;
@@ -156,6 +165,36 @@ export const editCategory = async (req, res, next) => {
     }
 };
 
+async function updateCategoryOfferPrice(categoryId, offerPercentage) {
+    // Calculate the amount to subtract based on the percentage
+    const amountToSubtract = offerPercentage > 0 ? Number(offerPercentage) / 100 : 0;
+
+    await Product.updateMany(
+        { category: categoryId },
+        [
+            {
+                $set: {
+                    tempCategoryOfferPrice: {
+                        $cond: {
+                            if: { $eq: [amountToSubtract, 0] },
+                            then: null,
+                            else: { $subtract: ["$actualPrice", { $multiply: ["$actualPrice", amountToSubtract] }] },
+                        },
+                    },
+                },
+            },
+            {
+                $set: {
+                    categoryOfferPrice: "$tempCategoryOfferPrice",
+                },
+            },
+            {
+                $unset: "tempCategoryOfferPrice",
+            },
+        ]
+    );
+};
+
 export const categoryAction = async (req, res, next) => {
     try {
         const state = req.body.state === "1";
@@ -164,4 +203,4 @@ export const categoryAction = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};

@@ -38,8 +38,16 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: function () {
             const currentDate = new Date();
-            return this.offerValidUpto ? currentDate <= this.offerValidUpto : true;
+            return this.offerValidUpto ? currentDate <= this.offerValidUpto : false;
         },
+    },
+    productOfferPrice: {
+        type: Number,
+        default: null
+    },
+    categoryOfferPrice: {
+        type: Number,
+        default: null
     },
     stock: {
         type: Number,

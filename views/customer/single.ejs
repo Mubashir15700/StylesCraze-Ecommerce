@@ -67,7 +67,23 @@
                 <div>
                   <p>
                     <strong class="text-primary h4">
-                      ₹<%= productData.actualPrice.toFixed(2) %>
+                      <!-- Price -->
+                      <% if (!productData.productOfferPrice && !productData.categoryOfferPrice) { %>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <p class="text-primary font-weight-bold">₹<%= productData.actualPrice.toFixed(2) %></p>
+                      </div>
+                      <% } else { %>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <p class="text-decoration-line-through shop-actual-price mr-1"><%= productData.actualPrice.toFixed(2) %></p>
+                        <% if (productData.productOfferPrice && productData.categoryOfferPrice) { %>
+                        <p class="text-primary font-weight-bold">₹<%= Math.min(productData.productOfferPrice, productData.categoryOfferPrice).toFixed(2) %></p>
+                        <% } else if (productData.productOfferPrice) { %>
+                        <p class="text-primary font-weight-bold">₹<%= product.productOfferPrice.toFixed(2) %></p>
+                        <% } else if (productData.categoryOfferPrice) { %>
+                        <p class="text-primary font-weight-bold">₹<%= productData.categoryOfferPrice.toFixed(2) %></p>
+                        <% } %>
+                      </div>
+                      <% } %>
                     </strong>
                   </p>
                   <% if (productData.stock) { %>

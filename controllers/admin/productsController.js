@@ -68,13 +68,13 @@ export const addNewProduct = async (req, res, next) => {
         } else {
             const imagesWithPath = images.map(img => '/products/' + img);
 
-            await Product.create({
+            const savedProduct = await Product.create({
                 name,
                 description,
                 stock,
                 actualPrice: price,
                 offerPercentage,
-                offerValidUpto: offerValidUpto || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                offerValidUpto: offerValidUpto || offerPercentage && new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
                 category,
                 size,
                 color,
@@ -82,6 +82,7 @@ export const addNewProduct = async (req, res, next) => {
             });
 
             await Category.findByIdAndUpdate(req.body.category, { $inc: { productsCount: 1 } });
+            await updateProductOfferPrice(savedProduct._id, offerPercentage);
         }
         res.redirect('/admin/products/1');
     } catch (error) {
@@ -147,6 +148,8 @@ export const editProduct = async (req, res, next) => {
         await currentCategory.save();
         await newCategory.save();
 
+        await updateProductOfferPrice(req.params.id, req.body.offerPercentage);
+
         res.redirect("/admin/products/1");
     } catch (error) {
         if (error.code === 11000) {
@@ -165,6 +168,35 @@ export const editProduct = async (req, res, next) => {
             next(error);
         }
     }
+};
+
+async function updateProductOfferPrice(productId, offerPercentage) {
+    // Calculate the amount to subtract based on the percentage
+    const amountToSubtract = offerPercentage > 0 ? Number(offerPercentage) / 100 : 0;
+
+    await Product.findByIdAndUpdate(productId,
+        [
+            {
+                $set: {
+                    tempProductOfferPrice: {
+                        $cond: {
+                            if: { $eq: [amountToSubtract, 0] },
+                            then: null,
+                            else: { $subtract: ["$actualPrice", { $multiply: ["$actualPrice", amountToSubtract] }] },
+                        },
+                    },
+                },
+            },
+            {
+                $set: {
+                    productOfferPrice: "$tempProductOfferPrice",
+                },
+            },
+            {
+                $unset: "tempProductOfferPrice",
+            },
+        ]
+    );
 };
 
 // causing an error
