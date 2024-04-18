@@ -7,11 +7,11 @@ import Coupon from "../../models/couponModel.js";
 import Return from "../../models/returnProductsModel.js";
 import Banner from "../../models/bannerModel.js";
 import { razorpay } from "../utils/razorpayConfig.js";
-import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
+import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getHome = async (req, res, next) => {
     try {
-        const foundProducts = await Product.find({ softDeleted: false }).populate('category').limit(6);
+        const foundProducts = await Product.find({ softDeleted: false }).populate("category").limit(6);
         const foundCategories = await Category.find({ removed: false });
         const currentBanner = await Banner.findOne({ isActive: true });
         res.render("customer/home", {
@@ -20,7 +20,7 @@ export const getHome = async (req, res, next) => {
             productDatas: foundProducts,
             categoryDatas: foundCategories,
             currentBanner,
-            activePage: 'Home',
+            activePage: "Home",
         });
     } catch (error) {
         next(error)
@@ -32,7 +32,7 @@ export const getAbout = async (req, res, next) => {
         res.render("customer/about", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            activePage: 'About',
+            activePage: "About",
         });
     } catch {
         next(error);
@@ -53,7 +53,7 @@ export const getShop = async (req, res, next) => {
 
         const foundProducts = await Product
             .find({ softDeleted: false })
-            .populate('category')
+            .populate("category")
             .skip(skip)
             .limit(pageSize);
         const foundCategories = await Category.find({ removed: false });
@@ -64,7 +64,7 @@ export const getShop = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
-            activePage: 'Shop',
+            activePage: "Shop",
             currentPage: page,
             totalPages: totalPages,
         });
@@ -82,7 +82,7 @@ export const getCategoryProducts = async (req, res, next) => {
 
         const foundProducts = await Product
             .find({ softDeleted: false, category: categoryId })
-            .populate('category')
+            .populate("category")
             .skip(skip)
             .limit(pageSize);
 
@@ -105,7 +105,7 @@ export const getCategoryProducts = async (req, res, next) => {
             categoryDatas: foundCategories,
             totalPages: totalPages,
             categoryBased: true,
-            activePage: 'Shop',
+            activePage: "Shop",
         });
     } catch (error) {
         next(error);
@@ -119,7 +119,7 @@ export const getSingleProduct = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             productData: foundProduct,
             currentUser: await getCurrentUser(req, res),
-            activePage: 'Shop',
+            activePage: "Shop",
         });
     } catch (error) {
         next(error);
@@ -131,10 +131,10 @@ export const searchProducts = async (req, res, next) => {
         const foundProducts = await Product.find({
             softDeleted: false,
             $or: [
-                { name: { $regex: req.body.product, $options: 'i' } },
-                { description: { $regex: `\\b${req.body.product}\\b`, $options: 'i' } },
+                { name: { $regex: req.body.product, $options: "i" } },
+                { description: { $regex: `\\b${req.body.product}\\b`, $options: "i" } },
             ]
-        }).populate('category');
+        }).populate("category");
 
         const foundCategories = await Category.find({ removed: false });
 
@@ -145,7 +145,7 @@ export const searchProducts = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
-            activePage: 'Shop',
+            activePage: "Shop",
             currentPage: 1,
             totalPages: 1,
         });
@@ -176,9 +176,9 @@ export const filterProducts = async (req, res, next) => {
         }
 
         for (const key in data) {
-            if (key.startsWith('size')) {
+            if (key.startsWith("size")) {
                 sizes.push(data[key]);
-            } else if (key.startsWith('color')) {
+            } else if (key.startsWith("color")) {
                 colors.push(data[key]);
             }
         }
@@ -189,13 +189,13 @@ export const filterProducts = async (req, res, next) => {
 
         if (sizes.length) {
             query.$or = [
-                { 'size': { $in: sizes } }
+                { "size": { $in: sizes } }
             ]
         }
 
         if (colors.length) {
             query.$or = [
-                { 'color': { $in: colors } }
+                { "color": { $in: colors } }
             ]
         }
 
@@ -207,12 +207,12 @@ export const filterProducts = async (req, res, next) => {
         // Check if searchText is provided, and include the name and description filters if it is
         if (searchText) {
             query.$or = [
-                { name: { $regex: searchText, $options: 'i' } },
-                { description: { $regex: `\\b${searchText}\\b`, $options: 'i' } }
+                { name: { $regex: searchText, $options: "i" } },
+                { description: { $regex: `\\b${searchText}\\b`, $options: "i" } }
             ];
         }
         
-        const foundProducts = await Product.find(query).populate('category');
+        const foundProducts = await Product.find(query).populate("category");
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
             isLoggedIn: isLoggedIn(req, res),
@@ -221,7 +221,7 @@ export const filterProducts = async (req, res, next) => {
             category: { name: "Shop All", id: "" },
             categoryDatas: foundCategories,
             categoryBased: false,
-            activePage: 'Shop',
+            activePage: "Shop",
             currentPage: 1,
             totalPages: 1,
         });
@@ -235,7 +235,7 @@ export const getContact = async (req, res, next) => {
         res.render("customer/contact", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
-            activePage: 'Contact',
+            activePage: "Contact",
         });
     } catch (error) {
         next(error);
@@ -283,11 +283,11 @@ export const updateWishlist = async (req, res, next) => {
 
 export const getWishlist = async (req, res, next) => {
     try {
-        const currentUser = await User.findById(req.session.user).populate('wishlist');
+        const currentUser = await User.findById(req.session.user).populate("wishlist");
         res.render("customer/wishlist", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
-            activePage: 'Wishlist',
+            activePage: "Wishlist",
         });
     } catch (error) {
         next(error);
@@ -296,9 +296,9 @@ export const getWishlist = async (req, res, next) => {
 
 export const applyCoupon = async (req, res, next) => {
     try {
-        const currentUser = await User.findById(req.session.user).populate('earnedCoupons.coupon');
-        await currentUser.populate('cart.product');
-        await currentUser.populate('cart.product.category');
+        const currentUser = await User.findById(req.session.user).populate("earnedCoupons.coupon");
+        await currentUser.populate("cart.product");
+        await currentUser.populate("cart.product.category");
         const cartProducts = currentUser.cart;
         const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
         const currentCoupon = await Coupon.findOne({ code: req.body.coupon });
@@ -312,7 +312,7 @@ export const applyCoupon = async (req, res, next) => {
             if (foundCoupon) {
                 if (foundCoupon.coupon.isActive) {
                     if (!foundCoupon.isUsed) {
-                        if (foundCoupon.coupon.discountType === 'fixedAmount') {
+                        if (foundCoupon.coupon.discountType === "fixedAmount") {
                             discount = foundCoupon.coupon.discountAmount;
                         } else {
                             discount = (foundCoupon.coupon.discountAmount / 100) * grandTotal;
@@ -337,10 +337,10 @@ export const applyCoupon = async (req, res, next) => {
             currentAddress: defaultAddress,
             discount,
             grandTotal,
-            currentCoupon: couponError ? '' : currentCoupon._id,
+            currentCoupon: couponError ? "" : currentCoupon._id,
             couponError,
             error: "",
-            activePage: 'Cart'
+            activePage: "Cart"
         });
     } catch (error) {
         next(error);
@@ -350,7 +350,7 @@ export const applyCoupon = async (req, res, next) => {
 export const placeOrder = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
-        await currentUser.populate('cart.product');
+        await currentUser.populate("cart.product");
         const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
 
         const grandTotal = currentUser.cart.reduce((total, element) => {
@@ -372,21 +372,21 @@ export const placeOrder = async (req, res, next) => {
             deliveryAddress,
         });
 
-        if (req.body.method === 'cod') {
+        if (req.body.method === "cod") {
             await newOrder.save();
-        } else if (req.body.method === 'rzp') {
+        } else if (req.body.method === "rzp") {
             // Create a Razorpay order
             const razorpayOrder = await razorpay.orders.create({
                 amount: (grandTotal - req.body.discount + 5) * 100, // Total amount in paise
-                currency: 'INR', // Currency code (change as needed)
-                receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}${Date.now()}`, // Provide a unique receipt ID
+                currency: "INR", // Currency code (change as needed)
+                receipt: `${Math.floor(Math.random() * 10000).toString().padStart(4, "0")}${Date.now()}`, // Provide a unique receipt ID
             });
 
             // Save the order details to your database
             newOrder.razorpayOrderId = razorpayOrder.id;
 
             // Redirect the user to the Razorpay checkout page
-            return res.render('customer/rzp', {
+            return res.render("customer/rzp", {
                 order: razorpayOrder,
                 key_id: process.env.RAZORPAY_ID_KEY,
                 user: currentUser
@@ -400,8 +400,8 @@ export const placeOrder = async (req, res, next) => {
                     currentAddress: deliveryAddress,
                     discount: 0,
                     grandTotal,
-                    currentCoupon: '',
-                    couponError: '',
+                    currentCoupon: "",
+                    couponError: "",
                     error: "Insufficient wallet balance.",
                 });
             } else {
@@ -409,8 +409,8 @@ export const placeOrder = async (req, res, next) => {
                 currentUser.wallet.balance -= (grandTotal + 5);
                 const transactionData = {
                     amount: grandTotal + 5,
-                    description: 'Order placed.',
-                    type: 'Debit',
+                    description: "Order placed.",
+                    type: "Debit",
                 };
                 currentUser.wallet.transactions.push(transactionData);
             }
@@ -444,7 +444,7 @@ export const saveRzpOrder = async (req, res, next) => {
         const { transactionId, orderId, signature } = req.body;
         const amount = parseInt(req.body.amount / 100);
         const currentUser = await getCurrentUser(req, res);
-        await currentUser.populate('cart.product');
+        await currentUser.populate("cart.product");
         const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
         if (transactionId && orderId && signature) {
             // stock update
@@ -469,7 +469,7 @@ export const saveRzpOrder = async (req, res, next) => {
                 user: req.session.user,
                 products: orderedProducts,
                 totalAmount: amount,
-                paymentMethod: 'rzp',
+                paymentMethod: "rzp",
                 deliveryAddress,
             });
             await newOrder.save();
@@ -496,9 +496,9 @@ export const saveRzpOrder = async (req, res, next) => {
 
 export const cancelOrder = async (req, res, next) => {
     try {
-        const foundOrder = await Order.findById(req.body.orderId).populate('products.product');
+        const foundOrder = await Order.findById(req.body.orderId).populate("products.product");
         const foundProduct = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
-        if (foundOrder.paymentMethod !== 'cod') {
+        if (foundOrder.paymentMethod !== "cod") {
             const currentUser = await User.findById(req.session.user);
 
             const refundAmount = (foundProduct.product.actualPrice * foundProduct.quantity) + 5;
@@ -511,8 +511,8 @@ export const cancelOrder = async (req, res, next) => {
 
             const transactionData = {
                 amount: refundAmount,
-                description: 'Order cancelled.',
-                type: 'Credit',
+                description: "Order cancelled.",
+                type: "Credit",
             };
             currentUser.wallet.transactions.push(transactionData);
 
@@ -571,7 +571,7 @@ export const getReturnProductForm = async (req, res) => {
             category,
             product,
             quantity: req.query.quantity,
-            activePage: 'Orders',
+            activePage: "Orders",
         });
     } catch (error) {
         next(error);
@@ -580,7 +580,7 @@ export const getReturnProductForm = async (req, res) => {
 
 export const requestReturnProduct = async (req, res, next) => {
     try {
-        const foundOrder = await Order.findById(req.body.order).populate('products.product');
+        const foundOrder = await Order.findById(req.body.order).populate("products.product");
         const foundProduct = await Product.findOne({ name: req.body.product });
         const returnProduct = new Return({
             user: req.session.user,
@@ -595,7 +595,7 @@ export const requestReturnProduct = async (req, res, next) => {
 
         foundOrder.products.forEach((product) => {
             if (product.product._id.toString() === foundProduct._id.toString()) {
-                product.returnRequested = 'Pending';
+                product.returnRequested = "Pending";
             }
         });
         await foundOrder.save();

@@ -60,8 +60,8 @@
                     <% orders.forEach((order) => { %>
                     <tr>
                       <td>
-                        Order Confirmed, <%= order.orderDate.toLocaleDateString() %><br>
-                        Delivery, <%= order.deliveryDate.toLocaleDateString() %>
+                        Order Confirmed, <%= order.orderDate?.toLocaleDateString() %><br>
+                        Delivery, <%= order.deliveryDate?.toLocaleDateString() %>
                       </td>
                       <td>
                         <%= order.deliveryAddress.state %>,
@@ -83,7 +83,7 @@
                           <% }) %>
                           <span>
                             <strong>
-                              Total Amount: ₹<%= order.totalAmount.toFixed(2) %><br>
+                              Total Amount: ₹<%= order.totalAmount?.toFixed(2) %><br>
                               Payment Method: <%= order.paymentMethod %>
                             </strong>
                           </span>

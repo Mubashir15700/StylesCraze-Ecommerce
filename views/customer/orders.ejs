@@ -32,7 +32,7 @@
               <%= order.orderedProducts[0].name %>
             </span>
             <p>
-              Price: ₹<%= order.orderedProducts[0].actualPrice.toFixed(2) %>,
+              Price: ₹<%= order.orderedProducts[0].actualPrice?.toFixed(2) %>,
               Quantity: <%= order.products.quantity %>,<br>
               Payment Method: <%= order.paymentMethod %><br>
               Delivery Address: <%= order.deliveryAddress.state %>,
@@ -43,10 +43,10 @@
             <div class="d-flex">
               <div>
                 <p class="text-black">
-                  Order Confirmed, <%= order.orderDate.toLocaleDateString() %>
+                  Order Confirmed, <%= order.orderDate?.toLocaleDateString() %>
                 </p>
                 <p class="text-black">
-                  Delivery, <%= order.deliveryDate.toLocaleDateString() %><br>
+                  Delivery, <%= order.deliveryDate?.toLocaleDateString() %><br>
                   <% if (!order.products.isCancelled) { %>
                   <strong>Status: <%= order.status %></strong>
                   <% } %>

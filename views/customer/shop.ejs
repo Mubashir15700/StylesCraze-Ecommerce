@@ -70,7 +70,7 @@
               No products found.
               <% } else { %>
               <% productDatas.forEach((product, index)=> { %>
-              <% if (product.category.removed===false) { %>
+              <% if (product.category.removed === false) { %>
               <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                 <div class="block-4 text-center border">
                   <figure class="block-4-image">
@@ -90,7 +90,7 @@
                       <p class="text-primary font-weight-bold">
                         Size: <%= product.size %>
                         <input type="hidden" name="productId" value="<%= product._id %>">
-                        <% if (currentUser.wishlist.some((item)=> item.toString() === product._id.toString() )) { %>
+                        <% if (currentUser.wishlist.some((item)=> item?.toString() === product._id?.toString() )) { %>
                         <a href="#" class="ml-2 updateWishlist" data-product-id="<%= product._id %>">
                           <span class="icon icon-heart">
                           </span>
@@ -126,17 +126,17 @@
                     <!-- Price -->
                     <% if (!product.productOfferPrice && !product.categoryOfferPrice) { %>
                     <div class="d-flex align-items-center justify-content-center">
-                      <p class="text-primary font-weight-bold">₹<%= product.actualPrice.toFixed(2) %></p>
+                      <p class="text-primary font-weight-bold">₹<%= product.actualPrice?.toFixed(2) %></p>
                     </div>
                     <% } else { %>
                       <div class="d-flex align-items-center justify-content-center">
-                        <p class="text-decoration-line-through shop-actual-price mr-1"><%= product.actualPrice.toFixed(2) %></p>
+                        <p class="text-decoration-line-through shop-actual-price mr-1"><%= product.actualPrice?.toFixed(2) %></p>
                         <% if (product.productOfferPrice && product.categoryOfferPrice) { %>
-                          <p class="text-primary font-weight-bold">₹<%= Math.min(product.productOfferPrice, product.categoryOfferPrice).toFixed(2) %></p>
+                          <p class="text-primary font-weight-bold">₹<%= Math.min(product.productOfferPrice, product.categoryOfferPrice)?.toFixed(2) %></p>
                         <% } else if (product.productOfferPrice) { %>
-                          <p class="text-primary font-weight-bold">₹<%= product.productOfferPrice.toFixed(2) %></p>
+                          <p class="text-primary font-weight-bold">₹<%= product.productOfferPrice?.toFixed(2) %></p>
                         <% } else if (product.categoryOfferPrice) { %>
-                          <p class="text-primary font-weight-bold">₹<%= product.categoryOfferPrice.toFixed(2) %></p>
+                          <p class="text-primary font-weight-bold">₹<%= product.categoryOfferPrice?.toFixed(2) %></p>
                         <% } %>
                       </div>
                     <% } %>

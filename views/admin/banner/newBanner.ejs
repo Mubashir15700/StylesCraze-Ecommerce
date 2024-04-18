@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('../../partials/admin/head') -%>
+<%- include("../../partials/admin/head") -%>
 
 <body>
   <div class="container-scroller">
-    <%- include('../../partials/admin/header') -%>
+    <%- include("../../partials/admin/header") -%>
     <div class="main-panel">
       <div class="content-wrapper my-custom-wrapper">
         <div class="row">
@@ -76,35 +76,36 @@
 
   <script>
     function hideErrorMessage() {
-      var errorMessageElement = document.getElementById('error-message');
+      var errorMessageElement = document.getElementById("error-message");
       if (errorMessageElement) {
         setTimeout(() => {
-          errorMessageElement.style.display = 'none';
+          errorMessageElement.style.display = "none";
         }, 4000);
 
       }
     }
     hideErrorMessage();
 
-    const previewInput = document.querySelector('.previewInput');
-    const previewArea = document.getElementById('preview-group');
+    const previewInput = document.querySelector(".previewInput");
+    const previewArea = document.getElementById("preview-group");
 
-    previewInput.addEventListener('change', function(e) {
-      const previewImages = document.querySelectorAll('.preview');
+    previewInput.addEventListener("change", function(e) {
+      const previewImages = document.querySelectorAll(".preview");
       if (e.target.files.length) {
         if (e.target.files.length > 3) {
-          e.target.value = ''; // Reset the file input
-          previewImages.forEach(image => image.src = ''); // Clear preview images
+          e.target.value = ""; // Reset the file input
+          previewImages.forEach(image => image.src = ""); // Clear preview images
           alert("You can only select up to 3 images.");
         } else {
           for (let i = 0; i < e.target.files.length; i++) {
             console.log(e.target.files.length, previewImages[i]);
             previewImages[i].src = URL.createObjectURL(e.target.files[i]);
           }
-          previewArea.style.display = 'block';
+          previewArea.style.display = "block";
         }
       }
     });
   </script>
 
-  <%- include('../../partials/admin/footer') -%>
+  <%- include("../../partials/admin/footer") -%>
+  

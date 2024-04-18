@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
             validator: function (value) {
                 return /^[a-zA-Z0-9\s]+$/.test(value);
             },
-            message: 'Product name must not contain special characters'
+            message: "Product name must not contain special characters"
         },
         unique: true,
         required: true,
@@ -65,7 +65,7 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: "Category",
     },
     softDeleted: {
         type: Boolean,
@@ -73,6 +73,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 
 export default Product;

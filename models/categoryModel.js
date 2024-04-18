@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema({
     name: {
@@ -9,7 +9,7 @@ const categorySchema = new mongoose.Schema({
             validator: function (value) {
                 return /^[a-zA-Z0-9\s]+$/.test(value);
             },
-            message: 'Category name must not contain special characters'
+            message: "Category name must not contain special characters"
         },
         unique: true,
         required: true,
@@ -41,6 +41,6 @@ const categorySchema = new mongoose.Schema({
     }
 });
 
-const Category = mongoose.model('Category', categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 
 export default Category;

@@ -19,7 +19,7 @@
         <div class="p-4 border m-5">
           <span class="d-block text-primary h5 text-uppercase">My Wallet</span>
           <span class="d-block h6 text-uppercase">
-            Balance: <strong>₹<%= currentUser.wallet.balance.toFixed(2) %></strong>
+            Balance: <strong>₹<%= currentUser.wallet.balance?.toFixed(2) %></strong>
           </span>
           <span class="d-block text-primary mt-4 text-uppercase">Transaction History</span>
           <% if (!currentUser.wallet.transactions.length) { %>

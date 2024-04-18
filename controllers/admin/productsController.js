@@ -1,10 +1,10 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import Category from '../../models/categoryModel.js';
-import Product from '../../models/productModel.js';
-import { newProductErrorPage, editProductErrorPage } from '../../middlewares/errorMiddleware.js';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import Category from "../../models/categoryModel.js";
+import Product from "../../models/productModel.js";
+import { newProductErrorPage, editProductErrorPage } from "../../middlewares/errorMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,18 +21,18 @@ export const getProducts = async (req, res, next) => {
         let foundProducts;
         if (req.query.search) {
             foundProducts = await Product.find({
-                name: { $regex: req.body.searchQuery, $options: 'i' }
-            }).populate('category');
+                name: { $regex: req.body.searchQuery, $options: "i" }
+            }).populate("category");
 
             return res.status(200).json({
                 productDatas: foundProducts,
             });
         } else {
-            foundProducts = await Product.find({}).populate('category').skip(skip).limit(pageSize);
+            foundProducts = await Product.find({}).populate("category").skip(skip).limit(pageSize);
         }
-        res.render('admin/products/products', {
+        res.render("admin/products/products", {
             productDatas: foundProducts,
-            activePage: 'Products',
+            activePage: "Products",
             filtered: req.query.search ? true : false,
             currentPage: page || 1,
             totalPages: totalPages || 1,
@@ -45,10 +45,10 @@ export const getProducts = async (req, res, next) => {
 export const getAddNewProduct = async (req, res, next) => {
     try {
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/products/newProduct', {
+        res.render("admin/products/newProduct", {
             categoryOptions: foundCategories,
             error: "",
-            activePage: 'Products'
+            activePage: "Products"
         });
     } catch (error) {
         next(error);
@@ -60,13 +60,13 @@ export const addNewProduct = async (req, res, next) => {
     const foundCategories = await Category.find({}, { name: 1 });
     try {
         if (!name || !description || !category || !price || !stock || !size || !color || !images) {
-            res.render('admin/products/newProduct', {
+            res.render("admin/products/newProduct", {
                 categoryOptions: foundCategories,
                 error: "All fields are required.",
-                activePage: 'Products'
+                activePage: "Products"
             });
         } else {
-            const imagesWithPath = images.map(img => '/products/' + img);
+            const imagesWithPath = images.map(img => "/products/" + img);
 
             const savedProduct = await Product.create({
                 name,
@@ -84,7 +84,7 @@ export const addNewProduct = async (req, res, next) => {
             await Category.findByIdAndUpdate(req.body.category, { $inc: { productsCount: 1 } });
             await updateProductOfferPrice(savedProduct._id, offerPercentage);
         }
-        res.redirect('/admin/products/1');
+        res.redirect("/admin/products/1");
     } catch (error) {
         if (error.code === 11000) {
             newProductErrorPage(req, res, "Product with the name already exist.", foundCategories);
@@ -108,11 +108,11 @@ export const getProduct = async (req, res, next) => {
     try {
         const foundProduct = await Product.findById(req.params.id);
         const foundCategories = await Category.find({}, { name: 1 });
-        res.render('admin/products/editProduct', {
+        res.render("admin/products/editProduct", {
             productData: foundProduct,
             categoryOptions: foundCategories,
             error: "",
-            activePage: 'Products'
+            activePage: "Products"
         });
     } catch (error) {
         next(error);
@@ -206,7 +206,7 @@ export const deleteImage = async (req, res, next) => {
     try {
         await Product.findByIdAndUpdate(id, { $pull: { images: image } }, { new: true });
 
-        fs.unlink(path.join(__dirname, '../public', image), (err) => {
+        fs.unlink(path.join(__dirname, "../public", image), (err) => {
             if (err) console.log(err);
         });
 
@@ -221,7 +221,7 @@ export const addImage = async (req, res, next) => {
     const { images } = req.body;
     let imagesWithPath;
     if (images && images.length) {
-        imagesWithPath = images.map(image => '/products/' + image);
+        imagesWithPath = images.map(image => "/products/" + image);
     }
     try {
         await Product.findByIdAndUpdate(id, { $push: { images: imagesWithPath } }, { new: true });
@@ -240,7 +240,7 @@ export const productAction = async (req, res, next) => {
         } else {
             await Category.findOneAndUpdate({ name: req.body.category }, { $inc: { productsCount: 1 } });
         }
-        res.redirect('/admin/products/1');
+        res.redirect("/admin/products/1");
     } catch (error) {
         next(error);
     }

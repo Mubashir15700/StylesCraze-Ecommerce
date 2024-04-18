@@ -1,9 +1,9 @@
-import Category from '../../models/categoryModel.js';
-import Product from '../../models/productModel.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import Category from "../../models/categoryModel.js";
+import Product from "../../models/productModel.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,7 +21,7 @@ export const getCategories = async (req, res, next) => {
         if (req.query.search) {
             foundCategories = await Category.find({
                 $or: [
-                    { name: { $regex: req.body.searchQuery, $options: 'i' } }
+                    { name: { $regex: req.body.searchQuery, $options: "i" } }
                 ]
             });
 
@@ -32,9 +32,9 @@ export const getCategories = async (req, res, next) => {
             foundCategories = await Category.find().skip(skip).limit(pageSize);
         }
 
-        res.render('admin/categories/categories', {
+        res.render("admin/categories/categories", {
             categoryDatas: foundCategories,
-            activePage: 'Categories',
+            activePage: "Categories",
             filtered: req.query.search ? true : false,
             currentPage: page || 1,
             totalPages: totalPages || 1,
@@ -45,9 +45,9 @@ export const getCategories = async (req, res, next) => {
 };
 
 export const newCategory = (req, res) => {
-    res.render('admin/categories/newCategory', {
+    res.render("admin/categories/newCategory", {
         error: "",
-        activePage: 'Categories'
+        activePage: "Categories"
     });
 };
 
@@ -55,9 +55,9 @@ export const addNewCategory = async (req, res, next) => {
     const { name, photo, offerPercentage, offerValidUpto } = req.body;
     try {
         if (!name || !photo) {
-            res.render('admin/categories/newCategory', {
+            res.render("admin/categories/newCategory", {
                 error: "Category name and photo are required.",
-                activePage: 'Categories'
+                activePage: "Categories"
             });
         }
 
@@ -71,7 +71,7 @@ export const addNewCategory = async (req, res, next) => {
         const categoryId = category._id;
         await updateCategoryOfferPrice(categoryId, offerPercentage);
 
-        res.redirect('/admin/categories/1');
+        res.redirect("/admin/categories/1");
     } catch (error) {
         let foundError = false;
         let errorMessage;
@@ -86,9 +86,9 @@ export const addNewCategory = async (req, res, next) => {
             errorMessage = error.message
         }
         if (foundError) {
-            res.render('admin/categories/newCategory', {
+            res.render("admin/categories/newCategory", {
                 error: errorMessage,
-                activePage: 'Categories'
+                activePage: "Categories"
             });
         } else {
             next(error);
@@ -102,10 +102,10 @@ export const getCategory = async (req, res, next) => {
         if (!foundCategory) {
             console.log("no category found");
         } else {
-            res.render('admin/categories/editCategory', {
+            res.render("admin/categories/editCategory", {
                 categoryData: foundCategory,
                 error: "",
-                activePage: 'Categories'
+                activePage: "Categories"
             });
         }
     } catch (error) {
@@ -154,10 +154,10 @@ export const editCategory = async (req, res, next) => {
             errorMessage = error.message;
         }
         if (foundError) {
-            res.render('admin/categories/editCategory', {
+            res.render("admin/categories/editCategory", {
                 categoryData: foundCategory,
                 error: errorMessage,
-                activePage: 'Categories'
+                activePage: "Categories"
             });
         } else {
             next(error);
@@ -199,7 +199,7 @@ export const categoryAction = async (req, res, next) => {
     try {
         const state = req.body.state === "1";
         await Category.findByIdAndUpdate(req.params.id, { $set: { removed: state } });
-        res.redirect('/admin/categories/1');
+        res.redirect("/admin/categories/1");
     } catch (error) {
         next(error);
     }

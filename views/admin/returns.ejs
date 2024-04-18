@@ -73,7 +73,7 @@
                             Price: ₹<%= request.product.actualPrice %> <br>
                             Quantity: <%= request.quantity %> <br>
                           </div>
-                          Requested Date: <%= request.createdAt.toLocaleDateString() %>
+                          Requested Date: <%= request.createdAt?.toLocaleDateString() %>
                         </div>
                       </td>
                       <td>

@@ -90,7 +90,7 @@
                         Category: <%= product.category.offerPercentage ?? 0 %>%
                       </td>
                       <td>
-                        <%= product.offerValidUpto ? product.offerValidUpto.toLocaleDateString() : 'No offer' %>
+                        <%= product.offerValidUpto ? product.offerValidUpto?.toLocaleDateString() : 'No offer' %>
                       </td>
                       <td>
                         <div class="d-flex">

@@ -1,8 +1,8 @@
-import bcrypt from 'bcryptjs';
-import { sendToMail } from './utils/sendMail.js';
+import bcrypt from "bcryptjs";
+import { sendToMail } from "./utils/sendMail.js";
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
-import UserOTPVerification from '../models/userOTPModel.js';
+import UserOTPVerification from "../models/userOTPModel.js";
 
 let salt;
 
@@ -21,15 +21,15 @@ export const loginAdmin = async (req, res, next) => {
                 const isMatch = await bcrypt.compare(password, foundAdmin.password);
                 if (isMatch) {
                     req.session.admin = foundAdmin._id;
-                    res.redirect('/admin/');
+                    res.redirect("/admin/");
                 } else {
-                    res.render('admin/login', { commonError: "Invalid username or password." });
+                    res.render("admin/login", { commonError: "Invalid username or password." });
                 }
             } else {
-                res.render('admin/login', { commonError: "No admin found." })
+                res.render("admin/login", { commonError: "No admin found." })
             }
         } else {
-            res.render('admin/login', { commonError: "All fields are required." });
+            res.render("admin/login", { commonError: "All fields are required." });
         }
     } catch (error) {
         next(error);
@@ -39,7 +39,7 @@ export const loginAdmin = async (req, res, next) => {
 export const logoutAdmin = async (req, res, next) => {
     try {
         req.session.admin = null;
-        res.redirect('/admin');
+        res.redirect("/admin");
     } catch (error) {
         next(error);
     }
@@ -52,21 +52,21 @@ export const loginCustomer = async (req, res, next) => {
             const foundUser = await User.findOne({ username: username });
             if (foundUser) {
                 if (foundUser.blocked) {
-                    res.render('customer/auth/login', { commonError: "Can't log in." });
+                    res.render("customer/auth/login", { commonError: "Can't log in." });
                 } else {
                     const isMatch = await bcrypt.compare(password, foundUser.password);
                     if (isMatch) {
                         req.session.user = foundUser._id;
-                        res.redirect('/');
+                        res.redirect("/");
                     } else {
-                        res.render('customer/auth/login', { commonError: "Invalid username or password." });
+                        res.render("customer/auth/login", { commonError: "Invalid username or password." });
                     }
                 }
             } else {
-                res.render('customer/auth/login', { commonError: "No user found." });
+                res.render("customer/auth/login", { commonError: "No user found." });
             }
         } else {
-            res.render('customer/auth/login', { commonError: "All fields are required." });
+            res.render("customer/auth/login", { commonError: "All fields are required." });
         }
     } catch (error) {
         next(error);
@@ -79,7 +79,7 @@ export const registerCustomer = async (req, res, next) => {
         if (username && email && phone && password && confirmPassword) {
             const foundUser = await User.findOne({ $or: [{ username: username }, { email: email }] });
             if (foundUser) {
-                res.render('customer/auth/register', { commonError: "User already exist." });
+                res.render("customer/auth/register", { commonError: "User already exist." });
             } else {
                 if (password === confirmPassword) {
                     const hashPassword = await bcrypt.hash(password, salt);
@@ -98,13 +98,13 @@ export const registerCustomer = async (req, res, next) => {
                     req.session.user = savedUser._id;
                     sendToMail(req, res, savedUser._id, false, next);
                 } else {
-                    res.render('customer/auth/register', {
+                    res.render("customer/auth/register", {
                         commonError: "Password and confirm password didn't match."
                     });
                 }
             }
         } else {
-            res.render('customer/auth/register', { commonError: "All fields are required." });
+            res.render("customer/auth/register", { commonError: "All fields are required." });
         }
     } catch (error) {
         next(error);
@@ -156,7 +156,7 @@ export const getNewPassword = async (req, res, next) => {
         res.render("customer/auth/newPassword", {
             userId: currentUser._id,
             email: currentUser.email,
-            error: ''
+            error: ""
         });
     } catch (error) {
         next(error);
@@ -239,7 +239,7 @@ export const Verification = async (req, res) => {
                         throw new Error("Invalid code. Please try again.");
                     } else {
                         await User.updateOne({ _id: userId }, { verified: true });
-                        if (req.body.isForgotPassword === 'true') {
+                        if (req.body.isForgotPassword === "true") {
                             res.status(200).json({
                                 success: true,
                                 redirectTo: `/new-password/${userId}`
@@ -247,7 +247,7 @@ export const Verification = async (req, res) => {
                         } else {
                             res.status(200).json({
                                 success: true,
-                                redirectTo: '/'
+                                redirectTo: "/"
                             });
                         }
                     }
@@ -265,7 +265,7 @@ export const Verification = async (req, res) => {
 export const logoutCustomer = async (req, res, next) => {
     try {
         req.session.user = null;
-        res.redirect('/login');
+        res.redirect("/login");
     } catch (error) {
         next(error);
     }

@@ -1,6 +1,6 @@
-import bcrypt from 'bcryptjs';
-import nodeMailer from 'nodemailer';
-import UserOTPVerification from '../../models/userOTPModel.js';
+import bcrypt from "bcryptjs";
+import nodeMailer from "nodemailer";
+import UserOTPVerification from "../../models/userOTPModel.js";
 
 let salt;
 
@@ -12,8 +12,8 @@ generateSalt();
 
 export const sendToMail = (req, res, userId, isForgotPassword, next) => {
     const transporter = nodeMailer.createTransport({
-        service: 'Gmail',
-        host: 'smtp.gmail.com',
+        service: "Gmail",
+        host: "smtp.gmail.com",
         port: 587,
         secure: false,
         auth: {
@@ -23,8 +23,8 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
     });
 
     function generateOTP(length) {
-        const charset = '0123456789';
-        let otp = '';
+        const charset = "0123456789";
+        let otp = "";
 
         for (let i = 0; i < length; i++) {
             const randomIndex = Math.floor(Math.random() * charset.length);
@@ -42,7 +42,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
             address: process.env.USER,
         },
         to: req.body.email,
-        subject: 'OTP Verification',
+        subject: "OTP Verification",
         html: `<p>Your otp for verification is ${OTP}</p>`,
     };
 
@@ -56,7 +56,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
             });
             await newUserOTPVerification.save();
             await transporter.sendMail(options);
-            res.render('customer/auth/verification', { 
+            res.render("customer/auth/verification", { 
                 userId, 
                 email: req.body.email, 
                 error: "", 

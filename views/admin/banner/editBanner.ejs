@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('../../partials/admin/head') -%>
+<%- include("../../partials/admin/head") -%>
 
 <body>
   <div class="container-scroller">
-    <%- include('../../partials/admin/header') -%>
+    <%- include("../../partials/admin/header") -%>
     <div class="main-panel">
       <div class="content-wrapper my-custom-wrapper">
         <div class="row">
@@ -63,7 +63,7 @@
                   <div class="card-body">
                     <form action="/admin/banners/img-add/<%= banner._id %>?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
                       <div class="mb-3" id="appendError">
-                        <input type="file" accept="image/*" <%=banner.images.length> 1 ? '' : 'multiple' %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
+                        <input type="file" accept="image/*" <%=banner.images.length> 1 ? "" : "multiple" %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
                       </div>
                       <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Upload</button>
@@ -84,42 +84,42 @@
 
   <script>
     function hideErrorMessage() {
-      var errorMessageElement = document.getElementById('error-message');
+      var errorMessageElement = document.getElementById("error-message");
       if (errorMessageElement) {
         setTimeout(() => {
-          errorMessageElement.style.display = 'none';
+          errorMessageElement.style.display = "none";
         }, 4000);
 
       }
     }
     hideErrorMessage();
 
-    const previewArea = document.getElementById('preview-group');
-    const previewInput = document.getElementById('preview-input');
-    const previewImg = document.getElementById('preview-img');
-    const uploadImg = document.getElementById('uploadImg');
-    const appendError = document.getElementById('appendError');
+    const previewArea = document.getElementById("preview-group");
+    const previewInput = document.getElementById("preview-input");
+    const previewImg = document.getElementById("preview-img");
+    const uploadImg = document.getElementById("uploadImg");
+    const appendError = document.getElementById("appendError");
 
     let validateUpload;
 
-    uploadImg.addEventListener('submit', function(e) {
+    uploadImg.addEventListener("submit", function(e) {
       const error = `
               <div class="alert alert-danger mt-3">
                 Please select image to upload.  
               </div>
             `;
-      const el = document.createElement('div');
-      el.setAttribute('id', 'error-el');
+      const el = document.createElement("div");
+      el.setAttribute("id", "error-el");
       el.innerHTML = error;
       if (typeof validateUpload === "undefined" || validateUpload?.length === 0) {
         e.preventDefault();
-        if (!appendError.hasAttribute('hasError')) {
-          appendError.setAttribute('hasError', true);
+        if (!appendError.hasAttribute("hasError")) {
+          appendError.setAttribute("hasError", true);
           appendError.appendChild(el);
         }
       } else {
-        const errorEl = document.getElementById('error-el');
-        appendError.removeAttribute('hasError');
+        const errorEl = document.getElementById("error-el");
+        appendError.removeAttribute("hasError");
         appendError.removeChild(el);
         this.submit();
       }
@@ -133,8 +133,9 @@
       if (e.target.files && e.target.files.length) {
         const imgSrc = URL.createObjectURL(e.target.files[0]);
         previewImg.src = imgSrc;
-        previewArea.style.display = 'block';
+        previewArea.style.display = "block";
       }
     }
   </script>
-  <%- include('../../partials/admin/footer') -%>
+  <%- include("../../partials/admin/footer") -%>
+  

@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 import Product from "../../models/productModel.js";
 import Address from "../../models/addressModel.js";
 import UserOTPVerification from "../../models/userOTPModel.js";
-import { sendToMail } from '../utils/sendMail.js';
-import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
+import { sendToMail } from "../utils/sendMail.js";
+import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getCart = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
         if (currentUser.verified) {
-            await currentUser.populate('cart.product');
-            await currentUser.populate('cart.product.category');
+            await currentUser.populate("cart.product");
+            await currentUser.populate("cart.product.category");
             const cartProducts = currentUser.cart;
             const grandTotal = cartProducts.reduce((total, element) => {
                 return total + (element.quantity * element.product.actualPrice);
@@ -20,8 +20,8 @@ export const getCart = async (req, res, next) => {
                 currentUser,
                 cartProducts,
                 grandTotal,
-                insufficientStockProduct: '',
-                activePage: 'Cart',
+                insufficientStockProduct: "",
+                activePage: "Cart",
             });
         } else {
             await UserOTPVerification.deleteMany({ userId: currentUser._id });
@@ -100,7 +100,7 @@ export const updateCart = async (req, res, next) => {
                 insufficientStock = true
             }
 
-            await currentUser.populate('cart.product');
+            await currentUser.populate("cart.product");
             const grandTotal = currentUser.cart.reduce((total, element) => {
                 return total + (element.quantity * element.product.actualPrice);
             }, 0);
@@ -125,8 +125,8 @@ export const getCheckout = async (req, res, next) => {
         const currentUser = await getCurrentUser(req, res);
         if (currentUser.verified) {
             const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
-            await currentUser.populate('cart.product');
-            await currentUser.populate('cart.product.category');
+            await currentUser.populate("cart.product");
+            await currentUser.populate("cart.product.category");
             const cartProducts = currentUser.cart;
             const grandTotal = cartProducts.reduce((total, element) => {
                 return total + (element.quantity * element.product.actualPrice);
@@ -147,10 +147,10 @@ export const getCheckout = async (req, res, next) => {
                     currentAddress: defaultAddress,
                     discount: 0,
                     grandTotal,
-                    currentCoupon: '',
-                    couponError: '',
-                    error: '',
-                    activePage: 'Orders',
+                    currentCoupon: "",
+                    couponError: "",
+                    error: "",
+                    activePage: "Orders",
                 });
             } else {
                 res.render("customer/cart", {
@@ -159,7 +159,7 @@ export const getCheckout = async (req, res, next) => {
                     cartProducts,
                     grandTotal,
                     insufficientStockProduct,
-                    activePage: 'Cart',
+                    activePage: "Cart",
                 });
             }
         } else {

@@ -11,7 +11,7 @@ const transactionSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Credit', 'Debit'],
+        enum: ["Credit", "Debit"],
         required: true,
     },
     timestamp: {
@@ -51,16 +51,16 @@ const userSchema = new mongoose.Schema({
     },
     profile: {
         type: String,
-        default: ''
+        default: ""
     },
     wishlist: [
-        { type: mongoose.Types.ObjectId, ref: 'Product' }
+        { type: mongoose.Types.ObjectId, ref: "Product" }
     ],
     cart: [
         {
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: "Product",
             },
             quantity: {
                 type: Number,
@@ -72,7 +72,7 @@ const userSchema = new mongoose.Schema({
         {
             coupon: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Coupon',
+                ref: "Coupon",
             },
             isUsed: {
                 type: Boolean,

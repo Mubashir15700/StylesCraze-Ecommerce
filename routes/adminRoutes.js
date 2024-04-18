@@ -1,31 +1,31 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import { loginAdmin, logoutAdmin } from '../controllers/authController.js';
+import { loginAdmin, logoutAdmin } from "../controllers/authController.js";
 // auth middleware
-import { checkAuth, isLoggedIn } from '../middlewares/adminMiddleware.js';
+import { checkAuth, isLoggedIn } from "../middlewares/adminMiddleware.js";
 // admin controller
 import {
     getLogin, getDashboard, getNotifications, getOrders, getSingleOrder, manuelStatusUpdate,
     getReturnRequests, returnRequestAction, getCustomers, customerAction, getCoupons, getAddNewCoupon,
     addNewCoupon, couponAction, getSalesReport, downloadSalesReport
-} from '../controllers/admin/adminController.js';
+} from "../controllers/admin/adminController.js";
 // category controller
 import {
     getCategories, addNewCategory, newCategory, getCategory, editCategory, categoryAction,
-} from '../controllers/admin/categoryController.js';
+} from "../controllers/admin/categoryController.js";
 // product controller
 import {
     getProducts, getAddNewProduct, addNewProduct, getProduct, editProduct, addImage, deleteImage, productAction,
-} from '../controllers/admin/productsController.js';
+} from "../controllers/admin/productsController.js";
 // banner controller
 import {
     getBanners, getAddNewBanner, addNewBanner, getBanner, editBanner, addBannerImage, deleteBannerImage, bannerAction,
-} from '../controllers/admin/bannerController.js';
+} from "../controllers/admin/bannerController.js";
 // image middleware
 import {
     uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages,
     uploadBannerImages, resizeBannerImages
-} from '../middlewares/imageUplaodMiddleware.js';
+} from "../middlewares/imageUplaodMiddleware.js";
 
 const router = Router();
 

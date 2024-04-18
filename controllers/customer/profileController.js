@@ -3,8 +3,8 @@ import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Order from "../../models/orderModel.js";
-import { sendToMail } from '../utils/sendMail.js';
-import { isLoggedIn, getCurrentUser } from '../getCurrentUser.js';
+import { sendToMail } from "../utils/sendMail.js";
+import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getProfile = async (req, res, next) => {
     try {
@@ -14,7 +14,7 @@ export const getProfile = async (req, res, next) => {
             currentUser: await getCurrentUser(req, res),
             error: "",
             addresses,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -27,7 +27,7 @@ const renderProfileView = async (req, res, error, addresses) => {
         currentUser: await getCurrentUser(req, res),
         error,
         addresses,
-        activePage: 'Profile',
+        activePage: "Profile",
     });
 };
 
@@ -79,7 +79,7 @@ export const updateProfile = async (req, res, next) => {
 export const removeProfileImage = async (req, res, next) => {
     try {
         let removeProfile = {
-            profile: '',
+            profile: "",
         };
         const currentUser = await User.findById(req.session.user);
         await currentUser.updateOne(removeProfile);
@@ -95,7 +95,7 @@ export const getNewAddress = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             error: "",
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -125,7 +125,7 @@ export const addNewAddress = async (req, res, next) => {
                 isLoggedIn: isLoggedIn(req, res),
                 currentUser: await getCurrentUser(req, res),
                 error: "Already added 3 addresses.",
-                activePage: 'Profile',
+                activePage: "Profile",
             });
         }
     } catch (error) {
@@ -141,7 +141,7 @@ export const getEditAddress = async (req, res, next) => {
             currentUser: await getCurrentUser(req, res),
             currentAddress,
             error: "",
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -158,7 +158,7 @@ export const editAddress = async (req, res, next) => {
                 currentUser: await getCurrentUser(req, res),
                 currentAddress,
                 error: "All fields are required.",
-                activePage: 'Profile',
+                activePage: "Profile",
             });
         } else {
             await Address.updateOne(
@@ -198,7 +198,7 @@ export const getAddresses = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser: await getCurrentUser(req, res),
             addresses,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -210,7 +210,7 @@ export const changeDefaultAddress = async (req, res, next) => {
         await Address.updateOne({ user: req.session.user, default: true }, { $set: { default: false } });
         await Address.findByIdAndUpdate(req.body.addressId, { $set: { default: true } });
         // Redirect to the previous page (referrer)
-        const previousPage = req.headers.referer || '/checkout'; // Default to '/checkout' if no referrer is found
+        const previousPage = req.headers.referer || "/checkout"; // Default to "/checkout" if no referrer is found
         res.redirect(previousPage);
     } catch (error) {
         next(error);
@@ -225,7 +225,7 @@ export const getChangePassword = async (req, res, next) => {
             currentUser: await getCurrentUser(req, res),
             error: "",
             email: currentUser.email,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -235,11 +235,11 @@ export const getChangePassword = async (req, res, next) => {
 export const getWallet = async (req, res, next) => {
     try {
         // fix sorting
-        const currentUser = await User.findById(req.session.user).sort({ 'wallet.transactions.timestamp': -1 });
+        const currentUser = await User.findById(req.session.user).sort({ "wallet.transactions.timestamp": -1 });
         res.render("customer/wallet", {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -248,7 +248,7 @@ export const getWallet = async (req, res, next) => {
 
 export const getCoupons = async (req, res, next) => {
     try {
-        const currentUser = await User.findById(req.session.user).populate('earnedCoupons.coupon');
+        const currentUser = await User.findById(req.session.user).populate("earnedCoupons.coupon");
         const allCoupons = await Coupon.find({ isActive: true });
         const earnedCoupons = currentUser.earnedCoupons;
 
@@ -262,7 +262,7 @@ export const getCoupons = async (req, res, next) => {
             currentUser,
             allCoupons: remainingCoupons,
             earnedCoupons,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -293,7 +293,7 @@ export const getOrders = async (req, res, next) => {
             isLoggedIn: isLoggedIn(req, res),
             currentUser,
             orders,
-            activePage: 'Profile',
+            activePage: "Profile",
         });
     } catch (error) {
         next(error);
@@ -309,10 +309,10 @@ const updateOrderStatus = async (req, res, next) => {
         // Update orders from Processing to Shipped after two days
         await Order.updateMany(
             {
-                status: 'Processing',
+                status: "Processing",
                 orderDate: { $lte: twoDaysAgo },
             },
-            { $set: { status: 'Shipped' } }
+            { $set: { status: "Shipped" } }
         );
     } catch (error) {
         next(error);

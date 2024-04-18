@@ -1,12 +1,12 @@
-import PDFDocument from 'pdfkit';
-import Admin from '../../models/adminModel.js';
-import User from '../../models/userModel.js';
-import Order from '../../models/orderModel.js';
-import Coupon from '../../models/couponModel.js';
-import Return from '../../models/returnProductsModel.js';
+import PDFDocument from "pdfkit";
+import Admin from "../../models/adminModel.js";
+import User from "../../models/userModel.js";
+import Order from "../../models/orderModel.js";
+import Coupon from "../../models/couponModel.js";
+import Return from "../../models/returnProductsModel.js";
 
 export const getLogin = (req, res) => {
-    res.render('admin/login', { commonError: "" });
+    res.render("admin/login", { commonError: "" });
 };
 
 export const getDashboard = async (req, res, next) => {
@@ -38,21 +38,21 @@ export const getDashboard = async (req, res, next) => {
                                 },
                             },
                         },
-                        { $count: 'count' },
+                        { $count: "count" },
                     ],
                     thisMonthsOrders: [
-                        { $count: 'count' },
+                        { $count: "count" },
                     ],
                     thisMonthsTotalRevenue: [
-                        { $group: { _id: null, total: { $sum: '$totalAmount' } } },
+                        { $group: { _id: null, total: { $sum: "$totalAmount" } } },
                     ],
                     totalCustomersThisMonth: [
                         {
                             $group: {
-                                _id: '$user',
+                                _id: "$user",
                             },
                         },
-                        { $count: 'count' },
+                        { $count: "count" },
                     ],
                 },
             },
@@ -73,7 +73,7 @@ export const getDashboard = async (req, res, next) => {
         });
 
         // for charts
-        const orderChartData = await Order.find({ status: 'Delivered' });
+        const orderChartData = await Order.find({ status: "Delivered" });
         // Initialize objects to store payment method counts and monthly order counts
         const paymentMethods = {};
         const monthlyOrderCountsCurrentYear = {};
@@ -119,14 +119,14 @@ export const getDashboard = async (req, res, next) => {
             resultArray[intValue] = monthlyOrderCountsCurrentYear[key];
         }
 
-        res.render('admin/dashboard', {
+        res.render("admin/dashboard", {
             todaysOrders,
             thisMonthsOrders,
             thisMonthsTotalRevenue,
             totalCustomersThisMonth,
             paymentMethods,
             monthlyOrderCountsCurrentYear: resultArray,
-            activePage: 'Dashboard',
+            activePage: "Dashboard",
             admin
         });
     } catch (error) {
@@ -147,8 +147,8 @@ export const getCustomers = async (req, res, next) => {
         if (req.query.search) {
             foundCustomers = await User.find({
                 $or: [
-                    { username: { $regex: req.body.searchQuery, $options: 'i' } },
-                    { email: { $regex: req.body.searchQuery, $options: 'i' } },
+                    { username: { $regex: req.body.searchQuery, $options: "i" } },
+                    { email: { $regex: req.body.searchQuery, $options: "i" } },
                 ]
             });
 
@@ -158,9 +158,9 @@ export const getCustomers = async (req, res, next) => {
         } else {
             foundCustomers = await User.find().skip(skip).limit(pageSize);
         }
-        res.render('admin/customers', {
+        res.render("admin/customers", {
             customerDatas: foundCustomers,
-            activePage: 'Customers',
+            activePage: "Customers",
             filtered: req.query.search ? true : false,
             currentPage: page || 1,
             totalPages: totalPages || 1,
@@ -176,7 +176,7 @@ export const customerAction = async (req, res, next) => {
         const customerId = req.params.id;
         await User.findByIdAndUpdate(customerId, { $set: { blocked: state } });
         if (!req.query.orderId) {
-            res.redirect('/admin/customers/1');
+            res.redirect("/admin/customers/1");
         } else {
             const orderId = req.query.orderId; // Get the orderId from the query parameters
             // Pass the orderId as a parameter to the getSingleOrder function
@@ -203,7 +203,7 @@ export const getOrders = async (req, res, next) => {
         if (req.query.filtered) {
             console.log("here");
             let query = {};
-            if (req.body.from !== '' && req.body.upto !== '') {
+            if (req.body.from !== "" && req.body.upto !== "") {
                 let startOfMonth = new Date(req.body.from);
                 let endOfMonth = new Date(req.body.upto);
                 endOfMonth.setHours(23, 59, 59, 999);
@@ -213,29 +213,29 @@ export const getOrders = async (req, res, next) => {
                 ]
             }
 
-            if (req.body.status !== 'Select Status') {
+            if (req.body.status !== "Select Status") {
                 query.status = req.body.status;
             }
 
             orders = await Order.find(
                 query
             ).populate([
-                { path: 'user' },
-                { path: 'products.product' },
+                { path: "user" },
+                { path: "products.product" },
             ]).sort({ orderDate: -1 });
 
         } else {
             orders = await Order.find().populate([
-                { path: 'user' },
-                { path: 'products.product' },
+                { path: "user" },
+                { path: "products.product" },
             ]).sort({ orderDate: -1 })
                 .skip(skip)
                 .limit(pageSize);
         }
 
-        res.render('admin/orders', {
+        res.render("admin/orders", {
             orders,
-            activePage: 'Orders',
+            activePage: "Orders",
             filtered: req.query.filtered ? true : false,
             currentPage: page || 1,
             totalPages: totalPages || 1,
@@ -249,10 +249,10 @@ export const getSingleOrder = async (req, res, next) => {
     try {
         await updateOrderStatus(req, res, next);
         const foundOrder = await Order.findById(req.params.id).populate([
-            { path: 'user' },
-            { path: 'products.product' },
+            { path: "user" },
+            { path: "products.product" },
         ]);
-        res.render('admin/singleOrder', { foundOrder, activePage: 'Orders', });
+        res.render("admin/singleOrder", { foundOrder, activePage: "Orders", });
     } catch (error) {
         next(error);
     }
@@ -267,10 +267,10 @@ const updateOrderStatus = async (req, res, next) => {
         // Update orders from Processing to Shipped after two days
         await Order.updateMany(
             {
-                status: 'Processing',
+                status: "Processing",
                 orderDate: { $lte: twoDaysAgo },
             },
-            { $set: { status: 'Shipped' } }
+            { $set: { status: "Shipped" } }
         );
     } catch (error) {
         next(error);
@@ -322,7 +322,7 @@ export const getReturnRequests = async (req, res, next) => {
         let returnRequests;
         if (req.query.filtered) {
             let query = {};
-            if (req.body.from !== '' && req.body.upto !== '') {
+            if (req.body.from !== "" && req.body.upto !== "") {
                 let startOfMonth = new Date(req.body.from);
                 let endOfMonth = new Date(req.body.upto);
                 endOfMonth.setHours(23, 59, 59, 999);
@@ -332,25 +332,25 @@ export const getReturnRequests = async (req, res, next) => {
                 ]
             }
 
-            if (req.body.status !== 'Select Status') {
+            if (req.body.status !== "Select Status") {
                 query.status = req.body.status;
             }
 
             returnRequests = await Return.find(query).populate([
-                { path: 'user' },
-                { path: 'order' },
-                { path: 'product' },
+                { path: "user" },
+                { path: "order" },
+                { path: "product" },
             ]);
         } else {
             returnRequests = await Return.find().populate([
-                { path: 'user' },
-                { path: 'order' },
-                { path: 'product' },
+                { path: "user" },
+                { path: "order" },
+                { path: "product" },
             ]).skip(skip).limit(pageSize);
         }
         res.render("admin/returns", {
             returnRequests,
-            activePage: 'Orders',
+            activePage: "Orders",
             filtered: req.query.search ? true : false,
             currentPage: page || 1,
             totalPages: totalPages || 1,
@@ -365,17 +365,17 @@ export const returnRequestAction = async (req, res, next) => {
         const foundRequet = await Return.findById(req.body.request);
         const foundOrders = await Order.findById(req.body.order);
         const currentProduct = foundOrders.products.find((product) => product.product.toString() === req.body.product.toString());
-        currentProduct.returnRequested = '';
+        currentProduct.returnRequested = "";
         if (req.body.action === "approve") {
-            foundRequet.status = 'Approved';
-            currentProduct.returnRequested = 'Approved';
+            foundRequet.status = "Approved";
+            currentProduct.returnRequested = "Approved";
         } else {
-            foundRequet.status = 'Rejected';
-            currentProduct.returnRequested = 'Rejected';
+            foundRequet.status = "Rejected";
+            currentProduct.returnRequested = "Rejected";
         }
         await foundRequet.save();
         await foundOrders.save();
-        res.redirect('/admin/return-requests/1');
+        res.redirect("/admin/return-requests/1");
     } catch (error) {
         next(error);
     }
@@ -400,9 +400,9 @@ export const getCoupons = async (req, res, next) => {
             });
         } else {
             foundCoupons = await Coupon.find().skip(skip).limit(pageSize);
-            res.render('admin/coupons/coupons', {
+            res.render("admin/coupons/coupons", {
                 foundCoupons,
-                activePage: 'Coupons',
+                activePage: "Coupons",
                 filtered: req.query.search ? true : false,
                 currentPage: page || 1,
                 totalPages: totalPages || 1,
@@ -414,9 +414,9 @@ export const getCoupons = async (req, res, next) => {
 };
 
 export const getAddNewCoupon = (req, res) => {
-    res.render('admin/coupons/newCoupon', {
+    res.render("admin/coupons/newCoupon", {
         error: "",
-        activePage: 'Coupons',
+        activePage: "Coupons",
     });
 };
 
@@ -424,15 +424,15 @@ export const addNewCoupon = async (req, res, next) => {
     try {
         const { description, discountType, discountAmount, minimumPurchaseAmount, usageLimit } = req.body;
         if (!description || !discountType || !discountAmount || !minimumPurchaseAmount || !usageLimit) {
-            res.render('admin/coupons/newCoupon', {
+            res.render("admin/coupons/newCoupon", {
                 error: "All fields are required",
-                activePage: 'Coupons',
+                activePage: "Coupons",
             });
         } else {
             if (description.length < 4 || description.length > 100) {
-                return res.render('admin/coupons/newCoupon', {
+                return res.render("admin/coupons/newCoupon", {
                     error: "Description must be between 4 and 100 characters",
-                    activePage: 'Coupons',
+                    activePage: "Coupons",
                 });
             } else {
                 const uniqueCode = await generateCouponCode();
@@ -457,7 +457,7 @@ export const addNewCoupon = async (req, res, next) => {
 
 function generateCouponCode() {
     const codeRegex = /^[A-Z0-9]{5,15}$/;
-    let code = '';
+    let code = "";
     while (!codeRegex.test(code)) {
         code = Math.random().toString(36).substring(7);
     }
@@ -474,7 +474,7 @@ export const couponAction = async (req, res, next) => {
         const state = req.body.state === "";
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { $set: { isActive: state } });
-        res.redirect('/admin/coupons/1');
+        res.redirect("/admin/coupons/1");
     } catch (error) {
         next(error);
     }
@@ -555,9 +555,9 @@ export const getSalesReport = async (req, res, next) => {
             }
         ]);
 
-        res.render('admin/salesReports', {
+        res.render("admin/salesReports", {
             salesReport: filteredOrders,
-            activePage: 'SalesReport',
+            activePage: "SalesReport",
         });
     } catch (error) {
         next(error);
@@ -571,14 +571,14 @@ export const downloadSalesReport = (req, res, next) => {
         const doc = new PDFDocument();
 
         // Set the PDF response headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=sales-report.pdf');
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=sales-report.pdf");
 
         // Pipe the PDF document to the response
         doc.pipe(res);
 
         // Add content to the PDF
-        doc.fontSize(16).text('Sales Report', { align: 'center' });
+        doc.fontSize(16).text("Sales Report", { align: "center" });
         doc.moveDown();
         doc.fontSize(12);
 
@@ -618,15 +618,15 @@ export const downloadSalesReport = (req, res, next) => {
 };
 
 export const getBanner = (req, res) => {
-    res.render('admin/banner/banners', {
-        activePage: 'Banner',
+    res.render("admin/banner/banners", {
+        activePage: "Banner",
     });
 };
 
 export const getNotifications = (req, res) => {
-    res.render('admin/notifications',
+    res.render("admin/notifications",
         {
-            activePage: ''
+            activePage: ""
         }
     );
 };

@@ -33,7 +33,7 @@
               <div class="card-body">
                 <h5 class="card-title"></h5>
                 <h6 class="card-subtitle mb-2 text-muted">
-                  Expires At: <%= coupon.expirationDate.toLocaleDateString() %>
+                  Expires At: <%= coupon.expirationDate?.toLocaleDateString() %>
                 </h6>
                 <p class="card-text">
                   <%= coupon.description %>
@@ -76,7 +76,7 @@
                 <% } %>
                 <%= coupon.coupon.description %>,
                 Discount Type: <%= coupon.coupon.discountType %>,
-                Valid Upto: <%= coupon.coupon.expirationDate.toLocaleDateString() %>
+                Valid Upto: <%= coupon.coupon.expirationDate?.toLocaleDateString() %>
               </p>
             </div>
             <% }) %>

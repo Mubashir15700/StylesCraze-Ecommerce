@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('../../partials/admin/head') -%>
+<%- include("../../partials/admin/head") -%>
 
 <body>
   <div class="container-scroller">
-    <%- include('../../partials/admin/header') -%>
+    <%- include("../../partials/admin/header") -%>
     <div class="main-panel">
       <div class="content-wrapper my-custom-wrapper">
         <div class="col-lg-12 grid-margin stretch-card">
@@ -70,7 +70,7 @@
                         <%= banner.title %>
                       </td>
                       <td>
-                        <%= banner.description.slice(0, 50) + '...' %>
+                        <%= banner.description.slice(0, 50) + "..." %>
                       </td>
                       <td>
                         <div class="d-flex">
@@ -144,54 +144,54 @@
 
       <script>
         $(document).ready(function() {
-          $('#search-input').on('input', function() {
+          $("#search-input").on("input", function() {
             const searchQuery = $(this).val();
             $.ajax({
-              type: 'POST',
-              url: '/admin/banners/1?search=true',
+              type: "POST",
+              url: "/admin/banners/1?search=true",
               data: {
                 searchQuery
               },
               success: function(response) {
                 const bannerDatas = response.bannerDatas;
 
-                const searchResultsContainer = $('#search-results');
+                const searchResultsContainer = $("#search-results");
 
                 searchResultsContainer.empty();
 
                 if (!bannerDatas.length) {
-                  const row = $('<tr>');
-                  const messageCell = $('<td>', {
+                  const row = $("<tr>");
+                  const messageCell = $("<td>", {
                     colspan: 6,
-                    text: 'No banners found.'
+                    text: "No banners found."
                   });
 
                   row.append(messageCell);
                   searchResultsContainer.append(row);
                 } else {
                   bannerDatas.forEach(banner => {
-                    const row = $('<tr>');
+                    const row = $("<tr>");
 
                     // for images
-                    const imgTd = $('<td>', {
-                      class: 'py-1',
+                    const imgTd = $("<td>", {
+                      class: "py-1",
                     });
 
                     banner.images.forEach((image) => {
-                      const rowClassDiv = $('<div>', {
-                        class: 'row',
+                      const rowClassDiv = $("<div>", {
+                        class: "row",
                       });
-                      const colClassDiv = $('<div>', {
-                        class: 'col-4',
+                      const colClassDiv = $("<div>", {
+                        class: "col-4",
                       });
-                      const img = $('<img>', {
+                      const img = $("<img>", {
                         src: image,
                         class: "bannerImg",
                         alt: "Banner Image",
                       });
 
                       // Add an event listener for the click event
-                      img.on('click', function () {
+                      img.on("click", function () {
                         openModal(image);
                       });
 
@@ -201,64 +201,64 @@
                     });
 
                     row.append(imgTd);
-                    row.append($('<td>').text(banner.title));
-                    row.append($('<td>').text(banner.description));
+                    row.append($("<td>").text(banner.title));
+                    row.append($("<td>").text(banner.description));
                     // Create the last <td> with the form
                     let elementsToAppend = [];
 
-                    const editButton = $('<a>', {
+                    const editButton = $("<a>", {
                       href: `/admin/edit-banner/${banner._id}`,
                       class: "btn btn-info btn-sm mb-1",
-                    }).append($('<i>', {
+                    }).append($("<i>", {
                       class: "bi bi-pen"
                     }));
 
                     elementsToAppend.push(editButton);
 
-                    const actionForm = $('<form>', {
+                    const actionForm = $("<form>", {
                       action: `/admin/banners/action/${banner._id}?_method=PATCH`,
-                      method: 'post',
-                      id: 'action-form'
+                      method: "post",
+                      id: "action-form"
                     });
 
                     if (banner.isActive === true) {
-                      actionForm.append($('<input>', {
-                        type: 'hidden',
-                        name: 'state',
-                        value: ''
+                      actionForm.append($("<input>", {
+                        type: "hidden",
+                        name: "state",
+                        value: ""
                       }));
-                      actionForm.append($('<button>', {
-                        type: 'submit',
-                        class: 'btn btn-warning btn-sm block-button',
-                        text: 'Activate'
+                      actionForm.append($("<button>", {
+                        type: "submit",
+                        class: "btn btn-warning btn-sm block-button",
+                        text: "Activate"
                       }))
                     } else {
-                      actionForm.append($('<input>', {
-                        type: 'hidden',
-                        name: 'state',
-                        value: '1'
+                      actionForm.append($("<input>", {
+                        type: "hidden",
+                        name: "state",
+                        value: "1"
                       }));
-                      actionForm.append($('<button>', {
-                        type: 'submit',
-                        class: 'btn btn-danger btn-sm block-button',
-                        text: 'Deactivate'
+                      actionForm.append($("<button>", {
+                        type: "submit",
+                        class: "btn btn-danger btn-sm block-button",
+                        text: "Deactivate"
                       }));
                     }
 
                     elementsToAppend.push(actionForm);
 
-                    row.append($('<td>').html(elementsToAppend));
+                    row.append($("<td>").html(elementsToAppend));
                     // Append the row to the table
                     searchResultsContainer.append(row);
                   });
                 }
               },
               error: function(error) {
-                console.error('Error:', error);
+                console.error("Error:", error);
               }
             });
           });
         });
       </script>
 
-      <%- include('../../partials/admin/footer') -%>
+      <%- include("../../partials/admin/footer") -%>

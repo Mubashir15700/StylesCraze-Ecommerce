@@ -77,8 +77,8 @@
                           </span>
                       </td>
                       <td>
-                        Order Confirmed, <%= report.orderDate.toLocaleDateString() %><br>
-                        Delivery, <%= report.deliveryDate.toLocaleDateString() %>
+                        Order Confirmed, <%= report.orderDate?.toLocaleDateString() %><br>
+                        Delivery, <%= report.deliveryDate?.toLocaleDateString() %>
                       </td>
                     </tr>
                     <% }) %>
@@ -89,7 +89,7 @@
                   <div class="col-md-9 col-12 pt-3">
                     Total orders done: <%= salesReport.length %><br>
                     Total products sold: <%= productsCount %><br>
-                    <strong>Total Revenue: ₹<%= totalRevenue.toFixed(2) %></strong>
+                    <strong>Total Revenue: ₹<%= totalRevenue?.toFixed(2) %></strong>
                   </div>
                   <% if (salesReport.length) { %>
                     <div class="col-md-3 col-12 p-4">

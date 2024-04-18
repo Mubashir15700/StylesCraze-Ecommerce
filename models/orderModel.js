@@ -1,16 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true,
     },
     products: [
         {
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: "Product",
                 required: true
             },
             quantity: {
@@ -23,8 +23,8 @@ const orderSchema = new mongoose.Schema({
             },
             returnRequested: {
                 type: String,
-                enum: ['Nil', 'Pending', 'Approved', 'Rejected', 'Completed'],
-                default: 'Nil',
+                enum: ["Nil", "Pending", "Approved", "Rejected", "Completed"],
+                default: "Nil",
             },
         },
     ],
@@ -56,12 +56,12 @@ const orderSchema = new mongoose.Schema({
             softDeleted: Boolean,
             __v: Number
         },
-        ref: 'Address',
+        ref: "Address",
     },
     status: {
         type: String,
-        enum: ['Processing', 'Shipped', 'Delivered', 'Pending', 'Cancelled'],
-        default: 'Processing',
+        enum: ["Processing", "Shipped", "Delivered", "Pending", "Cancelled"],
+        default: "Processing",
     },
     razorpayOrderId: {
         type: String,
@@ -72,7 +72,7 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Add a pre-save hook to calculate the delivery date
-orderSchema.pre('save', function (next) {
+orderSchema.pre("save", function (next) {
     const orderDate = this.orderDate;
     const deliveryDate = new Date(orderDate);
     deliveryDate.setDate(deliveryDate.getDate() + 7);
@@ -81,6 +81,6 @@ orderSchema.pre('save', function (next) {
     next();
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

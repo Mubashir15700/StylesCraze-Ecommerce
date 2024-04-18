@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({
     amount: {
@@ -22,7 +22,7 @@ const transactionSchema = new mongoose.Schema({
 const walletSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         unique: true,
     },
     balance: {
@@ -32,6 +32,6 @@ const walletSchema = new mongoose.Schema({
     transactions: [transactionSchema],
 });
 
-const Wallet = mongoose.model('Wallet', walletSchema);
+const Wallet = mongoose.model("Wallet", walletSchema);
 
 export default Wallet;

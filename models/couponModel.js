@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const couponSchema = new mongoose.Schema({
     code: {
@@ -13,7 +13,7 @@ const couponSchema = new mongoose.Schema({
     },
     discountType: {
         type: String,
-        enum: ['percentage', 'fixedAmount'],
+        enum: ["percentage", "fixedAmount"],
         required: true,
     },
     discountAmount: {
@@ -43,7 +43,7 @@ const couponSchema = new mongoose.Schema({
     }
 });
 
-couponSchema.pre('save', function (next) {
+couponSchema.pre("save", function (next) {
     const currentDate = new Date();
     const expirationDate = new Date(currentDate);
     expirationDate.setDate(expirationDate.getDate() + 7);
@@ -59,6 +59,6 @@ couponSchema.pre('save', function (next) {
     next();
 });
 
-const Coupon = mongoose.model('Coupon', couponSchema);
+const Coupon = mongoose.model("Coupon", couponSchema);
 
 export default Coupon;

@@ -65,8 +65,8 @@
                         </div>
                         <div class="card-body">
                           <strong class="mb-2">
-                            Order Confirmed, <%= foundOrder.orderDate.toLocaleDateString() %><br>
-                            Delivery, <%= foundOrder.deliveryDate.toLocaleDateString() %>
+                            Order Confirmed, <%= foundOrder.orderDate?.toLocaleDateString() %><br>
+                            Delivery, <%= foundOrder.deliveryDate?.toLocaleDateString() %>
                           </strong>
                           <% if (foundOrder.status === 'Cancelled') { %>
                           <p class="card-subtitle mb-2 text-danger">
@@ -121,7 +121,7 @@
                     <p>Quanity: <%= product.quantity %></p>
                     <p>Payment Method: <%= foundOrder.paymentMethod %></p>
                     <strong>
-                      Total Price: ₹<%= (product.product.actualPrice * product.quantity).toFixed(2) %>
+                      Total Price: ₹<%= (product.product.actualPrice * product.quantity)?.toFixed(2) %>
                     </strong>
                   </div>
                 </div>

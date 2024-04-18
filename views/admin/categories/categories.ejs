@@ -74,7 +74,7 @@
                         <%= category.offerPercentage ?? 0 %>%
                       </td>
                       <td>
-                        <%= category.offerValidUpto ? category.offerValidUpto.toLocaleDateString() : 'No offer' %>
+                        <%= category.offerValidUpto ? category.offerValidUpto?.toLocaleDateString() : 'No offer' %>
                       </td>
                       <td>
                         <div class="d-flex">

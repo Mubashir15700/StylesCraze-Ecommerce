@@ -32,13 +32,13 @@
               <span class="d-block text-primary h6 text-uppercase"><%= item.name %></span>
               <p>
                 <%= item.description %><br>
-                Price: ₹<%= item.actualPrice.toFixed(2) %>,
+                Price: ₹<%= item.actualPrice?.toFixed(2) %>,
                 Stock: <%= item.stock %>,
               </p>
             </div>
             <div class="col-md-4">
               <% if (item.stock > 0) { %>
-              <% if (currentUser && currentUser.cart.some((cartItem) => cartItem.product.toString() === item._id.toString())) { %>
+              <% if (currentUser && currentUser.cart.some((cartItem) => cartItem.product?.toString() === item._id?.toString())) { %>
               <a href="/cart" class="buy-now btn btn-sm btn-outline-primary mb-2">
                 Go To Cart
               </a>

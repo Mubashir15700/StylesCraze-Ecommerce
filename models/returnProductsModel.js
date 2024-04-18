@@ -1,19 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const returnSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true,
     },
     order: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order',
+        ref: "Order",
         required: true,
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: "Product",
         required: true,
     },
     quantity: {
@@ -30,13 +30,13 @@ const returnSchema = new mongoose.Schema({
     },
     address: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Address',
+        ref: "Address",
         required: true,
     },
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Rejected', 'Completed'],
-        default: 'Pending',
+        enum: ["Pending", "Approved", "Rejected", "Completed"],
+        default: "Pending",
     },
     createdAt: {
         type: Date,
@@ -44,6 +44,6 @@ const returnSchema = new mongoose.Schema({
     },
 });
 
-const Return = mongoose.model('Return', returnSchema);
+const Return = mongoose.model("Return", returnSchema);
 
 export default Return;
