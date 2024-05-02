@@ -35,7 +35,28 @@
               <p>
                 <%= cartItem.product.description %><br>
                 Category: <%= cartItem.product.category.name %><br>
-                <strong class="text-black">₹<%= cartItem.product.actualPrice %>.00</strong>
+                <div>
+                  <strong class="text-primary">  
+                  <% if (!cartItem.product.productOfferPrice && !cartItem.product.categoryOfferPrice) { %>
+                    <div>
+                      <p class="text-primary font-weight-bold">₹<%= cartItem.product.actualPrice?.toFixed(2) %></p>
+                    </div>
+                    <% } else { %>
+                    <div>
+                      <p>
+                        <span class="text-decoration-line-through shop-actual-price mr-1"><%= cartItem.product.actualPrice?.toFixed(2) %>, </span>
+                        <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice)?.toFixed(2) %></span>
+                        <% } else if (cartItem.product.productOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= cartItem.product.productOfferPrice?.toFixed(2) %></span>
+                        <% } else if (cartItem.product.categoryOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= cartItem.product.categoryOfferPrice?.toFixed(2) %></span>
+                        <% } %>
+                      </p>
+                    </div>
+                    <% } %>
+                  </strong>
+                </div>
               </p>
               <p>
                 Stock: <%= cartItem.product.stock %>
@@ -45,9 +66,15 @@
               <span class="text-black">
                 Quantity: <%= cartItem.quantity %><br>
                 Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
-                  <%=cartItem.product.actualPrice * cartItem.quantity %>
-                  .00
-                </span>
+                  <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                    <%= (Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice) * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.productOfferPrice) { %>
+                    <%= (cartItem.product.productOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.categoryOfferPrice) { %>
+                    <%= (cartItem.product.categoryOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else { %>
+                    <%= (cartItem.product.actualPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } %>
               </span>
             </div>
           </div>

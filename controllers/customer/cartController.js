@@ -13,8 +13,15 @@ export const getCart = async (req, res, next) => {
             await currentUser.populate("cart.product.category");
             const cartProducts = currentUser.cart;
             const grandTotal = cartProducts.reduce((total, element) => {
-                return total + (element.quantity * element.product.actualPrice);
+                let price = element.product.actualPrice;
+                if (element.product.productOfferPrice && element.product.categoryOfferPrice) {
+                    price = Math.min(element.product.productOfferPrice, element.product.categoryOfferPrice);
+                } else if (element.product.productOfferPrice || element.product.categoryOfferPrice) {
+                    price = element.product.categoryOfferPrice ? element.product.categoryOfferPrice : element.product.productOfferPrice;
+                }
+                return total + (element.quantity * price);
             }, 0);
+
             res.render("customer/cart", {
                 isLoggedIn: isLoggedIn(req, res),
                 currentUser,
@@ -101,14 +108,30 @@ export const updateCart = async (req, res, next) => {
             }
 
             await currentUser.populate("cart.product");
+            
             const grandTotal = currentUser.cart.reduce((total, element) => {
-                return total + (element.quantity * element.product.actualPrice);
+                let price = element.product.actualPrice;
+                if (element.product.productOfferPrice && element.product.categoryOfferPrice) {
+                    price = Math.min(element.product.productOfferPrice, element.product.categoryOfferPrice);
+                } else if (element.product.productOfferPrice || element.product.categoryOfferPrice) {
+                    price = element.product.categoryOfferPrice ? element.product.categoryOfferPrice : element.product.productOfferPrice;
+                }
+                return total + (element.quantity * price);
             }, 0);
+
             await currentUser.save();
+
+            let productPrice = product.actualPrice;
+            if (product.productOfferPrice && product.categoryOfferPrice) {
+                productPrice = Math.min(product.productOfferPrice, product.categoryOfferPrice);
+            } else if (product.productOfferPrice || product.categoryOfferPrice) {
+                productPrice = product.productOfferPrice ?? product.categoryOfferPrice;
+            }
+            
             return res.status(200).json({
                 message: "Success",
                 quantity: cartItem.quantity,
-                totalPrice: product.actualPrice * cartItem.quantity,
+                totalPrice: productPrice * cartItem.quantity,
                 grandTotal,
                 insufficientStock,
             });
@@ -128,8 +151,15 @@ export const getCheckout = async (req, res, next) => {
             await currentUser.populate("cart.product");
             await currentUser.populate("cart.product.category");
             const cartProducts = currentUser.cart;
+
             const grandTotal = cartProducts.reduce((total, element) => {
-                return total + (element.quantity * element.product.actualPrice);
+                let price = element.product.actualPrice;
+                if (element.product.productOfferPrice && element.product.categoryOfferPrice) {
+                    price = Math.min(element.product.productOfferPrice, element.product.categoryOfferPrice);
+                } else if (element.product.productOfferPrice || element.product.categoryOfferPrice) {
+                    price = element.product.categoryOfferPrice ? element.product.categoryOfferPrice : element.product.productOfferPrice;
+                }
+                return total + (element.quantity * price);
             }, 0);
 
             let insufficientStockProduct;

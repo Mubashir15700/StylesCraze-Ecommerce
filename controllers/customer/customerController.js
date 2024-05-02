@@ -211,7 +211,7 @@ export const filterProducts = async (req, res, next) => {
                 { description: { $regex: `\\b${searchText}\\b`, $options: "i" } }
             ];
         }
-        
+
         const foundProducts = await Product.find(query).populate("category");
         const foundCategories = await Category.find({ removed: false });
         res.render("customer/shop", {
@@ -354,12 +354,26 @@ export const placeOrder = async (req, res, next) => {
         const deliveryAddress = await Address.findOne({ user: req.session.user, default: true });
 
         const grandTotal = currentUser.cart.reduce((total, element) => {
-            return total + (element.quantity * element.product.actualPrice);
+            let price = element.product.actualPrice;
+            if (element.product.productOfferPrice && element.product.categoryOfferPrice) {
+                price = Math.min(element.product.productOfferPrice, element.product.categoryOfferPrice);
+            } else if (element.product.productOfferPrice || element.product.categoryOfferPrice) {
+                price = element.product.categoryOfferPrice ? element.product.categoryOfferPrice : element.product.productOfferPrice;
+            }
+            return total + (element.quantity * price);
         }, 0);
 
         const orderedProducts = currentUser.cart.map((item) => {
+            let price = item.product.actualPrice;
+            if (item.product.productOfferPrice && item.product.categoryOfferPrice) {
+                price = Math.min(item.product.productOfferPrice, item.product.categoryOfferPrice);
+            } else if (item.product.productOfferPrice || item.product.categoryOfferPrice) {
+                price = item.product.categoryOfferPrice ? item.product.categoryOfferPrice : item.product.productOfferPrice;
+            }
+
             return {
                 product: item.product._id,
+                finalPrice: item.quantity * price,
                 quantity: item.quantity,
             }
         });
@@ -454,13 +468,17 @@ export const saveRzpOrder = async (req, res, next) => {
                 await foundProduct.save();
             });
 
-            const grandTotal = currentUser.cart.reduce((total, element) => {
-                return total + (element.quantity * element.product.actualPrice);
-            }, 0);
-
             const orderedProducts = currentUser.cart.map((item) => {
+                let price = item.product.actualPrice;
+                if (item.product.productOfferPrice && item.product.categoryOfferPrice) {
+                    price = Math.min(item.product.productOfferPrice, item.product.categoryOfferPrice);
+                } else if (item.product.productOfferPrice || item.product.categoryOfferPrice) {
+                    price = item.product.categoryOfferPrice ? item.product.categoryOfferPrice : item.product.productOfferPrice;
+                }
+    
                 return {
                     product: item.product._id,
+                    finalPrice: item.quantity * price,
                     quantity: item.quantity,
                 }
             });
@@ -498,20 +516,20 @@ export const cancelOrder = async (req, res, next) => {
     try {
         const foundOrder = await Order.findById(req.body.orderId).populate("products.product");
         const foundProduct = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
+        const currentUser = await User.findById(req.session.user);
         if (foundOrder.paymentMethod !== "cod") {
-            const currentUser = await User.findById(req.session.user);
 
-            const refundAmount = (foundProduct.product.actualPrice * foundProduct.quantity) + 5;
+            const refundAmount = foundProduct.finalPrice;
             currentUser.wallet.balance += refundAmount;
 
-            foundOrder.totalAmount -= (foundProduct.product.actualPrice * foundProduct.quantity);
+            foundOrder.totalAmount -= (foundProduct.finalPrice * foundProduct.quantity);
             if (foundOrder.totalAmount === 5) {
                 foundOrder.totalAmount = 0;
             }
 
             const transactionData = {
                 amount: refundAmount,
-                description: "Order cancelled.",
+                description: "Product cancelled.",
                 type: "Credit",
             };
             currentUser.wallet.transactions.push(transactionData);
@@ -522,11 +540,9 @@ export const cancelOrder = async (req, res, next) => {
             const foundCurrentProduct = await Product.findById(req.body.productId);
             foundCurrentProduct.stock += foundProduct.quantity;
 
-            // Save changes to the user's wallet, canceled product, and order
-            await currentUser.save();
             await foundCurrentProduct.save();
         } else {
-            foundOrder.totalAmount -= (foundProduct.product.actualPrice * foundProduct.quantity);
+            foundOrder.totalAmount -= (foundProduct.finalPrice * foundProduct.quantity);
             if (foundOrder.totalAmount === 5) {
                 foundOrder.totalAmount = 0;
             }
@@ -549,9 +565,17 @@ export const cancelOrder = async (req, res, next) => {
 
         if (areAllProductsCancelled(foundOrder)) {
             foundOrder.status = "Cancelled";
+            currentUser.wallet.balance += 5;
+            const transactionData = {
+                amount: 5,
+                description: "Order cancelled.",
+                type: "Credit",
+            };
+            currentUser.wallet.transactions.push(transactionData);
         }
 
         await foundOrder.save();
+        await currentUser.save();
         res.redirect("/orders");
     } catch (error) {
         next(error);

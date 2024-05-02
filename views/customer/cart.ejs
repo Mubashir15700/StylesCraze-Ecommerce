@@ -33,9 +33,30 @@
                 <%= cartItem.product.name %>
               </span>
               <p>
-                Category: <%= cartItem.product.category.name %><br>
-                <strong class="text-black">₹<%= cartItem.product.actualPrice?.toFixed(2) %>
+                Category: <%= cartItem.product.category.name %>
+              <!-- Price -->
+              <div>
+                <strong class="text-primary">  
+                <% if (!cartItem.product.productOfferPrice && !cartItem.product.categoryOfferPrice) { %>
+                  <div>
+                    <p class="text-primary font-weight-bold">₹<%= cartItem.product.actualPrice?.toFixed(2) %></p>
+                  </div>
+                  <% } else { %>
+                  <div>
+                    <p>
+                      <span class="text-decoration-line-through shop-actual-price mr-1"><%= cartItem.product.actualPrice?.toFixed(2) %>, </span>
+                      <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice)?.toFixed(2) %></span>
+                      <% } else if (cartItem.product.productOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= cartItem.product.productOfferPrice?.toFixed(2) %></span>
+                      <% } else if (cartItem.product.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= cartItem.product.categoryOfferPrice?.toFixed(2) %></span>
+                      <% } %>
+                    </p>
+                  </div>
+                  <% } %>
                 </strong>
+              </div>
               </p>
               <p>Stock: <%= cartItem.product.stock %>
               </p>
@@ -46,7 +67,15 @@
             <div class="col-md-4">
               <span class="text-black">
                 Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
-                  <%= (cartItem.product.actualPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                    <%= (Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice) * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.productOfferPrice) { %>
+                    <%= (cartItem.product.productOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.categoryOfferPrice) { %>
+                    <%= (cartItem.product.categoryOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else { %>
+                    <%= (cartItem.product.actualPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } %>
                 </span>
               </span>
               <div class="input-group mb-3" style="max-width: 120px;">
@@ -215,3 +244,4 @@
   </script>
 
   <%- include('../partials/customer/footer') -%>
+  

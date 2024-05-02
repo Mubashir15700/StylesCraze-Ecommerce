@@ -31,10 +31,31 @@
             <div class="col-md-8">
               <span class="d-block text-primary h6 text-uppercase"><%= item.name %></span>
               <p>
-                <%= item.description %><br>
-                Price: ₹<%= item.actualPrice?.toFixed(2) %>,
-                Stock: <%= item.stock %>,
+                Stock: <%= item.stock %>
               </p>
+              <!-- Price -->
+              <div>
+                <strong class="text-primary">  
+                <% if (!item.productOfferPrice && !item.categoryOfferPrice) { %>
+                  <div>
+                    <p class="text-primary font-weight-bold">₹<%= item.actualPrice?.toFixed(2) %></p>
+                  </div>
+                  <% } else { %>
+                  <div>
+                    <p>
+                      <span class="text-decoration-line-through shop-actual-price mr-1"><%= item.actualPrice?.toFixed(2) %>, </span>
+                      <% if (item.productOfferPrice && item.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= Math.min(item.productOfferPrice, item.categoryOfferPrice)?.toFixed(2) %></span>
+                      <% } else if (item.productOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= item.productOfferPrice?.toFixed(2) %></span>
+                      <% } else if (item.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= item.categoryOfferPrice?.toFixed(2) %></span>
+                      <% } %>
+                    </p>
+                  </div>
+                  <% } %>
+                </strong>
+              </div>
             </div>
             <div class="col-md-4">
               <% if (item.stock > 0) { %>

@@ -283,9 +283,10 @@ export const getOrders = async (req, res, next) => {
                     from: "products",
                     localField: "products.product",
                     foreignField: "_id",
-                    as: "orderedProducts"
+                    as: "orderedProduct"
                 }
             },
+            { $unwind: "$orderedProduct" },
             { $sort: { orderDate: -1 } }
         ]);
 

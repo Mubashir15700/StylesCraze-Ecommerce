@@ -23,16 +23,16 @@
         <% orders.forEach((order)=> { %>
         <div class="d-flex flex-column flex-md-row border p-3 mb-3">
           <div class="col-md-3 col-12 d-flex justify-content-center mb-5">
-            <a href="/single/<%= order.orderedProducts[0]._id %>">
-              <img src="<%= order.orderedProducts[0].images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
+            <a href="/single/<%= order.orderedProduct._id %>">
+              <img src="<%= order.orderedProduct.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
             </a>
           </div>
           <div class="col-md-6">
             <span class="d-block text-primary h6 text-uppercase">
-              <%= order.orderedProducts[0].name %>
+              <%= order.orderedProduct.name %>
             </span>
             <p>
-              Price: ₹<%= order.orderedProducts[0].actualPrice?.toFixed(2) %>,
+              Total Price: ₹<%= order.products.finalPrice?.toFixed(2) %>,
               Quantity: <%= order.products.quantity %>,<br>
               Payment Method: <%= order.paymentMethod %><br>
               Delivery Address: <%= order.deliveryAddress.state %>,
@@ -65,18 +65,16 @@
             </p>
             <% } else { %>
             <% if (order.status==='Processing' ) { %>
-            <% order.orderedProducts.forEach((product) => { %>
             <p class="ml-3">
-            <form action="/cancel-order" method="post" class="orders-form" id='<%= `cancelForm_${order._id}${product._id}` %>'>
+            <form action="/cancel-order" method="post" class="orders-form" id='<%= `cancelForm_${order._id}${order.orderedProduct._id}` %>'>
               <input type="hidden" name="orderId" value="<%= order._id %>">
-              <input type="hidden" name="productId" value="<%= order.orderedProducts[0]._id %>">
+              <input type="hidden" name="productId" value="<%= order.orderedProduct._id %>">
               <button type="button" class="btn btn-sm btn-outline-danger mb-3"
-                onclick="openCancelOrderModal('<%= `cancelForm_${order._id}${product._id}` %>')">
+                onclick="openCancelOrderModal('<%= `cancelForm_${order._id}${order.orderedProduct._id}` %>')">
                 Cancel
               </button>
             </form>
             </p>
-            <% }) %>
             <% } else if (order.status==='Delivered' ) { %>
             <% const currentDate=new Date(); %>
             <% const deliveryDate=new Date(order.deliveryDate); %>
@@ -99,7 +97,7 @@
             </p>
             <% } else if (currentDate <= sevenDaysAfterDelivery) { %>
             <p class="ml-3">
-              <a href="/return-product?order=<%= order._id %>&product=<%= order.orderedProducts[0]._id %>&category=<%= order.orderedProducts[0].category %>&quantity=<%= order.products.quantity %>" class="btn btn-sm btn-outline-primary mb-3">
+              <a href="/return-product?order=<%= order._id %>&product=<%= order.orderedProduct._id %>&category=<%= order.orderedProduct.category %>&quantity=<%= order.products.quantity %>" class="btn btn-sm btn-outline-primary mb-3">
                 Return
               </a>
             </p>
