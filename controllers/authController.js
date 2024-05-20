@@ -195,7 +195,11 @@ export const newPassword = async (req, res) => {
 
 export const sendOTP = async (req, res, next) => {
     try {
-        const foundUser = await User.findOne({ email: req.body.email });
+        let foundUser;
+        const { email } = req.body;
+        foundUser = req.query.role === "user" ?
+            await User.findOne({ email }) :
+            await Admin.findOne({ email });
         if (foundUser) {
             sendToMail(req, res, foundUser._id, true, next);
         } else {

@@ -9,6 +9,10 @@ export const getLogin = (req, res) => {
     res.render("admin/login", { commonError: "" });
 };
 
+export const getEnterEmail = (req, res) => {
+    res.render("admin/forgot", { commonError: "" });
+};
+
 export const getDashboard = async (req, res, next) => {
     try {
         const admin = await Admin.findById(req.session.admin);

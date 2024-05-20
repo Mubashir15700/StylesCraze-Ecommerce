@@ -1,13 +1,13 @@
 import { Router } from "express";
 
-import { loginAdmin, logoutAdmin } from "../controllers/authController.js";
+import { loginAdmin, logoutAdmin, sendOTP } from "../controllers/authController.js";
 // auth middleware
 import { checkAuth, isLoggedIn } from "../middlewares/adminMiddleware.js";
 // admin controller
 import {
-    getLogin, getDashboard, getNotifications, getOrders, getSingleOrder, manuelStatusUpdate,
-    getReturnRequests, returnRequestAction, getCustomers, customerAction, getCoupons, getAddNewCoupon,
-    addNewCoupon, couponAction, getSalesReport, downloadSalesReport
+    getLogin, getEnterEmail, getDashboard, getNotifications, getOrders, getSingleOrder, 
+    manuelStatusUpdate, getReturnRequests, returnRequestAction, getCustomers, 
+    customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, getSalesReport, downloadSalesReport
 } from "../controllers/admin/adminController.js";
 // category controller
 import {
@@ -31,6 +31,9 @@ const router = Router();
 
 router.get("/", checkAuth, getDashboard);
 router.route("/login").get(isLoggedIn, getLogin).post(loginAdmin);
+router.route("/forgot-password")
+.get(isLoggedIn, getEnterEmail)
+.post(sendOTP);
 router.get("/notifications", checkAuth, getNotifications);
 
 router.route("/orders/:page")

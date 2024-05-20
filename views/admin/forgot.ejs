@@ -19,7 +19,7 @@
                 <img src="/StylesCraze.svg" class="mr-2" alt="logo" height="50" width="130" />
                 <p class="font-weight-light">Enter your email associated with StylesCraze.</p>
               </div>
-              <form action="/forgot-password?role=user" method="post" class="pt-3" id="getOTP-form">
+              <form action="/admin/forgot-password?role=admin" method="post" class="pt-3" id="getOTP-form">
                 <div class="form-group">
                   <input type="text" class="form-control form-control-lg" id="exampleInputEmail" placeholder="Email" name="email">
                 </div>
@@ -55,7 +55,7 @@
         hasErrors = true;
         document.getElementById("common-error-display").innerHTML = "Please fill in this fields.";
       } else {
-        if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
+        if (!emailInput.value.match(/^[A-Za-z\._\-0-9]*@[A-Za-z0-9.-]*\.[a-z]{2,4}$/)) {
           hasErrors = true;
           document.getElementById("common-error-display").innerHTML = "Please enter a valid email.";
         }
