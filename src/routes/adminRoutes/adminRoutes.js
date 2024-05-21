@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { loginAdmin, logoutAdmin, sendOTP } from "../../controllers/authController.js";
 // auth middleware
-import { checkAuth, isLoggedIn } from "../../middlewares/adminMiddleware.js";
+import { checkAuth, isLoggedIn } from "../../middlewares/adminMiddlewares.js";
 // admin controller
 import {
     getLogin, getEnterEmail, getDashboard, getNotifications, getOrders, getSingleOrder, 
@@ -24,7 +24,7 @@ import {
 import {
     uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages,
     uploadBannerImages, resizeBannerImages
-} from "../../middlewares/imageUplaodMiddleware.js";
+} from "../../middlewares/imageUplaodMiddlewares.js";
 
 const router = Router();
 

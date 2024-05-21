@@ -14,7 +14,7 @@ import { config } from "./src/config/envConfig.js";
 import Connection from "./src/config/dbConfig.js";
 import adminRoutes from "./src/routes/adminRoutes/adminRoutes.js";
 import customerRoutes from "./src/routes/customerRoutes/customerRoutes.js";
-import customError from "./src/middlewares/errorMiddleware.js";
+import customError from "./src/middlewares/errorMiddlewares.js";
 
 const app = express();
 

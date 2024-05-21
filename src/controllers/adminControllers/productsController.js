@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import Category from "../../models/categoryModel.js";
 import Product from "../../models/productModel.js";
-import { newProductErrorPage, editProductErrorPage } from "../../middlewares/errorMiddleware.js";
+import { newProductErrorPage, editProductErrorPage } from "../../middlewares/errorMiddlewares.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

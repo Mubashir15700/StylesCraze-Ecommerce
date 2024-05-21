@@ -3,7 +3,7 @@ import {
     loginCustomer, registerCustomer, Verification, resendOTP, getNewPassword, newPassword, changePassword, sendOTP, logoutCustomer,
 } from "../../controllers/authController.js";
 // auth middleware
-import { checkAuth, isLoggedIn, checkToBlock } from "../../middlewares/customerMiddleware.js";
+import { checkAuth, isLoggedIn, checkToBlock } from "../../middlewares/customerMiddlewares.js";
 // customer controller
 import {
     getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts,
@@ -18,7 +18,7 @@ import {
 // cart controller
 import { getCart, addToCart, removeFromCart, updateCart, getCheckout, } from "../../controllers/customerControllers/cartController.js";
 // image middleware
-import { uploadProfileImage, resizeProfileImage } from "../../middlewares/imageUplaodMiddleware.js";
+import { uploadProfileImage, resizeProfileImage } from "../../middlewares/imageUplaodMiddlewares.js";
 
 const router = Router();
 
