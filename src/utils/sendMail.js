@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import nodeMailer from "nodemailer";
-import UserOTPVerification from "../../models/userOTPModel.js";
+import { config } from "../config/env.js";
+import UserOTPVerification from "../models/userOTPModel.js";
 
 let salt;
 
@@ -17,8 +18,8 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.APP_EMAIL,
-            pass: process.env.APP_PASSWORD
+            user: config.appEmail,
+            pass: config.appPassword
         },
     });
 
@@ -39,7 +40,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
     const mailOptions = {
         from: {
             name: "StylesCraze",
-            address: process.env.APP_EMAIL,
+            address: config.appEmail,
         },
         to: req.body.email,
         subject: "OTP Verification",
