@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import Product from "../../models/productModel.js";
 import Address from "../../models/addressModel.js";
-import UserOTPVerification from "../../models/userOTPModel.js";
-import { sendToMail } from "../../utils/sendMail.js";
+import UserOTPVerification from "../../models/otpModel.js";
+import { sendToMail } from "../../utils/sendMailUtil.js";
 import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getCart = async (req, res, next) => {

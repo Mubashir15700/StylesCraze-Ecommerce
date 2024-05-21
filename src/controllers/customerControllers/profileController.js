@@ -3,7 +3,7 @@ import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Order from "../../models/orderModel.js";
-import { sendToMail } from "../../utils/sendMail.js";
+import { sendToMail } from "../../utils/sendMailUtil.js";
 import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getProfile = async (req, res, next) => {

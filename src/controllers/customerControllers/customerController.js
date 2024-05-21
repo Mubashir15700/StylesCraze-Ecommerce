@@ -6,7 +6,7 @@ import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
 import Return from "../../models/returnProductsModel.js";
 import Banner from "../../models/bannerModel.js";
-import { razorpay } from "../../utils/razorpayConfig.js";
+import { razorpay } from "../../config/razorpayConfig.js";
 import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
 
 export const getHome = async (req, res, next) => {

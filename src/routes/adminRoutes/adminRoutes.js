@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import { loginAdmin, logoutAdmin, sendOTP } from "../../controllers/authController.js";
 // auth middleware
 import { checkAuth, isLoggedIn } from "../../middlewares/adminMiddleware.js";
@@ -8,19 +7,19 @@ import {
     getLogin, getEnterEmail, getDashboard, getNotifications, getOrders, getSingleOrder, 
     manuelStatusUpdate, getReturnRequests, returnRequestAction, getCustomers, 
     customerAction, getCoupons, getAddNewCoupon, addNewCoupon, couponAction, getSalesReport, downloadSalesReport
-} from "../../controllers/admin/adminController.js";
+} from "../../controllers/adminControllers/adminController.js";
 // category controller
 import {
     getCategories, addNewCategory, newCategory, getCategory, editCategory, categoryAction,
-} from "../../controllers/admin/categoryController.js";
+} from "../../controllers/adminControllers/categoryController.js";
 // product controller
 import {
     getProducts, getAddNewProduct, addNewProduct, getProduct, editProduct, addImage, deleteImage, productAction,
-} from "../../controllers/admin/productsController.js";
+} from "../../controllers/adminControllers/productsController.js";
 // banner controller
 import {
     getBanners, getAddNewBanner, addNewBanner, getBanner, editBanner, addBannerImage, deleteBannerImage, bannerAction,
-} from "../../controllers/admin/bannerController.js";
+} from "../../controllers/adminControllers/bannerController.js";
 // image middleware
 import {
     uploadCategoryImage, resizeCategoryImage, uploadProductImages, resizeProductImages,

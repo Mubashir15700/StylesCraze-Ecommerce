@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import { sendToMail } from "../utils/sendMail.js";
+import { sendToMail } from "../utils/sendMailUtil.js";
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
-import UserOTPVerification from "../models/userOTPModel.js";
+import otpVerification from "../models/otpModel.js";
 
 let salt;
 
@@ -16,7 +16,7 @@ export const loginAdmin = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
-            const foundAdmin = await Admin.findOne({ username: username });
+            const foundAdmin = await Admin.findOne({ username });
             if (foundAdmin) {
                 const isMatch = await bcrypt.compare(password, foundAdmin.password);
                 if (isMatch) {
@@ -49,7 +49,7 @@ export const loginCustomer = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (username && password) {
-            const foundUser = await User.findOne({ username: username });
+            const foundUser = await User.findOne({ username });
             if (foundUser) {
                 if (foundUser.blocked) {
                     res.render("customer/auth/login", { commonError: "Can't log in." });
@@ -77,7 +77,7 @@ export const registerCustomer = async (req, res, next) => {
     try {
         const { username, email, phone, password, confirmPassword } = req.body;
         if (username && email && phone && password && confirmPassword) {
-            const foundUser = await User.findOne({ $or: [{ username: username }, { email: email }] });
+            const foundUser = await User.findOne({ $or: [{ username }, { email }] });
             if (foundUser) {
                 res.render("customer/auth/register", { commonError: "User already exist." });
             } else {
@@ -94,7 +94,7 @@ export const registerCustomer = async (req, res, next) => {
                         password: hashPassword,
                     });
                     await newUser.save();
-                    const savedUser = await User.findOne({ username: username });
+                    const savedUser = await User.findOne({ username });
                     req.session.user = savedUser._id;
                     sendToMail(req, res, savedUser._id, false, next);
                 } else {
@@ -224,7 +224,7 @@ export const resendOTP = async (req, res, next) => {
 
 export const Verification = async (req, res) => {
     let { userId, otp } = req.body;
-    const verificationRecords = await UserOTPVerification.findOne({ userId });
+    const verificationRecords = await otpVerification.findOne({ userId });
     try {
         if (!userId || !otp) {
             throw Error("Empty details are not allowed");

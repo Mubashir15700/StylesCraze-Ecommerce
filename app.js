@@ -10,10 +10,10 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import morgan from "morgan";
-import { config } from "./src/config/env.js";
-import Connection from "./src/config/db.js";
-import adminRoutes from "./src/routes/admin/adminRoutes.js";
-import customerRoutes from "./src/routes/customer/customerRoutes.js";
+import { config } from "./src/config/envConfig.js";
+import Connection from "./src/config/dbConfig.js";
+import adminRoutes from "./src/routes/adminRoutes/adminRoutes.js";
+import customerRoutes from "./src/routes/customerRoutes/customerRoutes.js";
 import customError from "./src/middlewares/errorMiddleware.js";
 
 const app = express();
@@ -25,6 +25,7 @@ const __dirname = dirname(__filename);
 // Set port and view engine
 app.set("port", config.port || 3000);
 app.set("views", path.join(__dirname, "src", "views"));
+app.set("view engine", "ejs");
 
 // Middleware setup
 app.use(express.static("public"));

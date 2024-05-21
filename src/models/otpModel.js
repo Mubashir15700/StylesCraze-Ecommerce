@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userOTPVerificationSchema = new mongoose.Schema({
+const otpVerificationSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -18,7 +18,7 @@ const userOTPVerificationSchema = new mongoose.Schema({
 });
 
 // Add a pre-save hook to calculate the delivery date
-userOTPVerificationSchema.pre("save", function (next) {
+otpVerificationSchema.pre("save", function (next) {
     const createdAt = this.createdAt;
     const expiresAt = new Date(createdAt);
     expiresAt.setSeconds(expiresAt.getSeconds() + 30);
@@ -27,6 +27,6 @@ userOTPVerificationSchema.pre("save", function (next) {
     next();
 });
 
-const UserOTPVerification = mongoose.model("UserOTPVerification", userOTPVerificationSchema);
+const otpVerification = mongoose.model("otpVerification", otpVerificationSchema);
 
-export default UserOTPVerification;
+export default otpVerification;

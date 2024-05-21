@@ -9,14 +9,14 @@ import {
     getHome, getAbout, getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts,
     getContact, getLogin, getRegister, getEnterEmail, getWishlist, updateWishlist, applyCoupon, placeOrder,
     saveRzpOrder, cancelOrder, getReturnProductForm, requestReturnProduct
-} from "../../controllers/customer/customerController.js";
+} from "../../controllers/customerControllers/customerController.js";
 // profile controller
 import {
     getProfile, updateProfile, removeProfileImage, getNewAddress, addNewAddress, getEditAddress, editAddress,
     deleteAddress, getAddresses, changeDefaultAddress, getChangePassword, getOrders, getWallet, getCoupons,
-} from "../../controllers/customer/profileController.js"
+} from "../../controllers/customerControllers/profileController.js";
 // cart controller
-import { getCart, addToCart, removeFromCart, updateCart, getCheckout, } from "../../controllers/customer/cartController.js"
+import { getCart, addToCart, removeFromCart, updateCart, getCheckout, } from "../../controllers/customerControllers/cartController.js";
 // image middleware
 import { uploadProfileImage, resizeProfileImage } from "../../middlewares/imageUplaodMiddleware.js";
 
