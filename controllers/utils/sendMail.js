@@ -17,7 +17,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.USER,
+            user: process.env.APP_EMAIL,
             pass: process.env.APP_PASSWORD
         },
     });
@@ -39,7 +39,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
     const mailOptions = {
         from: {
             name: "StylesCraze",
-            address: process.env.USER,
+            address: process.env.APP_EMAIL,
         },
         to: req.body.email,
         subject: "OTP Verification",
