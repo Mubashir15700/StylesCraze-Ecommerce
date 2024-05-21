@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import Product from "../../models/productModel.js";
 import Address from "../../models/addressModel.js";
-import UserOTPVerification from "../../models/otpModel.js";
+import Otp from "../../models/otpModel.js";
 import { sendToMail } from "../../utils/sendMailUtil.js";
-import { isLoggedIn, getCurrentUser } from "../getCurrentUser.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/getCurrentUser.js";
 
 export const getCart = async (req, res, next) => {
     try {
@@ -31,7 +31,7 @@ export const getCart = async (req, res, next) => {
                 activePage: "Cart",
             });
         } else {
-            await UserOTPVerification.deleteMany({ userId: currentUser._id });
+            await Otp.deleteMany({ userId: currentUser._id });
             req.body.email = currentUser.email;
             sendToMail(req, res, currentUser._id, false);
         }

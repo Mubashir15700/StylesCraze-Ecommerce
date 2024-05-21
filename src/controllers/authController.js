@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { sendToMail } from "../utils/sendMailUtil.js";
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
-import otpVerification from "../models/otpModel.js";
+import Otp from "../models/otpModel.js";
 
 let salt;
 
@@ -224,7 +224,7 @@ export const resendOTP = async (req, res, next) => {
 
 export const Verification = async (req, res) => {
     let { userId, otp } = req.body;
-    const verificationRecords = await otpVerification.findOne({ userId });
+    const verificationRecords = await Otp.findOne({ userId });
     try {
         if (!userId || !otp) {
             throw Error("Empty details are not allowed");

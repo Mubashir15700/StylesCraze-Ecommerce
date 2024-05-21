@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import nodeMailer from "nodemailer";
 import { config } from "../config/envConfig.js";
-import UserOTPVerification from "../models/otpModel.js";
+import Otp from "../models/otpModel.js";
 
 let salt;
 
@@ -49,13 +49,13 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
 
     const sendMail = async (transporter, options) => {
         try {
-            await UserOTPVerification.deleteMany({ userId });
+            await Otp.deleteMany({ userId });
             const hashedOTP = await bcrypt.hash(OTP, salt);
-            const newUserOTPVerification = new UserOTPVerification({
+            const newotpModel = new Otp({
                 userId,
                 otp: hashedOTP,
             });
-            await newUserOTPVerification.save();
+            await newotpModel.save();
             await transporter.sendMail(options);
             res.render("customer/auth/verification", { 
                 userId, 
