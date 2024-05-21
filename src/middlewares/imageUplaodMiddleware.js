@@ -38,7 +38,7 @@ export const resizeProductImages = async (req, res, next) => {
                 .resize(500, 500)
                 .toFormat("jpeg")
                 .jpeg({ quality: 90 })
-                .toFile(path.join(__dirname, "../public", "products", filename));
+                .toFile(path.join(__dirname, "../public/uploads", "products", filename));
 
             req.body.images.push(filename);
         })
@@ -57,7 +57,7 @@ export const resizeCategoryImage = async (req, res, next) => {
             .resize(500, 500)
             .toFormat("png")
             .png({ quality: 90 })
-            .toFile(path.join(__dirname, "../public", "categories", req.file.originalname));
+            .toFile(path.join(__dirname, "../public/uploads", "categories", req.file.originalname));
         next();
 
     } catch (error) {
@@ -76,7 +76,7 @@ export const resizeProfileImage = async (req, res, next) => {
             .resize(200, 200)
             .toFormat("png")
             .png({ quality: 90 })
-            .toFile(path.join(__dirname, "../public", "profiles", req.file.originalname));
+            .toFile(path.join(__dirname, "../public/uploads", "profiles", req.file.originalname));
         next();
     } catch (error) {
         console.log(error.message);
@@ -99,7 +99,7 @@ export const resizeBannerImages = async (req, res, next) => {
             await sharp(file.buffer)
                 .toFormat("jpeg")
                 .jpeg({ quality: 90 })
-                .toFile(path.join(__dirname, "../public", "banners", filename));
+                .toFile(path.join(__dirname, "../public/uploads", "banners", filename));
 
             req.body.images.push(filename);
         })

@@ -18,9 +18,13 @@ import customError from "./src/middlewares/errorMiddleware.js";
 
 const app = express();
 
+// Get current file path and directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // Set port and view engine
 app.set("port", config.port || 3000);
-app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src", "views"));
 
 // Middleware setup
 app.use(express.static("public"));
@@ -39,8 +43,6 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Logging middleware
-const __filename = fileURLToPath(import.meta.url); // Get current file path
-const __dirname = dirname(__filename); // Get directory name
 const accessLogStream = fs.createWriteStream(path.join(__dirname, "console.log"), {
     flags: "a",
     maxsize: 10 * 1024 * 1024 // 10 MB maximum size
