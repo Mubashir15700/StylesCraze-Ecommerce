@@ -25,9 +25,9 @@
                 <img src="/StylesCraze.svg" class="mr-2" alt="logo" height="50" width="130" />
                 <p class="font-weight-light">Sign in to continue.</p>
               </div>
-              <form action="/admin/login" method="post" class="pt-3" id="login-form">
+              <form action="/admin/auth/login" method="post" class="pt-3" id="login-form">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" name="username">
+                  <input type="text" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" name="email">
                   <p class="text-danger" id="username-error-display"></p>
                 </div>
                 <div class="form-group">
@@ -45,7 +45,7 @@
                   </button>
                 </div>
               </form>
-              <p><a href="/admin/forgot-password">Forgot password?</a></p>
+              <p><a href="/admin/auth/forgot-password">Forgot password?</a></p>
             </div>
           </div>
         </div>
@@ -68,9 +68,6 @@
       if (!usernameInput.value || !passwordInput.value) {
         hasErrors = true;
         document.getElementById("common-error-display").innerHTML = "Please fill in all fields.";
-      } else if (passwordInput.value.length < 6) {
-        hasErrors = true;
-        document.getElementById("password-error-display").innerHTML = "Password must be at least 6 characters long.";
       }
 
       if (hasErrors) {

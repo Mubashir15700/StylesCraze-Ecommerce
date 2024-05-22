@@ -78,7 +78,7 @@
                         <%= customer.verified %>
                       </td>
                       <td>
-                        <form action="/admin/customers/action/<%= customer._id %>?_method=PATCH" method="post" id="action-form">
+                        <form action="/admin/customers/<%= customer._id %>/action?_method=PATCH" method="post" id="action-form">
                           <% if(customer.blocked===true) { %>
                           <input type="hidden" name="state" value="">
                           <button type="submit" class="btn btn-warning btn-sm block-button">
@@ -183,7 +183,7 @@
                     row.append($('<td>').text(customer.verified));
                     // Create the last <td> with the form
                     const actionForm = $('<form>', {
-                      action: `/admin/customers/action/${customer._id}?_method=PATCH`,
+                      action: `/admin/customers/${customer._id}/action?_method=PATCH`,
                       method: 'post',
                       id: 'action-form'
                     });

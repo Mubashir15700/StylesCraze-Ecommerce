@@ -130,7 +130,7 @@ export const deleteBannerImage = async (req, res, next) => {
             if (err) console.log(err);
         });
 
-        res.redirect(`/admin/edit-banner/${id}`);
+        res.redirect(`/admin/banners/${id}/edit`);
     } catch (error) {
         next(error);
     }
@@ -145,7 +145,7 @@ export const addBannerImage = async (req, res, next) => {
     }
     try {
         await Banner.findByIdAndUpdate(id, { $push: { images: imagesWithPath } }, { new: true });
-        res.redirect(`/admin/edit-banner/${id}`);
+        res.redirect(`/admin/banners/${id}/edit`);
     } catch (error) {
         next(error);
     }

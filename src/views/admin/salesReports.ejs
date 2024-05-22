@@ -93,7 +93,7 @@
                   </div>
                   <% if (salesReport.length) { %>
                     <div class="col-md-3 col-12 p-4">
-                      <a href="/admin/download-report?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
+                      <a href="/admin/sales-report/download?salesReport=<%= JSON.stringify(salesReport) %>&&productsCount=<%= productsCount %>&&revenue=<%= totalRevenue %>" class="btn btn-primary btn-sm">
                         <i class="bi bi-download"></i>
                       </a>
                     </div>

@@ -17,7 +17,7 @@
                   <form class="form-inline flex-grow-1">
                     <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
                   </form>
-                  <a href="/admin/new-product" class="btn btn-primary">New Product</a>
+                  <a href="/admin/products/new" class="btn btn-primary">New Product</a>
                 </div>
               </div>
               <div class="table-responsive">
@@ -94,10 +94,10 @@
                       </td>
                       <td>
                         <div class="d-flex">
-                          <a href="/admin/edit-product/<%= product._id %>" class="btn btn-info btn-sm mr-1">
+                          <a href="/admin/products/<%= product._id %>/edit" class="btn btn-info btn-sm mr-1">
                             <i class="bi bi-pen"></i>
                           </a>
-                          <form action="/admin/products/action/<%= product._id %>?_method=PATCH" method="post" id="action-form">
+                          <form action="/admin/products/<%= product._id %>/action?_method=PATCH" method="post" id="action-form">
                             <input type="hidden" name="category" value="<%= product.category.name %>">
                             <% if (product.softDeleted) { %>
                             <input type="hidden" name="state" value="">
@@ -215,7 +215,7 @@
                     let elementsToAppend = [];
 
                     const editButton = $('<a>', {
-                      href: `/admin/edit-product/${product._id}`,
+                      href: `/admin/products/${product._id}/edit`,
                       class: "btn btn-info btn-sm mb-1",
                     }).append($('<i>', {
                       class: "bi bi-pen"
@@ -224,7 +224,7 @@
                     elementsToAppend.push(editButton);
 
                     const actionForm = $('<form>', {
-                      action: `/admin/products/action/${product._id}?_method=PATCH`,
+                      action: `/admin/products/${product._id}/action?_method=PATCH`,
                       method: 'post',
                       id: 'action-form'
                     });

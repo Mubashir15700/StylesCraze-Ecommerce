@@ -29,7 +29,7 @@
                       </h6>
                       <div class="d-md-flex">
                         <a href="/admin/customers/1" class="card-link mr-2">Go to Customers</a>
-                        <form action="/admin/customers/action/<%= foundOrder.user._id %>?_method=PATCH&orderId=<%= foundOrder._id %>" method="post" id="action-form">
+                        <form action="/admin/customers/<%= foundOrder.user._id %>/action?_method=PATCH&orderId=<%= foundOrder._id %>" method="post" id="action-form">
                           <% if(foundOrder.user.blocked===true) { %>
                           <input type="hidden" name="state" value="">
                           <button type="submit" class="btn btn-warning btn-sm block-button">
@@ -114,7 +114,7 @@
                       </p>
                     </div>
                     <div>
-                      <a href="/admin/products" class="btn btn-info btn-sm">View</a>
+                      <a href="/admin/products/1" class="btn btn-info btn-sm">View</a>
                     </div>
                   </div>
                   <div class="border-top mt-2">
@@ -158,7 +158,7 @@
 
       $.ajax({
         type: 'POST',
-        url: '/admin/update-order-status',
+        url: '/admin/orders/<%= foundOrder._id %>/update-status',
         data: {
           status: selectedStatus,
           userId: '<%= foundOrder.user._id %>',

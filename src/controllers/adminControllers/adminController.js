@@ -205,7 +205,6 @@ export const getOrders = async (req, res, next) => {
 
         let orders;
         if (req.query.filtered) {
-            console.log("here");
             let query = {};
             if (req.body.from !== "" && req.body.upto !== "") {
                 let startOfMonth = new Date(req.body.from);
@@ -352,6 +351,7 @@ export const getReturnRequests = async (req, res, next) => {
                 { path: "product" },
             ]).skip(skip).limit(pageSize);
         }
+
         res.render("admin/returns", {
             returnRequests,
             activePage: "Orders",

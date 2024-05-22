@@ -14,7 +14,7 @@
               <div class="card-body">
                 <h4 class="card-title">Edit Product</h4>
 
-                <form action="/admin/edit-product/<%= productData._id %>" method="post">
+                <form action="/admin/products/<%= productData._id %>/edit" method="post">
                   <p class="text-danger mb-3">
                     <%= error %>
                   </p>
@@ -91,7 +91,7 @@
                       <div class="col-4">
                         <figure>
                           <img src="<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 200px; object-fit: contain;" />
-                          <form action="/admin/products/img-delete/<%= productData._id %>?_method=DELETE" method="post" class="mt-3">
+                          <form action="/admin/products/<%= productData._id %>/delete-img?_method=DELETE" method="post" class="mt-3">
                             <input type="hidden" name="image" value="<%= img %>">
                             <div class="d-grid">
                               <button type="submit" class="btn btn-danger">Delete</button>
@@ -110,7 +110,7 @@
                     Upload
                   </div>
                   <div class="card-body">
-                    <form action="/admin/products/img-add/<%= productData._id %>?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
+                    <form action="/admin/products/<%= productData._id %>/add-img?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
                       <div class="mb-3" id="appendError">
                         <input type="file" accept="image/*" <%=productData.images.length> 1 ? '' : 'multiple' %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
                       </div>

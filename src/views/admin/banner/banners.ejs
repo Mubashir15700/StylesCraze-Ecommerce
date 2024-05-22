@@ -17,7 +17,7 @@
                   <form class="form-inline">
                     <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
                   </form>
-                  <a href="/admin/new-banner" class="btn btn-primary">New Banner</a>
+                  <a href="/admin/banners/new" class="btn btn-primary">New Banner</a>
                 </div>
               </div>
               <div class="table-responsive">
@@ -74,10 +74,10 @@
                       </td>
                       <td>
                         <div class="d-flex">
-                          <a href="/admin/edit-banner/<%= banner._id %>" class="btn btn-info btn-sm mr-1">
+                          <a href="/admin/banners/<%= banner._id %>/edit" class="btn btn-info btn-sm mr-1">
                             <i class="bi bi-pen"></i>
                           </a>
-                          <form action="/admin/banners/action/<%= banner._id %>?_method=PATCH" method="post">
+                          <form action="/admin/banners/<%= banner._id %>/action?_method=PATCH" method="post">
                             <% if(!banner.isActive) { %>
                             <input type="hidden" name="state" value="1">
                             <button type="submit" class="btn btn-warning btn-sm">
@@ -216,7 +216,7 @@
                     elementsToAppend.push(editButton);
 
                     const actionForm = $("<form>", {
-                      action: `/admin/banners/action/${banner._id}?_method=PATCH`,
+                      action: `/admin/banners/${banner._id}/action?_method=PATCH`,
                       method: "post",
                       id: "action-form"
                     });

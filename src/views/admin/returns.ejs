@@ -14,7 +14,7 @@
               <div class="d-flex justify-content-between">
                 <div>
                   <h4 class="card-title">Return Requests</h4>
-                  <form action="/admin/return-requests/?filtered=true" method="post">
+                  <form action="/admin/return-requests/1?filtered=true" method="post">
                     <select name="status" class="mr-3">
                       <option>Select Status</option>
                       <option value="Approved">Approved</option>
@@ -94,7 +94,7 @@
                           <% } else if (request.status==="Rejected" ) { %>
                           <p class="text-danger font-weight-bolder">Rejected</p>
                           <% } else { %>
-                          <form action="/admin/return-request-action" method="post">
+                          <form action="/admin/return-requests/<%= request._id %>/action" method="post">
                             <input type="hidden" name="action" value="approve">
                             <input type="hidden" name="request" value="<%= request._id %>">
                             <input type="hidden" name="order" value="<%= request.order._id %>">
@@ -103,7 +103,7 @@
                               <i class="bi bi-check2"></i>
                             </button>
                           </form>
-                          <form action="/admin/return-request-action" method="post" class="mt-1" id="action-form">
+                          <form action="/admin/return-requests/<%= request._id %>/action" method="post" class="mt-1" id="action-form">
                             <input type="hidden" name="action" value="reject">
                             <input type="hidden" name="request" value="<%= request._id %>">
                             <input type="hidden" name="order" value="<%= request.order._id %>">

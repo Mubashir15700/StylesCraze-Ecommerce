@@ -14,16 +14,16 @@ generateSalt();
 
 export const loginAdmin = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-        if (username && password) {
-            const foundAdmin = await Admin.findOne({ username });
+        const { email, password } = req.body;
+        if (email && password) {
+            const foundAdmin = await Admin.findOne({ email });
             if (foundAdmin) {
                 const isMatch = await bcrypt.compare(password, foundAdmin.password);
                 if (isMatch) {
                     req.session.admin = foundAdmin._id;
                     res.redirect("/admin/");
                 } else {
-                    res.render("admin/login", { commonError: "Invalid username or password." });
+                    res.render("admin/login", { commonError: "Invalid email or password." });
                 }
             } else {
                 res.render("admin/login", { commonError: "No admin found." })
@@ -39,7 +39,7 @@ export const loginAdmin = async (req, res, next) => {
 export const logoutAdmin = async (req, res, next) => {
     try {
         req.session.admin = null;
-        res.redirect("/admin");
+        res.redirect("/admin/auth/login");
     } catch (error) {
         next(error);
     }
@@ -182,7 +182,7 @@ export const newPassword = async (req, res) => {
                 password: hashPassword
             }
         });
-        res.redirect("/login");
+        res.redirect("/auth/login");
     } catch (error) {
         res.render("customer/auth/newPassword", {
             userId: foundUser._id,
@@ -269,7 +269,7 @@ export const Verification = async (req, res) => {
 export const logoutCustomer = async (req, res, next) => {
     try {
         req.session.user = null;
-        res.redirect("/login");
+        res.redirect("/auth/login");
     } catch (error) {
         next(error);
     }

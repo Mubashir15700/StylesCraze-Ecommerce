@@ -210,7 +210,7 @@ export const deleteImage = async (req, res, next) => {
             if (err) console.log(err);
         });
 
-        res.redirect(`/admin/edit-product/${id}`);
+        res.redirect(`/admin/products/${id}/edit`);
     } catch (error) {
         next(error);
     }
@@ -225,7 +225,7 @@ export const addImage = async (req, res, next) => {
     }
     try {
         await Product.findByIdAndUpdate(id, { $push: { images: imagesWithPath } }, { new: true });
-        res.redirect(`/admin/edit-product/${id}`);
+        res.redirect(`/admin/products/${id}/edit`);
     } catch (error) {
         next(error);
     }

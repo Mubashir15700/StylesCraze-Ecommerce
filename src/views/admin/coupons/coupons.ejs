@@ -19,7 +19,7 @@
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                   </select>
-                  <a href="/admin/new-coupon" class="btn btn-primary">New Coupon</a>
+                  <a href="/admin/coupons/new" class="btn btn-primary">New Coupon</a>
                 </div>
               </div>
               <div class="table-responsive">
@@ -78,7 +78,7 @@
                         <%= coupon.usedCount %>
                       </td>
                       <td>
-                        <form action="/admin/coupons/action/<%= coupon._id %>?_method=PATCH" method="post">
+                        <form action="/admin/coupons/<%= coupon._id %>/action?_method=PATCH" method="post">
                           <input type="hidden" name="coupon" value="<%= coupon._id %>">
                           <% if (coupon.isActive) { %>
                           <input type="hidden" name="state" value="1">
@@ -193,7 +193,7 @@
                     let elementsToAppend = [];
 
                     const actionForm = $('<form>', {
-                      action: `/admin/coupons/action/${coupon._id}?_method=PATCH`,
+                      action: `/admin/coupons/${coupon._id}/action?_method=PATCH`,
                       method: 'post',
                       id: 'action-form'
                     });
