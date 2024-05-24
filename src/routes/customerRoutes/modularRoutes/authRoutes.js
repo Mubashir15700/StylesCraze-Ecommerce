@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { checkAuth, isLoggedIn, checkToBlock } from "../../middlewares/customerMiddlewares.js";
+import { checkAuth, isLoggedIn, checkToBlock } from "../../../middlewares/customerMiddlewares.js";
 import {
     getLogin, getRegister, getEnterEmail, loginCustomer, registerCustomer, 
     Verification, resendOTP, getChangePassword, getNewPassword, newPassword, 
     changePassword, sendOTP, logoutCustomer
-} from "../../controllers/authController.js";
+} from "../../../controllers/authController.js";
 
 const router = Router();
 

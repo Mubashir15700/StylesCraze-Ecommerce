@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { checkToBlock } from "../../middlewares/customerMiddlewares.js";
+import { checkToBlock } from "../../../middlewares/customerMiddlewares.js";
 import { 
     getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts
-} from "../../controllers/customerControllers/customerController.js";
+} from "../../../controllers/customerControllers/customerController.js";
 
 const router = Router();
 

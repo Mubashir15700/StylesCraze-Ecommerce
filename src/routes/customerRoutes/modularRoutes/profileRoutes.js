@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { checkAuth, checkToBlock } from "../../middlewares/customerMiddlewares.js";
-import { uploadProfileImage, resizeProfileImage } from "../../middlewares/imageUplaodMiddlewares.js";
+import { checkAuth, checkToBlock } from "../../../middlewares/customerMiddlewares.js";
+import { uploadProfileImage, resizeProfileImage } from "../../../middlewares/imageUplaodMiddlewares.js";
 import {
     getProfile, updateProfile, removeProfileImage, getNewAddress, addNewAddress, 
     getEditAddress, editAddress, deleteAddress, getAddresses, changeDefaultAddress, 
     getOrders, getWallet, getCoupons,
-} from "../../controllers/customerControllers/profileController.js";
+} from "../../../controllers/customerControllers/profileController.js";
 
 const router = Router();
 
@@ -25,8 +25,8 @@ router.route("/profile/change-address")
     .get(checkToBlock, checkAuth, getAddresses)
     .post(checkToBlock, checkAuth, changeDefaultAddress);
 
-router.get("/orders", checkToBlock, checkAuth, getOrders);
-router.get("/wallet", checkToBlock, checkAuth, getWallet);
-router.get("/coupons", checkToBlock, checkAuth, getCoupons);
+router.get("/profile/orders", checkToBlock, checkAuth, getOrders);
+router.get("/profile/wallet", checkToBlock, checkAuth, getWallet);
+router.get("/profile/coupons", checkToBlock, checkAuth, getCoupons);
 
 export default router;
