@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { loginAdmin, logoutAdmin, sendOTP } from "../../../controllers/authController.js";
-import { isLoggedIn } from "../../../middlewares/adminMiddlewares.js";
-import { getLogin, getEnterEmail } from "../../../controllers/adminControllers/adminController.js";
+import { 
+    getLogin, getEnterEmail, loginAdmin, logoutAdmin, sendOTP 
+} from "../../controllers/adminControllers/authControllers.js";
+import { isLoggedIn } from "../../middlewares/adminMiddlewares.js";
 
 const router = Router();
 

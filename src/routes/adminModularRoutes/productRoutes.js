@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { checkAuth } from "../../../middlewares/adminMiddlewares.js";
-import { uploadProductImages, resizeProductImages } from "../../../middlewares/imageUplaodMiddlewares.js";
+import { checkAuth } from "../../middlewares/adminMiddlewares.js";
+import { uploadProductImages, resizeProductImages } from "../../middlewares/imageUplaodMiddlewares.js";
 import {
     getProducts, getAddNewProduct, addNewProduct, getProduct, editProduct, addImage, deleteImage, productAction,
-} from "../../../controllers/adminControllers/productsController.js";
+} from "../../controllers/adminControllers/productsControllers.js";
 
 const router = Router();
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { checkAuth } from "../../../middlewares/adminMiddlewares.js";
-import { uploadCategoryImage, resizeCategoryImage } from "../../../middlewares/imageUplaodMiddlewares.js";
+import { checkAuth } from "../../middlewares/adminMiddlewares.js";
+import { uploadCategoryImage, resizeCategoryImage } from "../../middlewares/imageUplaodMiddlewares.js";
 import {
     getCategories, addNewCategory, newCategory, getCategory, editCategory, categoryAction,
-} from "../../../controllers/adminControllers/categoryController.js";
+} from "../../controllers/adminControllers/categoryControllers.js";
 
 const router = Router();
 

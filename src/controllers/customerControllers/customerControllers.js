@@ -242,18 +242,6 @@ export const getContact = async (req, res, next) => {
     }
 };
 
-export const getLogin = (req, res) => {
-    res.render("customer/auth/login", { commonError: "" });
-};
-
-export const getRegister = (req, res) => {
-    res.render("customer/auth/register", { commonError: "" });
-};
-
-export const getEnterEmail = (req, res) => {
-    res.render("customer/auth/forgot", { commonError: "" });
-};
-
 export const updateWishlist = async (req, res, next) => {
     try {
         const currentUser = await getCurrentUser(req, res);
@@ -289,6 +277,64 @@ export const getWishlist = async (req, res, next) => {
             currentUser,
             activePage: "Wishlist",
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getCheckout = async (req, res, next) => {
+    try {
+        const currentUser = await getCurrentUser(req, res);
+        if (currentUser.verified) {
+            const defaultAddress = await Address.findOne({ user: req.session.user, default: true });
+            await currentUser.populate("cart.product");
+            await currentUser.populate("cart.product.category");
+            const cartProducts = currentUser.cart;
+
+            const grandTotal = cartProducts.reduce((total, element) => {
+                let price = element.product.actualPrice;
+                if (element.product.productOfferPrice && element.product.categoryOfferPrice) {
+                    price = Math.min(element.product.productOfferPrice, element.product.categoryOfferPrice);
+                } else if (element.product.productOfferPrice || element.product.categoryOfferPrice) {
+                    price = element.product.categoryOfferPrice ? element.product.categoryOfferPrice : element.product.productOfferPrice;
+                }
+                return total + (element.quantity * price);
+            }, 0);
+
+            let insufficientStockProduct;
+            cartProducts.forEach((cartProduct) => {
+                if (cartProduct.product.stock < cartProduct.quantity) {
+                    insufficientStockProduct = cartProduct._id;
+                }
+            });
+
+            if (!insufficientStockProduct) {
+                res.render("customer/checkout", {
+                    isLoggedIn: isLoggedIn(req, res),
+                    currentUser,
+                    cartProducts,
+                    currentAddress: defaultAddress,
+                    discount: 0,
+                    grandTotal,
+                    currentCoupon: "",
+                    couponError: "",
+                    error: "",
+                    activePage: "Orders",
+                });
+            } else {
+                res.render("customer/cart", {
+                    isLoggedIn: isLoggedIn(req, res),
+                    currentUser,
+                    cartProducts,
+                    grandTotal,
+                    insufficientStockProduct,
+                    activePage: "Cart",
+                });
+            }
+        } else {
+            req.body.email = currentUser.email;
+            sendToMail(req, res, currentUser._id, false);
+        }
     } catch (error) {
         next(error);
     }

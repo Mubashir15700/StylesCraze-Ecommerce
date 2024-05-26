@@ -217,21 +217,6 @@ export const changeDefaultAddress = async (req, res, next) => {
     }
 };
 
-export const getChangePassword = async (req, res, next) => {
-    try {
-        const currentUser = await getCurrentUser(req, res);
-        res.render("customer/auth/changePassword", {
-            isLoggedIn: isLoggedIn(req, res),
-            currentUser: await getCurrentUser(req, res),
-            error: "",
-            email: currentUser.email,
-            activePage: "Profile",
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const getWallet = async (req, res, next) => {
     try {
         // fix sorting

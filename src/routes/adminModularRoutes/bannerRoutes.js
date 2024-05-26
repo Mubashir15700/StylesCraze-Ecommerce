@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { checkAuth } from "../../../middlewares/adminMiddlewares.js";
-import { uploadBannerImages, resizeBannerImages } from "../../../middlewares/imageUplaodMiddlewares.js";
+import { checkAuth } from "../../middlewares/adminMiddlewares.js";
+import { uploadBannerImages, resizeBannerImages } from "../../middlewares/imageUplaodMiddlewares.js";
 import {
     getBanners, getAddNewBanner, addNewBanner, getBanner, editBanner, addBannerImage, deleteBannerImage, bannerAction,
-} from "../../../controllers/adminControllers/bannerController.js";
+} from "../../controllers/adminControllers/bannerControllers.js";
 
 const router = Router();
 

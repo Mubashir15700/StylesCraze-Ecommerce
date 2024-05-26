@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { checkAuth, checkToBlock } from "../../middlewares/customerMiddlewares.js";
+import { checkAuth, checkToBlock } from "../middlewares/customerMiddlewares.js";
 import {
     authRoutes, profileRoutes, cartRoutes, shopRoutes
-} from "./modularRoutes/index.js";
+} from "./customerModularRoutes/index.js";
 import {
     getHome, getAbout, getContact, getWishlist, updateWishlist, applyCoupon,
     saveRzpOrder, cancelOrder, getReturnProductForm, requestReturnProduct,
     getCheckout, placeOrder
-} from "../../controllers/customerControllers/customerController.js";
+} from "../controllers/customerControllers/customerControllers.js";
 
 const router = Router();
 
@@ -28,7 +28,7 @@ router.get("/contact", checkToBlock, getContact);
 
 // Wishlist Routes
 router.get("/wishlist", checkToBlock, checkAuth, getWishlist);
-router.post("/wishlist/update", checkToBlock, checkAuth, updateWishlist);
+router.patch("/wishlist/update", checkToBlock, checkAuth, updateWishlist);
 
 // Checkout Route
 router.route("/checkout")
@@ -38,7 +38,7 @@ router.route("/checkout")
 // Other Routes
 router.post("/apply-coupon", checkToBlock, checkAuth, applyCoupon);
 router.post("/save-rzporder", checkToBlock, checkAuth, saveRzpOrder);
-router.post("/cancel-order", checkToBlock, checkAuth, cancelOrder);
+router.patch("/cancel-order", checkToBlock, checkAuth, cancelOrder);
 router.route("/return-product")
     .get(checkToBlock, checkAuth, getReturnProductForm)
     .post(checkToBlock, checkAuth, requestReturnProduct);
