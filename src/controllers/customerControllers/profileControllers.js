@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import mongoose from "mongoose";
 import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
@@ -5,6 +7,7 @@ import Coupon from "../../models/couponModel.js";
 import Order from "../../models/orderModel.js";
 import { sendToMail } from "../../utils/sendMailUtil.js";
 import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
+import { __filename, __dirname } from "../../utils/filePathUtil.js";
 
 export const getProfile = async (req, res, next) => {
     try {
@@ -81,9 +84,17 @@ export const removeProfileImage = async (req, res, next) => {
         let removeProfile = {
             profile: "",
         };
+
         const currentUser = await User.findById(req.session.user);
         await currentUser.updateOne(removeProfile);
-        res.redirect("/profile");
+
+        fs.unlink(path.join(__dirname, "../../public/uploads", currentUser.profile), (err) => {
+            if (err) {
+                throw err;
+            } else {
+                res.redirect("/profile");
+            }
+        });
     } catch (error) {
         next(error);
     }

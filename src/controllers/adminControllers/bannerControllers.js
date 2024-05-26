@@ -115,18 +115,20 @@ export const editBanner = async (req, res, next) => {
     }
 };
 
-// causing an error
 export const deleteBannerImage = async (req, res, next) => {
     const { id } = req.params;
     const { image } = req.body;
+    
     try {
         await Banner.findByIdAndUpdate(id, { $pull: { images: image } }, { new: true });
 
-        fs.unlink(path.join(__dirname, "../public", image), (err) => {
-            if (err) console.log(err);
+        fs.unlink(path.join(__dirname, "../../public/uploads", image), (err) => {
+            if (err) {
+                throw err;
+            } else {
+                res.redirect(`/admin/banners/${id}/edit`);
+            }
         });
-
-        res.redirect(`/admin/banners/${id}/edit`);
     } catch (error) {
         next(error);
     }

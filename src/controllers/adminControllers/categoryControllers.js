@@ -123,12 +123,13 @@ export const editCategory = async (req, res, next) => {
         };
 
         if (typeof photo !== "undefined") {
-            fs.unlink(path.join(__dirname, "../public", category.image), (err) => {
+            fs.unlink(path.join(__dirname, "../../public/uploads", category.image), (err) => {
                 if (err) {
-                    console.error(err);
+                    throw err;
+                } else {
+                    updatedObj.image = "/categories/" + photo;
                 }
             });
-            updatedObj.image = "/categories/" + photo;
         }
 
         await category.updateOne(updatedObj, { runValidators: true });

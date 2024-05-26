@@ -195,18 +195,20 @@ async function updateProductOfferPrice(productId, offerPercentage) {
     );
 };
 
-// causing an error
 export const deleteImage = async (req, res, next) => {
     const { id } = req.params;
     const { image } = req.body;
+    
     try {
         await Product.findByIdAndUpdate(id, { $pull: { images: image } }, { new: true });
 
-        fs.unlink(path.join(__dirname, "../public", image), (err) => {
-            if (err) console.log(err);
+        fs.unlink(path.join(__dirname, "../../public/uploads", image), (err) => {
+            if (err) {
+                throw err;
+            } else {
+                res.redirect(`/admin/products/${id}/edit`);
+            }
         });
-
-        res.redirect(`/admin/products/${id}/edit`);
     } catch (error) {
         next(error);
     }
