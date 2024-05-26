@@ -23,7 +23,7 @@
         <% currentUser.wishlist.forEach((item)=> { %>
         <div class="p-4 border mb-3 d-flex flex-column flex-md-row">
           <div class="col-md-3 col-12 d-flex justify-content-center mb-3">
-            <a href="/single/<%= item._id %>">
+            <a href="/shop/products/single/<%= item._id %>">
               <img src="<%= item.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
             </a>
           </div>
@@ -64,7 +64,7 @@
                 Go To Cart
               </a>
               <% } else { %>
-              <form action="/add-to-cart" method="post">
+              <form action="/cart/add?_method=PATCH" method="post">
                 <input type="hidden" name="product" value="<%= item._id %>">
                 <input type="hidden" name="from" value="wishlist">
                 <input type="hidden" name="hiddenQuantity" value="1">
@@ -78,7 +78,7 @@
                 Currently Unavailable
               </p>
               <% } %>
-              <form action="/update-wishlist" method="post">
+              <form action="/wishlist/update?_method=PATCH" method="post">
                 <input type="hidden" name="productId" value="<%= item._id %>">
                 <input type="hidden" name="todo" value="remove">
                 <input type="hidden" name="goto" value="toWishlist">

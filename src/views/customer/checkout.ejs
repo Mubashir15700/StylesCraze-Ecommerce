@@ -24,7 +24,7 @@
           <% cartProducts.forEach((cartItem)=> { %>
           <div class="col-md-12 p-4 border mb-3 d-flex">
             <div class="col-md-4">
-              <a href="/single/<%= cartItem.product._id %>">
+              <a href="/shop/products/single/<%= cartItem.product._id %>">
                 <img src="<%= cartItem.product.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
               </a>
             </div>
@@ -100,9 +100,9 @@
             <div class="d-flex justify-content-between">
               <h3>Shipping Address</h3>
               <% if (currentAddress) { %>
-              <a href="/change-address" class="btn btn-primary">Change</a>
+              <a href="/profile/addresses/change" class="btn btn-primary">Change</a>
               <% } else { %>
-              <a href="/new-address" class="btn btn-outline-primary">
+              <a href="/profile/addresses/new" class="btn btn-outline-primary">
                 Add New Address
               </a>
               <% } %>
@@ -258,7 +258,7 @@
             <p class="text-danger">
               <%= couponError %>
             </p>
-            <a href="/coupons" class="btn btn-outline-primary btn-sm mt-4">View Available
+            <a href="/profile/coupons" class="btn btn-outline-primary btn-sm mt-4">View Available
               Coupons</a>
           </div>
         </form>

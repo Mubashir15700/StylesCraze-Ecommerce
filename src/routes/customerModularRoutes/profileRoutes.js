@@ -21,7 +21,7 @@ router.route("/addresses/:id/edit")
     .patch(checkToBlock, checkAuth, editAddress);
 
 router.delete("/addresses/:id/delete", checkToBlock, checkAuth, deleteAddress);
-router.route("/addresses/change-address")
+router.route("/addresses/change")
     .get(checkToBlock, checkAuth, getAddresses)
     .patch(checkToBlock, checkAuth, changeDefaultAddress);
 

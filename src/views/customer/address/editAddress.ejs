@@ -22,7 +22,7 @@
             <h2 class="h3 mb-3 text-black">Delivery Address</h2>
           </div>
           <div class="col-md-7">
-            <form action="/edit-address/<%= currentAddress._id %>" method="post">
+            <form action="/profile/addresses/<%= currentAddress._id %>/edit?_method=PATCH" method="post">
               <div class="p-3 p-lg-5 border">
                 <div class="form-group row">
                   <div class="col-md-6">

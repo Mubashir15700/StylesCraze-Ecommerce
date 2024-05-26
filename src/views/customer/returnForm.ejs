@@ -32,7 +32,7 @@
                 <input type="hidden" name="order" value="<%= order %>">
                 <div class="form-group row">
                   <div class="col-md-6">
-                    <label for="c_fname" class="text-black">Username<span class="text-danger">*</span></label>
+                    <label for="c_fname-address" class="text-black">Username<span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="c_fname" name="username" value="<%= currentUser.username %>" required>
                   </div>
                   <div class="col-md-6">
@@ -105,9 +105,9 @@
                   <div class="d-flex justify-content-between">
                     <h3>Choose Return Address</h3>
                     <% if (currentAddress) { %>
-                    <a href="/change-address" class="btn btn-primary">Change</a>
+                    <a href="/profile/addresses/change" class="btn btn-primary">Change</a>
                     <% } else { %>
-                    <a href="/new-address" class="btn btn-outline-primary">
+                    <a href="/profile/addresses/new" class="btn btn-outline-primary">
                       Add New Address
                     </a>
                     <% } %>

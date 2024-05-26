@@ -60,7 +60,7 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
             res.render("customer/auth/verification", { 
                 userId, 
                 email: req.body.email, 
-                error: "", 
+                commonError: "", 
                 isForgotPassword,
             });
         } catch (error) {

@@ -29,7 +29,7 @@
             </a>
             <% } else { %>
             <% addresses.forEach((address) => { %>
-            <form id="<%= address._id %>" action="/change-address" method="post">
+            <form id="<%= address._id %>" action="/profile/addresses/change?_method=PATCH" method="post">
               <div class="p-4 border mb-3 <%= address.default ? 'bg-primary' : 'bg-light' %>" onclick="changeAddress('<%= address._id %>')">
                 <input type="hidden" name="addressId" value="<%= address._id %>">
                 <span class="d-block text-primary h6 text-uppercase <%= address.default ? 'text-light' : '' %>"><%= address.state %></span>

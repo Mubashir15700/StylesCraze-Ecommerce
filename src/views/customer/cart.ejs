@@ -23,7 +23,7 @@
         <% cartProducts.forEach((cartItem)=> { %>
         <div class="d-flex flex-column flex-md-row border p-3 mb-3">
           <div class="col-md-3 col-12 d-flex justify-content-center mb-5">
-            <a href="/single/<%= cartItem.product._id %>">
+            <a href="/shop/products/single/<%= cartItem.product._id %>">
               <img src="<%= cartItem.product.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
             </a>
           </div>
@@ -87,7 +87,7 @@
                   <button class="btn btn-outline-primary" type="button" onclick="updateCartItem('<%= cartItem._id %>', 'increment')">&plus;</button>
                 </div>
               </div>
-              <form action="/remove-from-cart/<%= cartItem._id %>" method="post" id="<%= cartItem._id %>">
+              <form action="/cart/remove/<%= cartItem._id %>?_method=DELETE" method="post" id="<%= cartItem._id %>">
                 <button type="button" class="btn btn-sm btn-danger" onclick="openRemoveFromCartModal('<%= cartItem._id %>')">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -145,7 +145,7 @@
             <div class="row mb-5">
               <div class="col-md-6">
                 <p>
-                  <a href="/shop" class="btn btn-outline-primary btn-sm btn-block">
+                  <a href="/shop/1" class="btn btn-outline-primary btn-sm btn-block">
                     Go To Shop
                   </a>
                 </p>
@@ -195,8 +195,8 @@
     $('#confirmRemoveCartItem').on('click', function() {
       // Perform the removal action using the cartItemIdToRemove variable
       $.ajax({
-        url: '/remove-from-cart/' + cartItemIdToRemove,
-        type: 'POST',
+        url: '/cart/remove/' + cartItemIdToRemove,
+        type: 'DELETE',
         success: function(response) {
           // Handle success, e.g., update the cart UI
           location.reload();
@@ -214,8 +214,8 @@
         type: incOrDec
       };
       $.ajax({
-        url: '/update-cart/' + cartItemId,
-        type: 'POST',
+        url: '/cart/update/' + cartItemId,
+        type: 'PATCH',
         data: JSON.stringify(data),
         contentType: 'application/json',
         success: function(response) {

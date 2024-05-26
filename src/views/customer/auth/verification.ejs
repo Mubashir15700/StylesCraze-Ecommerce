@@ -30,11 +30,11 @@
                 <img src="/StylesCraze.svg" class="mr-2" alt="logo" height="50" width="130" />
                 <p class="font-weight-light">Please Verify to continue.</p>
               </div>
-              <form action="/verification" method="post" class="pt-3" id="otp-form">
+              <form action="/auth/verification" method="post" class="pt-3" id="otp-form">
                 <div class="form-group">
                   <input type="hidden" value="<%= userId %>" id="userId" name="userId">
                   <input type="hidden" value="<%= email %>" id="email" name="email">
-                  <input type="number" class="form-control form-control-lg" id="exampleInputOTP1" placeholder="OTP" name="exampleInputOTP1">
+                  <input type="number" class="form-control form-control-lg" id="exampleInputOTP1" placeholder="OTP" name="otp">
                   <input type="hidden" value="<%= isForgotPassword %>" id="isForgotPassword" name="isForgotPassword">
                   <!-- error display -->
                   <p class="text-danger" id="otp-error-display"></p>
@@ -53,7 +53,7 @@
                 <input type="hidden" value="<%= email %>" name="email">
                 <input type="hidden" value="<%= isForgotPassword %>" name="isForgotPassword">
                 <p class="text-danger" id="server-error">
-                  <%= error %>
+                  <%= commonError %>
                 </p>
                 <a href="#" id="submitLink" style="display: none;">Resend OTP</a>
                 <p>Please check your inbox.</p>

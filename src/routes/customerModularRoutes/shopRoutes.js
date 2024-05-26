@@ -6,7 +6,7 @@ import {
 
 const router = Router();
 
-router.get("/products/:page", checkToBlock, getShop);
+router.get("/:page", checkToBlock, getShop);
 router.get("/products/single/:id", checkToBlock, getSingleProduct);
 router.get("/products/:id/:page", checkToBlock, getCategoryProducts);
 router.post("/products/search", checkToBlock, searchProducts);

@@ -74,7 +74,7 @@
               <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                 <div class="block-4 text-center border">
                   <figure class="block-4-image">
-                    <a href="/single/<%= product._id %>"><img src="<%= product.images[0] %>" alt="Image placeholder" class="img-fluid"></a>
+                    <a href="/shop/products/single/<%= product._id %>"><img src="<%= product.images[0] %>" alt="Image placeholder" class="img-fluid"></a>
                   </figure>
                   <div class="block-4-text p-4">
                     <h3>
@@ -185,7 +185,7 @@
                 No categories found.
                 <% } else { %>
                 <% categoryDatas.forEach((category)=> { %>
-                <li class="mb-1"><a href="/shop/<%= category._id %>/1" class="d-flex"><span>
+                <li class="mb-1"><a href="/shop/products/<%= category._id %>/1" class="d-flex"><span>
                       <%= category.name %>
                     </span>
                     <span class="text-black ml-auto">
@@ -197,7 +197,7 @@
                 <% } %>
               </ul>
             </div>
-            <form action="/filter-products" method="post">
+            <form action="/shop/products/filter" method="post">
               <div class="border p-4 rounded mb-4">
                 <div class="mb-4">
                   <input type="text" placeholder="Enter name or category" name="search" class="form-control">
@@ -277,8 +277,8 @@
         }
 
         $.ajax({
-          url: '/update-wishlist',
-          type: 'POST',
+          url: '/wishlist/update',
+          type: 'PATCH',
           data: {
             productId,
             todo

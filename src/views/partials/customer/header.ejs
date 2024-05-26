@@ -4,7 +4,7 @@
       <div class="row align-items-center">
 
         <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-          <form action="/search-product" method="post" class="site-block-top-search">
+          <form action="/shop/products/search" method="post" class="site-block-top-search">
             <span class="icon icon-search2"></span>
             <input type="text" class="form-control border-0" name="product" placeholder="Search">
           </form>
@@ -47,7 +47,7 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const currentPage = '<%= activePage %>';
+    const currentPage = "<%= activePage %>";
     if (currentPage === "Home") {
       document.getElementById("headerHome").classList.add("active");
     } else if (currentPage === "About") {

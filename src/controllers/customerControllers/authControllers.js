@@ -216,47 +216,53 @@ export const resendOTP = async (req, res, next) => {
     }
 };
 
-export const Verification = async (req, res) => {
-    let { userId, otp } = req.body;
+export const Verification = async (req, res, next) => {
+    let { userId, otp, isForgotPassword } = req.body;
     const verificationRecords = await Otp.findOne({ userId });
     try {
+        let errorMessage = "";
+        let userEmail = "";
+
         if (!userId || !otp) {
-            throw Error("Empty details are not allowed");
+            errorMessage = "Empty details are not allowed";
         } else {
             if (!verificationRecords) {
-                throw new Error(
-                    "Account record doesn't exist or has been verified already."
-                );
+                errorMessage = "Account record doesn't exist or has been verified already.";
             } else {
                 const hashedOTP = verificationRecords.otp;
                 if (verificationRecords.expiresAt < Date.now()) {
-                    throw new Error("Code has expired. Please try again.");
+                    errorMessage = "Code has expired. Please try again.";
                 } else {
                     const isValid = await bcrypt.compare(otp, hashedOTP);
                     if (!isValid) {
-                        throw new Error("Invalid code. Please try again.");
+                        errorMessage = "Invalid code. Please try again.";
                     } else {
                         await User.updateOne({ _id: userId }, { verified: true });
-                        if (req.body.isForgotPassword === "true") {
-                            res.status(200).json({
-                                success: true,
-                                redirectTo: `/new-password/${userId}`
-                            });
+                        if (isForgotPassword === "true") {
+                            res.redirect(`/new-password/${userId}`);
                         } else {
-                            res.status(200).json({
-                                success: true,
-                                redirectTo: "/"
-                            });
+                            res.redirect("/");
                         }
                     }
                 }
             }
         }
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
+
+        // If any error, find the user's email
+        const foundUser = await User.findById(userId);
+        if (foundUser) {
+            userEmail = foundUser.email;
+        }
+
+        // Render the verification template with error message and user's email
+        res.render("customer/auth/verification", {
+            userId,
+            email: userEmail,
+            commonError: errorMessage,
+            isForgotPassword,
         });
+    } catch (error) {
+        next(error);
     }
 };
 

@@ -31,9 +31,9 @@
 
 <li>
   <% if (!isLoggedIn) { %>
-  <a href="/login">Login</a>
+  <a href="/auth/login">Login</a>
   <% } else { %>
-  <form id="logout-form" action="/logout" method="post">
+  <form id="logout-form" action="/auth/logout" method="post">
     <input type="hidden" value="<%= currentUser._id %>" name="userId">
     <button id="logout-button" class="btn btn-light" type="button" data-toggle="modal" data-target="#logoutModal">
       <i class="bi bi-power"></i>
@@ -124,7 +124,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <form action="/logout" method="post">
+        <form action="/auth/logout" method="post">
           <button class="btn btn-danger" type="submit">Logout</button>
         </form>
       </div>

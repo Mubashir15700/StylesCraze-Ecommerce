@@ -101,7 +101,7 @@
                     Go To Cart
                   </a>
                   <% } else { %>
-                  <form action="/add-to-cart" method="post">
+                  <form action="/cart/add?_method=PATCH" method="post">
                     <input type="hidden" name="product" value="<%= productData._id %>">
                     <input type="hidden" name="hiddenQuantity" value="1">
                     <button type="submit" class="buy-now btn btn-sm btn-primary">
