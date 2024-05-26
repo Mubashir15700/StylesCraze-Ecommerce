@@ -184,7 +184,6 @@ export const newPassword = async (req, res) => {
             error: error.message
         });
     }
-
 };
 
 export const sendOTP = async (req, res, next) => {
