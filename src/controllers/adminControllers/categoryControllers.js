@@ -123,13 +123,19 @@ export const editCategory = async (req, res, next) => {
         };
 
         if (typeof photo !== "undefined") {
-            fs.unlink(path.join(__dirname, "../../public/uploads", category.image), (err) => {
-                if (err) {
-                    throw err;
-                } else {
-                    updatedObj.image = "/categories/" + photo;
-                }
-            });
+            // Construct the full path to the image file
+            const imagePath = path.join(__dirname, "../../public/uploads", category.image);
+
+            // Check if the image file exists
+            if (fs.existsSync(imagePath)) {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        throw err;
+                    }
+                });
+            }
+
+            updatedObj.image = "/categories/" + photo;
         }
 
         await category.updateOne(updatedObj, { runValidators: true });

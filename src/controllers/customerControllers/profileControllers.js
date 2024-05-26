@@ -88,13 +88,19 @@ export const removeProfileImage = async (req, res, next) => {
         const currentUser = await User.findById(req.session.user);
         await currentUser.updateOne(removeProfile);
 
-        fs.unlink(path.join(__dirname, "../../public/uploads", currentUser.profile), (err) => {
-            if (err) {
-                throw err;
-            } else {
-                res.redirect("/profile");
-            }
-        });
+        // Construct the full path to the image file
+        const imagePath = path.join(__dirname, "../../public/uploads", currentUser.profile);
+
+        // Check if the image file exists
+        if (fs.existsSync(imagePath)) {
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        }
+
+        res.redirect("/profile");
     } catch (error) {
         next(error);
     }

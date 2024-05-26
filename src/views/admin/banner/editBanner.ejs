@@ -41,7 +41,7 @@
                       <% banner.images.forEach(img=> { %>
                       <div class="col-4">
                         <figure>
-                          <img src="<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 250px; object-fit: contain;" />
+                          <img src="/uploads<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 250px; object-fit: contain;" />
                           <form action="/admin/banners/<%= banner._id %>/delete-img?_method=DELETE" method="post" class="mt-3">
                             <input type="hidden" name="image" value="<%= img %>">
                             <div class="d-grid">

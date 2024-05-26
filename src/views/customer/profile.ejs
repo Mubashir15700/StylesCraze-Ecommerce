@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('../partials/customer/head') -%>
+<%- include("../partials/customer/head") -%>
 
 <body>
 
   <div class="site-wrap">
-    <%- include('../partials/customer/header') -%>
+    <%- include("../partials/customer/header") -%>
     <div class="bg-light py-3">
       <div class="container">
         <div class="row">
@@ -25,19 +25,19 @@
           <div class="col-md-6 mb-4">
             <div class="p-3 p-lg-5 border">
               <div class="form-group" id="preview-group">
-                <% if (currentUser.profile.includes('undefined') || currentUser.profile==='' ) { %>
+                <% if (currentUser.profile.includes("undefined") || currentUser.profile==="" ) { %>
                 <div id="personIcon" style="display: block;">
                   <i class="bi bi-person-circle" style="font-size: 50px;"></i>
                 </div>
                 <% } else if (currentUser.profile) { %>
                 <form action="/profile/remove-image?_method=PATCH" method="post" id="removeImg-form">
-                  <img src="<%= currentUser.profile %>" style="border-radius: 10px; display: inline;" height="100px" width="100px" id="previewForm-img" alt="profileImage">
+                  <img src="/uploads<%= currentUser.profile %>" style="border-radius: 10px; display: inline;" height="100px" width="100px" id="previewForm-img" alt="profileImage">
                   <button type="button" class="btn btn-danger mt-0" style="display: inline;" id="removeBtn" onclick="removeProfileImage()">
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>
                 <% } %>
-                <img src="<%= currentUser.profile %>" class="preview" id="preview-img" style="border-radius: 10px; display: none;" height="100px" width="100px" id="preview-img" alt="profileImage">
+                <img src="/uploads<%= currentUser.profile %>" class="preview" id="preview-img" style="border-radius: 10px; display: none;" height="100px" width="100px" id="preview-img" alt="profileImage">
               </div>
               <form action="/profile?_method=PATCH" method="post" id="profile-form" enctype="multipart/form-data">
                 <div class="form-group row">
@@ -169,10 +169,10 @@
     </div>
 
     <script>
-      const form = document.getElementById('profile-form');
-      const usernameInput = document.getElementById('exampleInputUsername1');
-      const emailInput = document.getElementById('exampleInputEmail1');
-      const phoneInput = document.getElementById('exampleInputPhone1');
+      const form = document.getElementById("profile-form");
+      const usernameInput = document.getElementById("exampleInputUsername1");
+      const emailInput = document.getElementById("exampleInputEmail1");
+      const phoneInput = document.getElementById("exampleInputPhone1");
 
       // To show/hide the profile update modal
       const confirmationModal = document.getElementById("confirmationModal");
@@ -185,36 +185,36 @@
       });
 
       // Close the modal when the "Cancel" button is clicked
-      confirmUpdateButton.addEventListener('click', (event) => {
+      confirmUpdateButton.addEventListener("click", (event) => {
         form.submit();
         confirmationModal.hide();
       });
 
-      const imageForm = document.getElementById('removeImg-form');
+      const imageForm = document.getElementById("removeImg-form");
 
       function removeProfileImage() {
         imageForm.submit();
       }
 
-      const previewArea = document.getElementById('preview-group');
-      const previewInput = document.getElementById('preview-input');
-      const previewImg = document.getElementById('preview-img');
+      const previewArea = document.getElementById("preview-group");
+      const previewInput = document.getElementById("preview-input");
+      const previewImg = document.getElementById("preview-img");
 
       previewInput.onchange = e => {
         if (e.target.files && e.target.files.length) {
-          previewImg.style.display = 'block';
+          previewImg.style.display = "block";
           const imgSrc = URL.createObjectURL(e.target.files[0]);
           previewImg.src = imgSrc;
-          previewArea.style.display = 'block';
+          previewArea.style.display = "block";
           if (document.getElementById("personIcon")) {
-            document.getElementById("personIcon").style.display = 'none';
+            document.getElementById("personIcon").style.display = "none";
           }
-          document.getElementById("previewForm-img").style.display = 'none';
-          document.getElementById("removeBtn").style.display = 'none';
+          document.getElementById("previewForm-img").style.display = "none";
+          document.getElementById("removeBtn").style.display = "none";
         }
       }
 
-      form.addEventListener('submit', (event) => {
+      form.addEventListener("submit", (event) => {
         let hasErrors = false;
 
         // Clear previous error messages
@@ -243,4 +243,4 @@
       });
     </script>
 
-    <%- include('../partials/customer/footer') -%>
+    <%- include("../partials/customer/footer") -%>

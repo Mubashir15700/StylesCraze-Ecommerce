@@ -198,17 +198,23 @@ async function updateProductOfferPrice(productId, offerPercentage) {
 export const deleteImage = async (req, res, next) => {
     const { id } = req.params;
     const { image } = req.body;
-    
+
     try {
         await Product.findByIdAndUpdate(id, { $pull: { images: image } }, { new: true });
 
-        fs.unlink(path.join(__dirname, "../../public/uploads", image), (err) => {
-            if (err) {
-                throw err;
-            } else {
-                res.redirect(`/admin/products/${id}/edit`);
-            }
-        });
+        // Construct the full path to the image file
+        const imagePath = path.join(__dirname, "../../public/uploads", image);
+
+        // Check if the image file exists
+        if (fs.existsSync(imagePath)) {
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        }
+
+        res.redirect(`/admin/products/${id}/edit`);
     } catch (error) {
         next(error);
     }

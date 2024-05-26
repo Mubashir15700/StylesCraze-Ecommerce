@@ -53,7 +53,7 @@
                     <% categoryDatas.forEach((category)=> { %>
                     <tr>
                       <td class="py-1">
-                        <img src="<%= category.image %>" alt="<%= category.name %>" class="img-click" onclick="openModal('<%= category.image %>')" />
+                        <img src="/uploads<%= category.image %>" alt="<%= category.name %>" class="img-click" onclick="openModal('<%= category.image %>')" />
                       </td>
                       <!-- for display and zoom image -->
                       <div id="imageModal" class="modal">
