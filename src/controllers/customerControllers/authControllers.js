@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { sendToMail } from "../../utils/sendMailUtil.js";
 import User from "../../models/userModel.js";
 import Otp from "../../models/otpModel.js";
-import { isLoggedIn, getCurrentUser } from "../../utils/getCurrentUser.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 
 let salt;
 

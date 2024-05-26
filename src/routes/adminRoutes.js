@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { checkAuth } from "../middlewares/adminMiddlewares.js";
 import {
-    authRoutes, bannerRoutes, categoryRoutes,
-    couponRoutes, orderRoutes, productRoutes
+    authRoutes, bannerRoutes, categoryRoutes, couponRoutes, orderRoutes, productRoutes
 } from "./adminModularRoutes/index.js";
-import {
-    getDashboard, getNotifications, getReturnRequests, returnRequestAction,
-    getCustomers, customerAction, getSalesReport, downloadSalesReport
-} from "../controllers/adminControllers/adminControllers.js";
+import { getDashboard } from "../controllers/adminControllers/dashboardControllers.js";
+import { getNotifications } from "../controllers/adminControllers/notificationControllers.js";
+import { getReturnRequests, returnRequestAction } from "../controllers/adminControllers/requestControllers.js";
+import { getSalesReport, downloadSalesReport } from "../controllers/adminControllers/saleReportControllers.js";
+import { getCustomers, customerAction } from "../controllers/adminControllers/customerControllers.js";
 
 const router = Router();
 

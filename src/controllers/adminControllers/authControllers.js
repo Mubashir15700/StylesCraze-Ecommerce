@@ -1,20 +1,8 @@
 import bcrypt from "bcryptjs";
 import Admin from "../../models/adminModel.js";
 
-let salt;
-
-async function generateSalt() {
-    salt = await bcrypt.genSalt(10);
-}
-
-generateSalt();
-
 export const getLogin = (req, res) => {
     res.render("admin/login", { commonError: "" });
-};
-
-export const getEnterEmail = (req, res) => {
-    res.render("admin/forgot", { commonError: "" });
 };
 
 export const loginAdmin = async (req, res, next) => {
@@ -39,6 +27,10 @@ export const loginAdmin = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+};
+
+export const getEnterEmail = (req, res) => {
+    res.render("admin/forgot", { commonError: "" });
 };
 
 export const sendOTP = async (req, res, next) => {

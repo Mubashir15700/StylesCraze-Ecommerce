@@ -1,13 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import Category from "../../models/categoryModel.js";
 import Product from "../../models/productModel.js";
 import { newProductErrorPage, editProductErrorPage } from "../../middlewares/errorMiddlewares.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { __filename, __dirname } from "../../utils/filePathUtil.js";
 
 export const getProducts = async (req, res, next) => {
     try {

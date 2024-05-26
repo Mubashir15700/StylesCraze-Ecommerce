@@ -1,4 +1,5 @@
 import Coupon from "../../models/couponModel.js";
+import generateCouponCode from "../../utils/generateCouponUtil.js";
 
 export const getCoupons = async (req, res, next) => {
     try {
@@ -73,20 +74,6 @@ export const addNewCoupon = async (req, res, next) => {
         next(error);
     }
 };
-
-function generateCouponCode() {
-    const codeRegex = /^[A-Z0-9]{5,15}$/;
-    let code = "";
-    while (!codeRegex.test(code)) {
-        code = Math.random().toString(36).substring(7);
-    }
-    return Coupon.findOne({ code }).then(existingCoupon => {
-        if (existingCoupon) {
-            return generateCouponCode();
-        }
-        return code;
-    });
-}
 
 export const couponAction = async (req, res, next) => {
     try {

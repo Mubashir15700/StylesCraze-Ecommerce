@@ -1,7 +1,7 @@
 import Order from "../../models/orderModel.js";
 import Product from "../../models/productModel.js";
 import Address from "../../models/addressModel.js";
-import { isLoggedIn, getCurrentUser } from "../../utils/getCurrentUser.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 import { razorpay } from "../../config/razorpayConfig.js";
 
 export const placeOrder = async (req, res, next) => {

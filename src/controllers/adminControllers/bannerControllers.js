@@ -1,11 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 import Banner from "../../models/bannerModel.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { __filename, __dirname } from "../../utils/filePathUtil.js";
 
 export const getBanners = async (req, res, next) => {
     try {

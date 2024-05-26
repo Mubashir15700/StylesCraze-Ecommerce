@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkToBlock } from "../../middlewares/customerMiddlewares.js";
 import { 
     getShop, getCategoryProducts, getSingleProduct, searchProducts, filterProducts
-} from "../../controllers/customerControllers/customerControllers.js";
+} from "../../controllers/customerControllers/shopControllers.js";
 
 const router = Router();
 

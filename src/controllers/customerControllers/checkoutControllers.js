@@ -1,7 +1,7 @@
 import User from "../../models/userModel.js";
 import Address from "../../models/addressModel.js";
 import Coupon from "../../models/couponModel.js";
-import { isLoggedIn, getCurrentUser } from "../../utils/getCurrentUser.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 
 export const getCheckout = async (req, res, next) => {
     try {

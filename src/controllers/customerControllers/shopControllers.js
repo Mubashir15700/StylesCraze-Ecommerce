@@ -1,6 +1,6 @@
 import Product from "../../models/productModel.js";
 import Category from "../../models/categoryModel.js";
-import { isLoggedIn, getCurrentUser } from "../../utils/getCurrentUser.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 
 export const getShop = async (req, res, next) => {
     try {

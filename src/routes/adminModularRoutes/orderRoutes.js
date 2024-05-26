@@ -2,7 +2,7 @@ import { Router } from "express";
 import { checkAuth } from "../../middlewares/adminMiddlewares.js";
 import {
     getOrders, getSingleOrder, manuelStatusUpdate 
-} from "../../controllers/adminControllers/adminControllers.js";
+} from "../../controllers/adminControllers/orderControllers.js";
 
 const router = Router();
 

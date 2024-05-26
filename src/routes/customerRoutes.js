@@ -3,11 +3,11 @@ import { checkAuth, checkToBlock } from "../middlewares/customerMiddlewares.js";
 import {
     authRoutes, profileRoutes, cartRoutes, shopRoutes
 } from "./customerModularRoutes/index.js";
-import {
-    getHome, getAbout, getContact, getWishlist, updateWishlist, applyCoupon,
-    saveRzpOrder, cancelOrder, getReturnProductForm, requestReturnProduct,
-    getCheckout, placeOrder
-} from "../controllers/customerControllers/customerControllers.js";
+import { getHome, getAbout, getContact } from "../controllers/customerControllers/navbarControllers.js";
+import { getCheckout, applyCoupon } from "../controllers/customerControllers/checkoutControllers.js";
+import { getWishlist, updateWishlist } from "../controllers/customerControllers/wishlistControllers.js";
+import { placeOrder, saveRzpOrder, cancelOrder } from "../controllers/customerControllers/orderControllers.js";
+import { getReturnProductForm, requestReturnProduct } from "../controllers/customerControllers/returnProductControllers.js";
 
 const router = Router();
 
