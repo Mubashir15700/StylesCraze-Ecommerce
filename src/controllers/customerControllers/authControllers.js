@@ -1,16 +1,11 @@
 import bcrypt from "bcryptjs";
-import { sendToMail } from "../../utils/sendMailUtil.js";
 import User from "../../models/userModel.js";
 import Otp from "../../models/otpModel.js";
+import { sendToMail } from "../../utils/sendMailUtil.js";
+import generateSalt from "../../utils/generateSaltUtil.js";
 import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 
-let salt;
-
-async function generateSalt() {
-    salt = await bcrypt.genSalt(10);
-}
-
-generateSalt();
+const salt = generateSalt();
 
 export const getLogin = (req, res) => {
     res.render("customer/auth/login", { commonError: "" });

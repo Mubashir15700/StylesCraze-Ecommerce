@@ -3,8 +3,9 @@ import Category from "../../models/categoryModel.js";
 import Order from "../../models/orderModel.js";
 import Address from "../../models/addressModel.js";
 import Return from "../../models/returnProductsModel.js";
+import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 
-export const getReturnProductForm = async (req, res) => {
+export const getReturnProductForm = async (req, res, next) => {
     try {
         const product = await Product.findById(req.query.product);
         const category = await Category.findById(req.query.category);
