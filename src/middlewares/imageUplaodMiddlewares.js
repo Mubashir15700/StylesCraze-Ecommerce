@@ -2,12 +2,7 @@ import multer from "multer";
 import sharp from "sharp";
 import path from "path";
 import { v4 } from "uuid";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-// Determine the directory name of the current module file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { __filename, __dirname } from "../utils/filePathUtil.js";
 
 const storage = multer.memoryStorage();
 

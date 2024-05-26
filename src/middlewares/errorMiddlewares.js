@@ -9,7 +9,7 @@ export const newProductErrorPage = function (req, res, error, categories) {
         error: error || "An error occurred",
         activePage: "Products"
     });
-}
+};
 
 export const editProductErrorPage = function (req, res, error, product, foundCategories) {
     res.render("admin/products/editProduct", {
@@ -18,6 +18,6 @@ export const editProductErrorPage = function (req, res, error, product, foundCat
         error: error || "An error occurred",
         activePage: "Products"
     });
-}
+};
 
 export default customError;
