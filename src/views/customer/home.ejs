@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+<body>
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <% if (currentBanner) { %>
+    <div id="bannerCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <% for (let i = 0; i < currentBanner.images.length; i++) { %>
+        <li data-target="#bannerCarousel" data-slide-to="<%= i %>" class="<%= i === 0 ? 'active' : '' %>"></li>
+        <% } %>
+      </ol>
+      <!-- Slides -->
+      <div class="carousel-inner">
+        <% for (let i = 0; i < currentBanner.images.length; i++) { %>
+        <div class="site-blocks-cover carousel-item <%= i === 0 ? 'active' : '' %>" 
+          style="background-image: url('/uploads<%= currentBanner.images[i] %>');" data-aos="fade">
+          <div class="container">
+            <div class="row align-items-start align-items-md-center justify-content-end">
+              <div class="col-md-5 text-center text-md-left pt-5 pt-md-0">
+                <h1 class="mb-2"><%= currentBanner.title %></h1>
+                <div class="intro-text text-center text-md-left">
+                  <p class="mb-4"><%= currentBanner.description %></p>
+                  <p>
+                    <a href="/shop/1" class="btn btn-sm btn-primary">Shop Now</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Controls -->
+      <a class="carousel-control-prev" href="#bannerCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#bannerCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <% } else { %>
+    <div class="site-blocks-cover" style="background-image: url(/customer/images/hero_1.jpg);" data-aos="fade">
+      <div class="container">
+        <div class="row align-items-start align-items-md-center justify-content-end">
+          <div class="col-md-5 text-center text-md-left pt-5 pt-md-0">
+            <h1 class="mb-2">Finding Your Perfect Shoes</h1>
+            <div class="intro-text text-center text-md-left">
+              <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam.
+                Integer accumsan tincidunt fringilla. </p>
+              <p>
+                <a href="/shop/1" class="btn btn-sm btn-primary">Shop Now</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <%- include('../partials/customer/features') -%>
+    <%- include('../partials/customer/category') -%>
+    <%- include('../partials/customer/featuredProducts') -%>
+    <div class="site-section block-8">
+      <div class="container">
+        <div class="row justify-content-center  mb-5">
+          <div class="col-md-7 site-section-heading text-center pt-4">
+            <h2>Big Sale!</h2>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-md-12 col-lg-7 mb-5">
+            <a href="#"><img src="/customer/images/blog_1.jpg" alt="Image placeholder" class="img-fluid rounded"></a>
+          </div>
+          <div class="col-md-12 col-lg-5 text-center pl-md-5">
+            <h2><a href="#">50% less in all items</a></h2>
+            <p class="post-meta mb-4">By <a href="#">Carl Smith</a> <span class="block-8-sep">&bullet;</span>
+              September
+              3, 2018</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam iste dolor accusantium
+              facere
+              corporis
+              ipsum animi deleniti fugiat. Ex, veniam?</p>
+            <p><a href="/shop/1" class="btn btn-primary btn-sm">Shop Now</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/customer/footer') -%>

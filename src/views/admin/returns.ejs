@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/admin/head') -%>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h4 class="card-title">Return Requests</h4>
+                  <form action="/admin/return-requests/1?filtered=true" method="post">
+                    <select name="status" class="mr-3">
+                      <option>Select Status</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Rejected">Rejected</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+                    <input class="m-1" type="date" name="from">
+                    <input class="m-1" type="date" name="upto">
+                    <button class="btn btn-outline-primary btn-sm m-1" type="submit">Apply</button>
+                  </form>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        User
+                      </th>
+                      <th>
+                        Details
+                      </th>
+                      <th>
+                        Return To
+                      </th>
+                      <th>
+                        Reason and Condition
+                      </th>
+                      <th>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!returnRequests.length) { %>
+                    <tr>
+                      <td colspan="5">No requests found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% returnRequests.forEach((request)=> { %>
+                    <tr>
+                      <td>
+                        <%= request.user.username %><br>
+                        <p class="text-dark">
+                          <%= request.user.email %>
+                        </p><br>
+                        <%= request.user.phone %>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="border-bottom mb-3">
+                            <span class="text-primary h6 text-uppercase">
+                              <%= request.product.name %>
+                            </span><br>
+                            Price: ₹<%= request.product.actualPrice %> <br>
+                            Quantity: <%= request.quantity %> <br>
+                          </div>
+                          Requested Date: <%= request.createdAt?.toLocaleDateString() %>
+                        </div>
+                      </td>
+                      <td>
+                        <%= request.order.deliveryAddress.state %>,
+                        <%= request.order.deliveryAddress.city %><br>
+                        <%= request.order.deliveryAddress.area %>,
+                        Pincode: <%= request.order.deliveryAddress.pincode%><br>
+                        House No.: <%= request.order.deliveryAddress.building %>
+                      </td>
+                      <td>
+                        <%= request.reason %>,<br>
+                        <%= request.condition %>
+                      </td>
+                      <td>
+                        <div class="d-flex flex-column justify-content-between">
+                          <% if (request.status==="Approved" ) { %>
+                          <p class="text-success font-weight-bolder">Approved</p>
+                          <% } else if (request.status==="Rejected" ) { %>
+                          <p class="text-danger font-weight-bolder">Rejected</p>
+                          <% } else { %>
+                          <form action="/admin/return-requests/<%= request._id %>/action" method="post">
+                            <input type="hidden" name="action" value="approve">
+                            <input type="hidden" name="request" value="<%= request._id %>">
+                            <input type="hidden" name="order" value="<%= request.order._id %>">
+                            <input type="hidden" name="product" value="<%= request.product._id %>">
+                            <button type="submit" class="btn btn-warning btn-sm">
+                              <i class="bi bi-check2"></i>
+                            </button>
+                          </form>
+                          <form action="/admin/return-requests/<%= request._id %>/action" method="post" class="mt-1" id="action-form">
+                            <input type="hidden" name="action" value="reject">
+                            <input type="hidden" name="request" value="<%= request._id %>">
+                            <input type="hidden" name="order" value="<%= request.order._id %>">
+                            <input type="hidden" name="product" value="<%= request.product._id %>">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                              <i class="bi bi-x-lg"></i>
+                            </button>
+                          </form>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if (returnRequests.length) { %>
+        <div class="container">
+          <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/return-requests/<%= currentPage - 1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <% } %>
+                <% for (let i=1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                <li class="page-item">
+                  <a class="page-link bg-primary text-light" href="/admin/return-requests/<%= i %>"><%= i %></a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/return-requests/<%= i %>"><%= i %></a>
+                </li>
+                <% } %>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/return-requests/<%= currentPage + 1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <% } %>
+
+      </div>
+      <%- include('../partials/admin/footer') -%>

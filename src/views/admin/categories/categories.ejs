@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../../partials/admin/head') -%>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../../partials/admin/header') -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between flex-wrap">
+                <h4 class="card-title">Categories</h4>
+                <div class="d-flex justify-content-between">
+                  <form class="form-inline flex-grow-1">
+                    <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search" id="search-input">
+                  </form>
+                  <a href="/admin/categories/new" class="btn btn-primary">New Category</a>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        Category
+                      </th>
+                      <th>
+                        Name
+                      </th>
+                      <th>
+                        Product's Count
+                      </th>
+                      <th>
+                        Offer
+                      </th>
+                      <th>
+                        Offer Validity
+                      </th>
+                      <th>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="search-results">
+                    <% if (!categoryDatas.length) { %>
+                    <tr>
+                      <td colspan="4">No categories found.</td>
+                    </tr>
+                    <% } else { %>
+                    <% categoryDatas.forEach((category)=> { %>
+                    <tr>
+                      <td class="py-1">
+                        <img src="/uploads<%= category.image %>" alt="<%= category.name %>" class="img-click" onclick="openModal('<%= category.image %>')" />
+                      </td>
+                      <!-- for display and zoom image -->
+                      <div id="imageModal" class="modal">
+                        <button id="closeButton" class="close-button">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                        <div class="image-zoom">
+                          <img src="" id="modalImage" alt="Image">
+                        </div>
+                      </div>
+                      <td>
+                        <%= category.name %>
+                      </td>
+                      <td>
+                        <%= category.productsCount %>
+                      </td>
+                      <td>
+                        <%= category.offerPercentage ?? 0 %>%
+                      </td>
+                      <td>
+                        <%= category.offerValidUpto ? category.offerValidUpto?.toLocaleDateString() : 'No offer' %>
+                      </td>
+                      <td>
+                        <div class="d-flex">
+                          <a href="/admin/categories/<%= category._id %>/edit" class="btn btn-info btn-sm mr-1">
+                            <i class="bi bi-pen"></i>
+                          </a>
+                          <form action="/admin/categories/<%= category._id %>/action?_method=PATCH" method="post" id="action-form">
+                            <% if(category.removed===true) { %>
+                            <input type="hidden" name="state" value="">
+                            <button type="submit" class="btn btn-warning btn-sm action-btn">
+                              Activate
+                            </button>
+                            <% } else { %>
+                            <input type="hidden" name="state" value="1">
+                            <button type="submit" class="btn btn-danger btn-sm action-btn">
+                              Deactivate
+                            </button>
+                            <% } %>
+                          </form>
+                          <!-- Add a button for deactivating the offer -->
+                          <form action="/admin/categories/deactivate-offer/<%= category._id %>?_method=PATCH" method="post" id="deactivate-offer-form">
+                            <button type="submit" class="btn btn-light btn-sm mr-1">
+                              Remove Offer
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }) %>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if (categoryDatas.length) { %>
+        <div class="container">
+          <div class="d-flex justify-content-end">
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/categories/<%= currentPage - 1 %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <% } %>
+                <% for (let i=1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                <li class="page-item">
+                  <a class="page-link bg-primary text-light" href="/admin/categories/<%= i %>"><%= i %></a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/categories/<%= i %>"><%= i %></a>
+                </li>
+                <% } %>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/categories/<%= currentPage + 1 %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <% } %>
+
+      </div>
+
+      <script>
+        $(document).ready(function() {
+          $('#search-input').on('input', function() {
+            const searchQuery = $(this).val();
+
+            $.ajax({
+              type: 'POST',
+              url: '/admin/categories/1?search=true',
+              data: {
+                searchQuery
+              },
+              success: function(response) {
+                const categoryDatas = response.categoryDatas;
+
+                const searchResultsContainer = $('#search-results');
+
+                searchResultsContainer.empty();
+
+                if (categoryDatas.length === 0) {
+                  const row = $('<tr>');
+                  const messageCell = $('<td>', {
+                    colspan: 6,
+                    text: 'No categories found.'
+                  });
+
+                  row.append(messageCell);
+                  searchResultsContainer.append(row);
+                } else {
+                  categoryDatas.forEach(category => {
+                    const row = $('<tr>');
+                    row.append($('<td>').html(`<img src="${category.image}" alt="Category Image" onclick="openModal('${category.image}')" />`));
+                    row.append($('<td>').text(category.name));
+                    row.append($('<td>').text(category.productsCount));
+                    row.append($('<td>').text((category.offerPercentage ?? 0) + "%"));
+                    row.append($('<td>').text(category.offerValidUpto ? new Date(category.offerValidUpto).toLocaleDateString() : 'No offer'));
+                    // Create the last <td> with the form
+                    let elementsToAppend = [];
+
+                    const editButton = $('<a>', {
+                      href: `/admin/edit-category/${category._id}`,
+                      class: "btn btn-info btn-sm mb-1",
+                    }).append($('<i>', {
+                      class: "bi bi-pen"
+                    }));
+
+                    elementsToAppend.push(editButton);
+
+                    const actionForm = $('<form>', {
+                      action: `/admin/categories/action/${category._id}?_method=PATCH`,
+                      method: 'post',
+                      id: 'action-form'
+                    });
+
+                    const offerForm = $('<form>', {
+                      action: `/admin/categories/deactivate-offer/${category._id}?_method=PATCH`,
+                      method: 'post',
+                      id: 'deactivate-offer-form'
+                    });
+
+                    offerForm.append($('<button>', {
+                      type: 'submit',
+                      class: 'btn btn-light btn-sm mr-1',
+                      text: 'Remove Offer'
+                    }));
+
+                    if (category.removed === true) {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: ''
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-warning btn-sm block-button',
+                        text: 'Activate'
+                      }))
+                    } else {
+                      actionForm.append($('<input>', {
+                        type: 'hidden',
+                        name: 'state',
+                        value: '1'
+                      }));
+                      actionForm.append($('<button>', {
+                        type: 'submit',
+                        class: 'btn btn-danger btn-sm block-button',
+                        text: 'Deactivate'
+                      }));
+                    }
+
+                    elementsToAppend.push(actionForm);
+                    elementsToAppend.push(offerForm);
+
+                    row.append($('<td>').html(elementsToAppend));
+                    // Append the row to the table
+                    searchResultsContainer.append(row);
+                  });
+                }
+              },
+              error: function(error) {
+                console.error('Error:', error);
+              }
+            });
+          });
+        });
+      </script>
+
+      <%- include('../../partials/admin/footer') -%>

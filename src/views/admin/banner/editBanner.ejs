@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include("../../partials/admin/head") -%>
+
+<body>
+  <div class="container-scroller">
+    <%- include("../../partials/admin/header") -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="row">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Edit Banner</h4>
+
+                <form action="/admin/banners/<%= banner._id %>/edit" method="post">
+                  <p class="text-danger mb-3">
+                    <%= error %>
+                  </p>
+                  <div class="form-group">
+                    <label for="name">Title</label>
+                    <input type="text" class="form-control" name="title" value="<%= banner.title %>" id="title" placeholder="Title" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="exampleInputName1">Description</label>
+                    <input type="text" class="form-control" name="description" value="<%= banner.description %>" id="exampleInputName1" placeholder="description" required>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary mr-2">Edit</button>
+                  <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
+                </form>
+                <% if (banner.images.length) { %>
+                <div class="card mt-3">
+                  <div class="card-header">
+                    Preview Image
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <% banner.images.forEach(img=> { %>
+                      <div class="col-4">
+                        <figure>
+                          <img src="/uploads<%= img %>" alt="img" class="preview" id="preview-img" style="max-width: 250px; object-fit: contain;" />
+                          <form action="/admin/banners/<%= banner._id %>/delete-img?_method=DELETE" method="post" class="mt-3">
+                            <input type="hidden" name="image" value="<%= img %>">
+                            <div class="d-grid">
+                              <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                          </form>
+                        </figure>
+                      </div>
+                      <% }) %>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+                <% if (banner.images.length < 3) { %>
+                <div class="card mt-3">
+                  <div class="card-header">
+                    Upload
+                  </div>
+                  <div class="card-body">
+                    <form action="/admin/banners/<%= banner._id %>/add-img?_method=PATCH" method="post" enctype="multipart/form-data" id="uploadImg">
+                      <div class="mb-3" id="appendError">
+                        <input type="file" accept="image/*" <%=banner.images.length> 1 ? "" : "multiple" %> name="images" class="form-control file-upload-info" placeholder="Upload Image" id="preview-input" />
+                      </div>
+                      <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <script>
+    function hideErrorMessage() {
+      var errorMessageElement = document.getElementById("error-message");
+      if (errorMessageElement) {
+        setTimeout(() => {
+          errorMessageElement.style.display = "none";
+        }, 4000);
+
+      }
+    }
+    hideErrorMessage();
+
+    const previewArea = document.getElementById("preview-group");
+    const previewInput = document.getElementById("preview-input");
+    const previewImg = document.getElementById("preview-img");
+    const uploadImg = document.getElementById("uploadImg");
+    const appendError = document.getElementById("appendError");
+
+    let validateUpload;
+
+    uploadImg.addEventListener("submit", function(e) {
+      const error = `
+              <div class="alert alert-danger mt-3">
+                Please select image to upload.  
+              </div>
+            `;
+      const el = document.createElement("div");
+      el.setAttribute("id", "error-el");
+      el.innerHTML = error;
+      if (typeof validateUpload === "undefined" || validateUpload?.length === 0) {
+        e.preventDefault();
+        if (!appendError.hasAttribute("hasError")) {
+          appendError.setAttribute("hasError", true);
+          appendError.appendChild(el);
+        }
+      } else {
+        const errorEl = document.getElementById("error-el");
+        appendError.removeAttribute("hasError");
+        appendError.removeChild(el);
+        this.submit();
+      }
+
+    });
+
+    previewInput.onchange = e => {
+
+      validateUpload = e.target.files;
+
+      if (e.target.files && e.target.files.length) {
+        const imgSrc = URL.createObjectURL(e.target.files[0]);
+        previewImg.src = imgSrc;
+        previewArea.style.display = "block";
+      }
+    }
+  </script>
+  <%- include("../../partials/admin/footer") -%>
+  

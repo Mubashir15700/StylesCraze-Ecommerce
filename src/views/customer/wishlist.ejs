@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+<body>
+
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Wishlist</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="site-section">
+        <% if (!currentUser.wishlist.length) { %>
+        Your wishlist is empty.
+        <% } else { %>
+        <% currentUser.wishlist.forEach((item)=> { %>
+        <div class="p-4 border mb-3 d-flex flex-column flex-md-row">
+          <div class="col-md-3 col-12 d-flex justify-content-center mb-3">
+            <a href="/shop/products/single/<%= item._id %>">
+              <img src="/uploads<%= item.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
+            </a>
+          </div>
+          <div class="d-flex col-md-8 col-12 flex-column flex-md-row">
+            <div class="col-md-8">
+              <span class="d-block text-primary h6 text-uppercase"><%= item.name %></span>
+              <p>
+                Stock: <%= item.stock %>
+              </p>
+              <!-- Price -->
+              <div>
+                <strong class="text-primary">  
+                <% if (!item.productOfferPrice && !item.categoryOfferPrice) { %>
+                  <div>
+                    <p class="text-primary font-weight-bold">₹<%= item.actualPrice?.toFixed(2) %></p>
+                  </div>
+                  <% } else { %>
+                  <div>
+                    <p>
+                      <span class="text-decoration-line-through shop-actual-price mr-1"><%= item.actualPrice?.toFixed(2) %>, </span>
+                      <% if (item.productOfferPrice && item.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= Math.min(item.productOfferPrice, item.categoryOfferPrice)?.toFixed(2) %></span>
+                      <% } else if (item.productOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= item.productOfferPrice?.toFixed(2) %></span>
+                      <% } else if (item.categoryOfferPrice) { %>
+                      <span class="text-primary font-weight-bold">₹<%= item.categoryOfferPrice?.toFixed(2) %></span>
+                      <% } %>
+                    </p>
+                  </div>
+                  <% } %>
+                </strong>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <% if (item.stock > 0) { %>
+              <% if (currentUser && currentUser.cart.some((cartItem) => cartItem.product?.toString() === item._id?.toString())) { %>
+              <a href="/cart" class="buy-now btn btn-sm btn-outline-primary mb-2">
+                Go To Cart
+              </a>
+              <% } else { %>
+              <form action="/cart/add?_method=PATCH" method="post">
+                <input type="hidden" name="product" value="<%= item._id %>">
+                <input type="hidden" name="from" value="wishlist">
+                <input type="hidden" name="hiddenQuantity" value="1">
+                <button type="submit" class="buy-now btn btn-sm btn-outline-primary mb-3">
+                  <i class="bi bi-cart3"></i>
+                </button>
+              </form>
+              <% } %>
+              <% } else { %>
+              <p class="text-danger mr-2">
+                Currently Unavailable
+              </p>
+              <% } %>
+              <form action="/wishlist/update?_method=PATCH" method="post">
+                <input type="hidden" name="productId" value="<%= item._id %>">
+                <input type="hidden" name="todo" value="remove">
+                <input type="hidden" name="goto" value="toWishlist">
+                <button type="submit" class="btn btn-sm btn-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+        <% } %>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-6">
+                <p><a href="/shop/1" class="btn btn-outline-primary btn-sm btn-block">Continue
+                    Shopping
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <%- include('../partials/customer/footer') -%>

@@ -1,0 +1,133 @@
+<li class="custom-li">
+  <a href="/profile"><span class="icon icon-person" id="menuProfile1"></span></a>
+</li>
+
+<li class="custom-li">
+  <a href="/wishlist" class="site-cart">
+    <% if (currentUser) { %>
+    <span class="icon icon-heart" id="menuWishlist1"></span>
+    <span class="count" id="wishlistCount">
+      <% if (currentUser.wishlist.length) { %>
+      <%= currentUser.wishlist.length %>
+      <% } else { %>
+      0
+      <% } %>
+    </span>
+    <% } else { %>
+    <span class="icon icon-heart-o" id="menuWishlist1"></span>
+    <% } %>
+  </a>
+</li>
+
+<li class="custom-li"><a href="/cart" class="site-cart">
+    <span class="icon icon-shopping_cart" id="menuCart1"></span>
+    <% if (currentUser) { %>
+    <span class="count">
+      <%= currentUser.cart.length %>
+    </span>
+    <% } %>
+  </a>
+</li>
+
+<li>
+  <% if (!isLoggedIn) { %>
+  <a href="/auth/login">Login</a>
+  <% } else { %>
+  <form id="logout-form" action="/auth/logout" method="post">
+    <input type="hidden" value="<%= currentUser._id %>" name="userId">
+    <button id="logout-button" class="btn btn-light" type="button" data-toggle="modal" data-target="#logoutModal">
+      <i class="bi bi-power"></i>
+    </button>
+  </form>
+  <% } %>
+</li>
+
+<!-- Dropdown -->
+<li id="list-icon">
+  <i class="bi bi-list"></i>
+  <ul id="dropdown-menu">
+    <li><a href="/about" id="menuAbout" class="">About</a></li>
+    <li><a href="/shop/1" id="menuShop" class="">Shop</a></li>
+    <li><a href="/contact" id="menuContact" class="">Contact</a></li>
+    <li>
+      <a href="/profile" id="menuProfile2">
+        <span class="icon icon-person"></span>
+        Profile
+      </a>
+    </li>
+    <li>
+      <a href="/wishlist" class="site-cart">
+        <% if (currentUser) { %>
+        <span class="icon icon-heart" id="menuWishlist1"></span>
+        <span class="count" id="wishlistCount">
+          <% if (currentUser.wishlist.length) { %>
+          <%= currentUser.wishlist.length %>
+          <% } else { %>
+          0
+          <% } %>
+        </span>
+        <% } else { %>
+        <span class="icon icon-heart-o" id="menuWishlist2"></span>
+        <% } %>
+        Wishlist
+      </a>
+    </li>
+    <li class="mt-2">
+      <a href="/cart" class="site-cart">
+        <span class="icon icon-shopping_cart" id="menuCart2">
+          Cart
+        </span>
+        <% if (currentUser) { %>
+        <span class="count">
+          <%= currentUser.cart.length %>
+        </span>
+        <% } %>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const currentPage = '<%= activePage %>';
+    if (currentPage === "Profile") {
+      document.getElementById("menuProfile1").classList.add("text-primary");
+      document.getElementById("menuProfile2").classList.add("text-primary");
+    } else if (currentPage === "Wishlist") {
+      document.getElementById("menuWishlist1").classList.add("text-primary");
+      document.getElementById("menuWishlist2").classList.add("text-primary");
+    } else if (currentPage === "Cart") {
+      document.getElementById("menuCart1").classList.add("text-primary");
+      document.getElementById("menuCart2").classList.add("text-primary");
+    } else if (currentPage === "About") {
+      document.getElementById("menuAbout").classList.add("text-primary");
+    } else if (currentPage === "Shop") {
+      document.getElementById("menuShop").classList.add("text-primary");
+    } else if (currentPage === "Contact") {
+      document.getElementById("menuContact").classList.add("text-primary");
+    }
+  });
+</script>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <form action="/auth/logout" method="post">
+          <button class="btn btn-danger" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

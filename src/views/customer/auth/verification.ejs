@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>StylesCraze</title>
+  <link rel="stylesheet" href="/admin/css/vertical-layout-light/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* Hide the number input stepper */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div>
+                <img src="/StylesCraze.svg" class="mr-2" alt="logo" height="50" width="130" />
+                <p class="font-weight-light">Please Verify to continue.</p>
+              </div>
+              <form action="/auth/verification" method="post" class="pt-3" id="otp-form">
+                <div class="form-group">
+                  <input type="hidden" value="<%= userId %>" id="userId" name="userId">
+                  <input type="hidden" value="<%= email %>" id="email" name="email">
+                  <input type="number" class="form-control form-control-lg" id="exampleInputOTP1" placeholder="OTP" name="otp">
+                  <input type="hidden" value="<%= isForgotPassword %>" id="isForgotPassword" name="isForgotPassword">
+                  <!-- error display -->
+                  <p class="text-danger" id="otp-error-display"></p>
+                </div>
+                <div class="mt-3">
+                  <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" id="verify-btn">
+                    Verify
+                  </button>
+                  <p id="otp-timer" style="display: none;">
+                    Time remaining: <span id="countdown"></span>
+                  </p>
+                </div>
+              </form>
+              <form action="/resend-otp" method="post" id="resendForm">
+                <input type="hidden" value="<%= userId %>" name="id">
+                <input type="hidden" value="<%= email %>" name="email">
+                <input type="hidden" value="<%= isForgotPassword %>" name="isForgotPassword">
+                <p class="text-danger" id="server-error">
+                  <%= commonError %>
+                </p>
+                <a href="#" id="submitLink" style="display: none;">Resend OTP</a>
+                <p>Please check your inbox.</p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById("submitLink").addEventListener("click", function(event) {
+      event.preventDefault();
+      document.getElementById("resendForm").submit();
+    });
+
+    const otpExpirationTime = Date.now() + 30000;
+    const countdownElement = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const now = Date.now();
+      const timeRemaining = otpExpirationTime - now;
+      const seconds = Math.floor((timeRemaining / 1000) % 60);
+      const formattedTime = `00:${String(seconds).padStart(2, '0')}`;
+      countdownElement.textContent = formattedTime;
+      document.getElementById("otp-timer").style.display = "inline";
+      if (timeRemaining <= 0) {
+        clearInterval(intervalId);
+        countdownElement.textContent = '00:00';
+        document.getElementById("submitLink").style.display = "inline";
+      }
+    }
+    updateCountdown();
+    const intervalId = setInterval(updateCountdown, 1000);
+
+    // Create a FormData object to send the form data
+    const userId = document.getElementById("userId").value;
+    const email = document.getElementById("email").value;
+    const exampleInputOTP1 = document.getElementById("exampleInputOTP1");
+    const isForgotPassword = document.getElementById("isForgotPassword").value;
+    const formData = {
+      userId,
+      email,
+      isForgotPassword
+    };
+
+    const errorDisplay = document.getElementById('otp-error-display');
+
+    // Send the form data using AJAX
+    $('#verify-btn').on('click', function(event) {
+      event.preventDefault();
+      formData.otp = exampleInputOTP1.value;
+      $.ajax({
+        url: '/verification',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+          if (response.success === false) {
+            errorDisplay.textContent = response.message;
+          } else {
+            window.location.href = response.redirectTo;
+          }
+        },
+        error: function(xhr, status, error) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success === false) {
+              errorDisplay.textContent = response.message;
+            }
+          } catch (e) {
+            // Handle JSON parsing error, if any
+            console.error('Error parsing JSON response:', e);
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>

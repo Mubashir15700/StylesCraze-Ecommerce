@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/customer/head') -%>
+
+<body>
+
+  <div class="site-wrap">
+    <%- include('../partials/customer/header') -%>
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0"><a href="/">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="site-section">
+        <% if (!cartProducts.length) { %>
+        Your cart is empty.
+        <% } else { %>
+        <div class="row">
+          <% cartProducts.forEach((cartItem)=> { %>
+          <div class="col-md-12 p-4 border mb-3 d-flex">
+            <div class="col-md-4">
+              <a href="/shop/products/single/<%= cartItem.product._id %>">
+                <img src="/uploads<%= cartItem.product.images[0] %>" alt="Image" height="180px" width="180px" class="img-fluid">
+              </a>
+            </div>
+            <div class="col-md-4">
+              <span class="d-block text-primary h6 text-uppercase">
+                <%= cartItem.product.name %>
+              </span>
+              <p>
+                <%= cartItem.product.description %><br>
+                Category: <%= cartItem.product.category.name %><br>
+                <div>
+                  <strong class="text-primary">  
+                  <% if (!cartItem.product.productOfferPrice && !cartItem.product.categoryOfferPrice) { %>
+                    <div>
+                      <p class="text-primary font-weight-bold">₹<%= cartItem.product.actualPrice?.toFixed(2) %></p>
+                    </div>
+                    <% } else { %>
+                    <div>
+                      <p>
+                        <span class="text-decoration-line-through shop-actual-price mr-1"><%= cartItem.product.actualPrice?.toFixed(2) %>, </span>
+                        <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice)?.toFixed(2) %></span>
+                        <% } else if (cartItem.product.productOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= cartItem.product.productOfferPrice?.toFixed(2) %></span>
+                        <% } else if (cartItem.product.categoryOfferPrice) { %>
+                        <span class="text-primary font-weight-bold">₹<%= cartItem.product.categoryOfferPrice?.toFixed(2) %></span>
+                        <% } %>
+                      </p>
+                    </div>
+                    <% } %>
+                  </strong>
+                </div>
+              </p>
+              <p>
+                Stock: <%= cartItem.product.stock %>
+              </p>
+            </div>
+            <div class="col-md-4">
+              <span class="text-black">
+                Quantity: <%= cartItem.quantity %><br>
+                Total Price: ₹<span id="totalPrice_<%= cartItem._id %>" class="text-black">
+                  <% if (cartItem.product.productOfferPrice && cartItem.product.categoryOfferPrice) { %>
+                    <%= (Math.min(cartItem.product.productOfferPrice, cartItem.product.categoryOfferPrice) * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.productOfferPrice) { %>
+                    <%= (cartItem.product.productOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else if (cartItem.product.categoryOfferPrice) { %>
+                    <%= (cartItem.product.categoryOfferPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } else { %>
+                    <%= (cartItem.product.actualPrice * cartItem.quantity)?.toFixed(2) %>
+                  <% } %>
+              </span>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-5">
+            <div class="d-flex">
+              <p class="m-3">
+                <a href="/shop/1" class="btn btn-outline-primary btn-sm btn-block">
+                  Continue Shopping
+                </a>
+              </p>
+              <p class="m-3">
+                <a href="/cart" class="btn btn-primary btn-sm btn-block">
+                  Back To cart
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6 address border p-3">
+            <div class="d-flex justify-content-between">
+              <h3>Shipping Address</h3>
+              <% if (currentAddress) { %>
+              <a href="/profile/addresses/change" class="btn btn-primary">Change</a>
+              <% } else { %>
+              <a href="/profile/addresses/new" class="btn btn-outline-primary">
+                Add New Address
+              </a>
+              <% } %>
+
+            </div>
+            <% if (currentAddress) { %>
+            <p>
+              <%= currentAddress.state %>,
+              <%= currentAddress.city %>
+              <%= currentAddress.area %>,
+              <%= currentAddress.building %>,
+              <%= currentAddress.pincode %>
+            </p>
+            <% } else { %>
+            <p>No delivery address found.</p>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+      <% } %>
+      <form action="/checkout" method="post" id="checkout-form">
+        <div class="row">
+          <div class="col-md-6 d-flex flex-column justify-content-between">
+            <div>
+              <div>
+                <label class="text-black h4" for="payment">Payment Methods</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="rzp" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Razorpay
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="wlt">
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Wallet
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="method" value="cod">
+                <label class="form-check-label" for="flexRadioDefault3">
+                  Cash on Delivery
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pl-5">
+            <div class="row justify-content-end">
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-12 text-right border-bottom mb-5">
+                    <h3 class="text-black h4 text-uppercase">Price Details</h3>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Price (<%= cartProducts.length %> items)</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                      ₹<span id="totalPrice" class="text-black">
+                        <%= grandTotal %>.00
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Delivery Charges</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                      ₹<span class="text-black">
+                        5.00
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span>Discount</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="text-black">
+                      <% if (discount===0) { %>
+                      ₹<span class="text-black">
+                        00.00
+                      </span>
+                      <% } else { %>
+                      ₹<%= discount %>.00
+                      <% } %>
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-6">
+                    <span>Grand Total</span>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <span class="h5 text-black">
+                      ₹<span id="grandTotalPrice" class="text-black">
+                        <% if (discount===0) { %>
+                        <%= grandTotal + 5 %>.00
+                        <% } else { %>
+                        <%= grandTotal - discount + 5 %>.00
+                        <% } %>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row mb-5">
+                  <div class="col-md-12">
+                    <% if (!currentAddress) { %>
+                    <p class="text-center">No Address found.</p>
+                    <a href="/profile" class="btn btn-outline-primary btn-lg btn-block">
+                      Go To Profile
+                    </a>
+                    <% } else { %>
+                    <div>
+                      <input type="hidden" name="addressId" value="<%= currentAddress._id %>">
+                      <input type="hidden" name="discount" value="<%= discount %>">
+                      <input type="hidden" name="currentCoupon" value="<%= currentCoupon %>">
+                      <button type="button" class="btn btn-primary btn-lg py-3 btn-block" onclick="openPlaceOrderModal()">
+                        Place Order
+                      </button>
+                      <p class="text-danger">
+                        <%= error %>
+                      </p>
+                    </div>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="row col-lg-12">
+        <form action="/apply-coupon" method="post" id="checkout-form">
+          <div>
+            <div>
+              <label class="text-black h4" for="coupon">Coupon</label>
+              <p>Enter your coupon code if you have one.</p>
+            </div>
+            <div class="d-flex">
+              <input type="text" class="form-control py-3" name="coupon" id="coupon" placeholder="Paste Coupon Code">
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-sm">Apply Coupon</button>
+              </div>
+            </div>
+            <p class="text-danger">
+              <%= couponError %>
+            </p>
+            <a href="/profile/coupons" class="btn btn-outline-primary btn-sm mt-4">View Available
+              Coupons</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Place Order Modal -->
+  <div class="modal fade" id="placeOrderModal" tabindex="-1" role="dialog" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="placeOrderModalLabel">Confirm Place Order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to place your order?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmPlaceOrder">Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Function to open the "Place Order" modal
+    function openPlaceOrderModal() {
+      $('#placeOrderModal').modal('show');
+    }
+
+    // Event handler for the "Place Order" button click
+    $('#confirmPlaceOrder').on('click', function() {
+      const checkoutForm = document.getElementById('checkout-form');
+      checkoutForm.submit();
+      // After placing the order, you can close the modal
+      $('#placeOrderModal').modal('hide');
+    });
+  </script>
+
+  <%- include('../partials/customer/footer') -%>

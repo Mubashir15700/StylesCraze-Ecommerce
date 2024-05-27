@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include("../../partials/admin/head") -%>
+
+<body>
+  <div class="container-scroller">
+    <%- include("../../partials/admin/header") -%>
+    <div class="main-panel">
+      <div class="content-wrapper my-custom-wrapper">
+        <div class="row">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Add New Banner</h4>
+
+                <form class="forms-sample" action="/admin/banners/new" method="post" enctype="multipart/form-data">
+                  <p class="text-danger mb-3">
+                    <%= error %>
+                  </p>
+                  <div class="form-group">
+                    <label for="name">Title</label>
+                    <input type="text" class="form-control" name="title" id="title" placeholder="Title" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="exampleInputName1">Description</label>
+                    <input type="text" class="form-control" name="description" id="exampleInputName1" placeholder="description" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Images</label>
+                    <div class="input-group col-xs-12">
+                      <input type="file" accept="image/*" multiple name="images" class="form-control file-upload-info previewInput" placeholder="Upload Image" id="preview-input" required />
+                    </div>
+                  </div>
+
+                  <div class="form-group" id="preview-group" style="display: none;">
+                    <div class="card">
+                      <div class="card-header">
+                        Preview Images
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" id="preview-img" data-img-index="1" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" data-img-index="2" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                          <div class="col-4">
+                            <div class="img-preview-p">
+                              <img src="" alt="" class="preview" id="preview-img" data-img-index="3" style="max-width: 100%; object-fit: cover; display: block;" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary mr-2">Create</button>
+                  <a href="#" class="btn btn-outline-primary btn-light" id="cancel-button">Cancel</a>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <script>
+    function hideErrorMessage() {
+      var errorMessageElement = document.getElementById("error-message");
+      if (errorMessageElement) {
+        setTimeout(() => {
+          errorMessageElement.style.display = "none";
+        }, 4000);
+
+      }
+    }
+    hideErrorMessage();
+
+    const previewInput = document.querySelector(".previewInput");
+    const previewArea = document.getElementById("preview-group");
+
+    previewInput.addEventListener("change", function(e) {
+      const previewImages = document.querySelectorAll(".preview");
+      if (e.target.files.length) {
+        if (e.target.files.length > 3) {
+          e.target.value = ""; // Reset the file input
+          previewImages.forEach(image => image.src = ""); // Clear preview images
+          alert("You can only select up to 3 images.");
+        } else {
+          for (let i = 0; i < e.target.files.length; i++) {
+            console.log(e.target.files.length, previewImages[i]);
+            previewImages[i].src = URL.createObjectURL(e.target.files[i]);
+          }
+          previewArea.style.display = "block";
+        }
+      }
+    });
+  </script>
+
+  <%- include("../../partials/admin/footer") -%>
+  
