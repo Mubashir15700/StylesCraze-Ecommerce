@@ -3,42 +3,39 @@ import path from "path";
 import Category from "../../models/categoryModel.js";
 import Product from "../../models/productModel.js";
 import { __filename, __dirname } from "../../utils/filePathUtil.js";
+import catchAsync from "../../utils/catchAsyncUtil.js";
 
-export const getCategories = async (req, res, next) => {
-    try {
-        // pagination
-        const page = parseInt(req.params.page) || 1;
-        const pageSize = 3;
-        const skip = (page - 1) * pageSize;
-        const totalCategories = await Category.countDocuments();
-        const totalPages = Math.ceil(totalCategories / pageSize);
+export const getCategories = catchAsync(async (req, res, next) => {
+    // pagination
+    const page = parseInt(req.params.page) || 1;
+    const pageSize = 3;
+    const skip = (page - 1) * pageSize;
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / pageSize);
 
-        let foundCategories;
-        if (req.query.search) {
-            foundCategories = await Category.find({
-                $or: [
-                    { name: { $regex: req.body.searchQuery, $options: "i" } }
-                ]
-            });
-
-            return res.status(200).json({
-                categoryDatas: foundCategories,
-            });
-        } else {
-            foundCategories = await Category.find().skip(skip).limit(pageSize);
-        }
-
-        res.render("admin/categories/categories", {
-            categoryDatas: foundCategories,
-            activePage: "Categories",
-            filtered: req.query.search ? true : false,
-            currentPage: page || 1,
-            totalPages: totalPages || 1,
+    let foundCategories;
+    if (req.query.search) {
+        foundCategories = await Category.find({
+            $or: [
+                { name: { $regex: req.body.searchQuery, $options: "i" } }
+            ]
         });
-    } catch (error) {
-        next(error);
+
+        return res.status(200).json({
+            categoryDatas: foundCategories,
+        });
+    } else {
+        foundCategories = await Category.find().skip(skip).limit(pageSize);
     }
-};
+
+    res.render("admin/categories/categories", {
+        categoryDatas: foundCategories,
+        activePage: "Categories",
+        filtered: req.query.search ? true : false,
+        currentPage: page || 1,
+        totalPages: totalPages || 1,
+    });
+});
 
 export const newCategory = (req, res) => {
     res.render("admin/categories/newCategory", {
@@ -48,8 +45,8 @@ export const newCategory = (req, res) => {
 };
 
 export const addNewCategory = async (req, res, next) => {
-    const { name, photo, offerPercentage, offerValidUpto } = req.body;
     try {
+        const { name, photo, offerPercentage, offerValidUpto } = req.body;
         if (!name || !photo) {
             res.render("admin/categories/newCategory", {
                 error: "Category name and photo are required.",
@@ -92,28 +89,25 @@ export const addNewCategory = async (req, res, next) => {
     }
 };
 
-export const getCategory = async (req, res, next) => {
-    try {
-        const foundCategory = await Category.findById(req.params.id);
-        if (!foundCategory) {
-            console.log("no category found");
-        } else {
-            res.render("admin/categories/editCategory", {
-                categoryData: foundCategory,
-                error: "",
-                activePage: "Categories"
-            });
-        }
-    } catch (error) {
-        next(error);
+export const getCategory = catchAsync(async (req, res, next) => {
+    const foundCategory = await Category.findById(req.params.id);
+    if (!foundCategory) {
+        console.log("no category found");
+    } else {
+        res.render("admin/categories/editCategory", {
+            categoryData: foundCategory,
+            error: "",
+            activePage: "Categories"
+        });
     }
-};
+});
 
 export const editCategory = async (req, res, next) => {
     const { id } = req.params;
     const { name, photo, offerPercentage, offerValidUpto } = req.body;
-    const foundCategory = await Category.findById(req.params.id);
+
     try {
+        const foundCategory = await Category.findById(req.params.id);
         const category = await Category.findById(id);
 
         let updatedObj = {
@@ -198,12 +192,8 @@ async function updateCategoryOfferPrice(categoryId, offerPercentage) {
     );
 };
 
-export const categoryAction = async (req, res, next) => {
-    try {
-        const state = req.body.state === "1";
-        await Category.findByIdAndUpdate(req.params.id, { $set: { removed: state } });
-        res.redirect("/admin/categories/1");
-    } catch (error) {
-        next(error);
-    }
-};
+export const categoryAction = catchAsync(async (req, res, next) => {
+    const state = req.body.state === "1";
+    await Category.findByIdAndUpdate(req.params.id, { $set: { removed: state } });
+    res.redirect("/admin/categories/1");
+});

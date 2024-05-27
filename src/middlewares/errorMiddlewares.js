@@ -1,6 +1,13 @@
 const customError = (err, req, res, next) => {
     console.log("Err Middleware: ", err.stack);
-    res.status(500).render("error/internalError", { error: err.message });
+
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || "error";
+    
+    res.status(err.statusCode).render("error/internalError", {
+        status: err.status,
+        error: err.message
+    });
 };
 
 export const newProductErrorPage = function (req, res, error, categories) {

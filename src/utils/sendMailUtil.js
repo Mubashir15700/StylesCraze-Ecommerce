@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import nodeMailer from "nodemailer";
 import { config } from "../config/envConfig.js";
 import Otp from "../models/otpModel.js";
+import catchAsync from "./catchAsyncUtil.js";
 
 let salt;
 
@@ -47,26 +48,22 @@ export const sendToMail = (req, res, userId, isForgotPassword, next) => {
         html: `<p>Your otp for verification is ${OTP}</p>`,
     };
 
-    const sendMail = async (transporter, options) => {
-        try {
-            await Otp.deleteMany({ userId });
-            const hashedOTP = await bcrypt.hash(OTP, salt);
-            const newotpModel = new Otp({
-                userId,
-                otp: hashedOTP,
-            });
-            await newotpModel.save();
-            await transporter.sendMail(options);
-            res.render("customer/auth/verification", { 
-                userId, 
-                email: req.body.email, 
-                commonError: "", 
-                isForgotPassword,
-            });
-        } catch (error) {
-            next(error);
-        }
-    }
+    const sendMail = catchAsync(async (transporter, options) => {
+        await Otp.deleteMany({ userId });
+        const hashedOTP = await bcrypt.hash(OTP, salt);
+        const newotpModel = new Otp({
+            userId,
+            otp: hashedOTP,
+        });
+        await newotpModel.save();
+        await transporter.sendMail(options);
+        res.render("customer/auth/verification", {
+            userId,
+            email: req.body.email,
+            commonError: "",
+            isForgotPassword,
+        });
+    });
 
     sendMail(transporter, mailOptions);
 };
