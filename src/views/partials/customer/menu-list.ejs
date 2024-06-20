@@ -34,7 +34,7 @@
   <a href="/auth/login">Login</a>
   <% } else { %>
   <form id="logout-form" action="/auth/logout" method="post">
-    <input type="hidden" value="<%= currentUser._id %>" name="userId">
+    <input type="hidden" value="<%= currentUser?._id %>" name="userId">
     <button id="logout-button" class="btn btn-light" type="button" data-toggle="modal" data-target="#logoutModal">
       <i class="bi bi-power"></i>
     </button>
