@@ -87,7 +87,7 @@ export const changePassword = catchAsync(async (req, res) => {
         throw new Error("All fields are required.");
     }
 
-    foundUser = await User.findById(req.session.user);
+    foundUser = await getCurrentUser(req, res);
     const isMatch = await bcrypt.compare(currentPassword, foundUser.password);
 
     if (!isMatch) {

@@ -95,6 +95,7 @@ export const addNewProduct = async (req, res, next) => {
 
 export const getProduct = catchAsync(async (req, res, next) => {
     const foundProduct = await Product.findById(req.params.id);
+    console.log(foundProduct);
     const foundCategories = await Category.find({}, { name: 1 });
     res.render("admin/products/editProduct", {
         productData: foundProduct,

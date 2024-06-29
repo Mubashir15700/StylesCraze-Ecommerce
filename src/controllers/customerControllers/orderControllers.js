@@ -165,7 +165,7 @@ export const saveRzpOrder = catchAsync(async (req, res, next) => {
 export const cancelOrder = catchAsync(async (req, res, next) => {
     const foundOrder = await Order.findById(req.body.orderId).populate("products.product");
     const foundProduct = foundOrder.products.find((order) => order.product._id.toString() === req.body.productId);
-    const currentUser = await User.findById(req.session.user);
+    const currentUser = await getCurrentUser(req, res);
     if (foundOrder.paymentMethod !== "cod") {
 
         const refundAmount = foundProduct.finalPrice;

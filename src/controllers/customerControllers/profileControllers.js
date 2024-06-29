@@ -10,22 +10,22 @@ import { isLoggedIn, getCurrentUser } from "../../utils/currentUserUtil.js";
 import { __filename, __dirname } from "../../utils/filePathUtil.js";
 import catchAsync from "../../utils/catchAsyncUtil.js";
 
+const renderProfileView = catchAsync(async (req, res, error, addresses) => {
+    res.render("customer/profile", {
+        isLoggedIn: isLoggedIn(req, res),
+        currentUser: await getCurrentUser(req, res),
+        error,
+        addresses,
+        activePage: "Profile",
+    });
+});
+
 export const getProfile = catchAsync(async (req, res, next) => {
     const addresses = await Address.find({ user: req.session.user });
     res.render("customer/profile", {
         isLoggedIn: isLoggedIn(req, res),
         currentUser: await getCurrentUser(req, res),
         error: "",
-        addresses,
-        activePage: "Profile",
-    });
-});
-
-const renderProfileView = catchAsync(async (req, res, error, addresses) => {
-    res.render("customer/profile", {
-        isLoggedIn: isLoggedIn(req, res),
-        currentUser: await getCurrentUser(req, res),
-        error,
         addresses,
         activePage: "Profile",
     });
@@ -38,7 +38,7 @@ export const updateProfile = catchAsync(async (req, res, next) => {
         renderProfileView(req, res, "Username, mobile, and email are required.", addresses);
         return;
     } else {
-        const currentUser = await User.findById(req.session.user);
+        const currentUser = await getCurrentUser(req, res);
 
         const usernameExist = await User.findOne({ _id: { $ne: currentUser._id }, username });
         if (usernameExist) {
@@ -77,7 +77,7 @@ export const removeProfileImage = catchAsync(async (req, res, next) => {
         profile: "",
     };
 
-    const currentUser = await User.findById(req.session.user);
+    const currentUser = await getCurrentUser(req, res);
     await currentUser.updateOne(removeProfile);
 
     // Construct the full path to the image file
@@ -206,7 +206,8 @@ export const getWallet = catchAsync(async (req, res, next) => {
 });
 
 export const getCoupons = catchAsync(async (req, res, next) => {
-    const currentUser = await User.findById(req.session.user).populate("earnedCoupons.coupon");
+    const currentUser = await getCurrentUser(req, res);
+    await currentUser.populate("earnedCoupons.coupon");
     const allCoupons = await Coupon.find({ isActive: true });
     const earnedCoupons = currentUser.earnedCoupons;
 
@@ -228,7 +229,7 @@ export const getOrders = catchAsync(async (req, res, next) => {
     // Update order statuses before fetching orders
     await updateOrderStatus(req, res, next);
 
-    const currentUser = await User.findById(req.session.user);
+    const currentUser = await getCurrentUser(req, res);
     const orders = await Order.aggregate([
         { $match: { user: new mongoose.Types.ObjectId(req.session.user) } },
         { $unwind: "$products" },
